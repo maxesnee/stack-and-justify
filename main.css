@@ -1,0 +1,74 @@
+@font-face {
+	font-family: "Baudricourt";
+	src: url("fonts/Baudricourt-Leger.otf") format("opentype");
+	font-weight: 300;
+}
+@font-face {
+	font-family: "Baudricourt";
+	src: url("fonts/Baudricourt-Courant.otf") format("opentype");
+	font-weight: 400;
+}
+@font-face {
+	font-family: "Baudricourt";
+	src: url("fonts/Baudricourt-Demi-Gras.otf") format("opentype");
+	font-weight: 500;
+}
+@font-face {
+	font-family: "Baudricourt";
+	src: url("fonts/Baudricourt-Gras.otf") format("opentype");
+	font-weight: 700;
+}
+@font-face {
+	font-family: "Baudricourt";
+	src: url("fonts/Baudricourt-Noir.otf") format("opentype");
+	font-weight: 900;
+}
+
+@font-face {
+	font-family: "Scopra";
+	src: url("fonts/Scopra-Regular.otf") format("opentype");
+	font-weight: 400;
+}
+
+body {
+	margin: 2rem;
+}
+
+button {
+	margin: 0;
+	padding: 0.3rem 0.4rem;
+	box-shadow: none;
+	border: none;
+	background-color: transparent;
+}
+
+.specimen {
+	font-family: 'Scopra';
+	line-height: 1.2;
+}
+
+.line {
+	display: flex;
+}
+
+.size-select,
+.text,
+.refresh {
+	border: 1px dashed white;
+}
+
+.size-select,
+.refresh {
+	opacity: 0;
+}
+
+.specimen:hover .size-select,
+.specimen:hover .refresh {
+	opacity: 1;
+}
+
+.specimen:hover .size-select,
+.specimen:hover .text,
+.specimen:hover .refresh {
+	border-color: black;
+}
