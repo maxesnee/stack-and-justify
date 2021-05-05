@@ -4,11 +4,11 @@
 	<meta charset="UTF-8">
 	<title>AutoSpecimen</title>
 	<link rel="stylesheet" href="main.css">
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-	<div class="specimen" id="specimen">
-		<div class="line" v-for="line in lines">
+	<div id="app"></div>
+
+<!-- 	<div class="line">
 			<div class="size-select"><button v-on:click="decrementSize(line)">◀︎</button>{{ line.size }}<button v-on:click="incrementSize(line)">▶︎</button></div>
 			<div class="text" v-bind:style="{ fontSize: line.size + 'px', width: width + 'px', fontWeight: fontWeight }">{{line.text}}</div>
 			<div class="refresh"><button v-on:click="refreshLine(line)">↩︎</button></div>
@@ -16,13 +16,9 @@
 
 		<div class="line add-line">
 			<button v-on:click="addLine">+</button>
-		</div>	
-	</div>
+		</div>	 -->
 
-	<script src="titles.js"></script>
 	<script src="dictionary.js"></script>
-	<script src="idioms.js"></script>
-	<script src="history.js"></script>
 <!-- 	<script src="main.js"></script>
  -->	
 	<script src="app.js"></script>
