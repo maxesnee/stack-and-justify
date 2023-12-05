@@ -1,37 +1,19 @@
 @font-face {
-	font-family: "Baudricourt";
-	src: url("fonts/Baudricourt-Leger.otf") format("opentype");
-	font-weight: 300;
-}
-@font-face {
-	font-family: "Baudricourt";
-	src: url("fonts/Baudricourt-Courant.otf") format("opentype");
+	font-family: "Plomb Sans";
+	src: url("fonts/PlombSans-Regular.otf") format("opentype");
 	font-weight: 400;
-}
-@font-face {
-	font-family: "Baudricourt";
-	src: url("fonts/Baudricourt-Demi-Gras.otf") format("opentype");
-	font-weight: 500;
-}
-@font-face {
-	font-family: "Baudricourt";
-	src: url("fonts/Baudricourt-Gras.otf") format("opentype");
-	font-weight: 700;
-}
-@font-face {
-	font-family: "Baudricourt";
-	src: url("fonts/Baudricourt-Noir.otf") format("opentype");
-	font-weight: 900;
 }
 
-@font-face {
-	font-family: "Scopra";
-	src: url("fonts/Scopra-Regular.otf") format("opentype");
-	font-weight: 400;
+button {
+	color: inherit;
 }
 
 body {
+	background: black;
+	color: white;
 	margin: 2rem;
+	font-family: Plomb Sans;
+	line-height: 1.2;
 }
 
 button {
@@ -43,21 +25,31 @@ button {
 }
 
 .specimen {
-	font-family: 'Scopra';
-	line-height: 1.2;
+
 }
 
 .line {
 	display: flex;
 }
 
-.size-select,
-.text,
-.refresh {
-	border: 1px dashed white;
+.size-select {
+	min-width: 4.5rem;
+	display: flex;
+	align-items: center;
+}
+
+.size-select span {
+	flex: 1;
+	text-align: center;
 }
 
 .size-select,
+.text,
+.refresh {
+	border-bottom: 1px dashed;
+}
+
+/*.size-select,
 .refresh {
 	opacity: 0;
 }
@@ -65,10 +57,19 @@ button {
 .specimen:hover .size-select,
 .specimen:hover .refresh {
 	opacity: 1;
-}
+}*/
 
-.specimen:hover .size-select,
+/*.specimen:hover .size-select,
 .specimen:hover .text,
 .specimen:hover .refresh {
 	border-color: black;
+}*/
+
+.drop-zone {
+	border: 1px dashed;
+	width: 10rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	padding:  1rem;
 }

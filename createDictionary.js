@@ -30,7 +30,6 @@ document.getElementById('files').addEventListener('change', function() {
 			reader.readAsText(file, "UTF-8");
 		}
 	}
-	// console.log(dictionnary);
 
 })
 
