@@ -104,63 +104,48 @@ function Line(size) {
 	function update() {
 		sizeLabel.textContent = size;
 
-		text = getWord(size, layout.lineWidth);
-		textBlock.textContent = text;
-		textBlock.style.fontSize = size + "px"; 
-		textBlock.style.width = layout.lineWidth + "px";
-		textBlock.style.fontWeight = fontWeight;
-		textBlock.style.fontFamily = font.name;
+		if (font) {
+			text = getWord(size, layout.lineWidth);
+			textBlock.textContent = text;
+			textBlock.style.fontSize = size + "px"; 
+			textBlock.style.width = layout.lineWidth + "px";
+			textBlock.style.fontWeight = fontWeight;
+			textBlock.style.fontFamily = font.name;
+		}
 	}
 
-	// update();
+	update();
 
 	el.update = update;
 
 	return el;
 }
 
-function CaseControls() {
+// function CaseSelect() {
+// 	const el = $("select.case-select", {name: 'case'},
+// 			$("option", {value: 'lowercase'}, "Lowercase"),
+// 			$("option", {value: 'uppercase'}, "Uppercase"),
+// 			$("option", {value: 'capitalised', selected: 'selected'}, "Capitalised"),
+// 		);
 
-	const capRadio = $("div", 
-			$("input", {type: "radio", id: "capitalised", name: "case", oninput: update, checked: true}),
-			$("label", {for: "capitalised"}, "Capitalised")
-		);
-	const uppRadio = $("div", 
-		$("input", {type: "radio", id: "uppercase", name: "case", oninput: update}),
-		$("label", {for: "uppercase"}, "UPPERCASE")
-	);
-	const lcRadio = $("div", 
-		$("input", {type: "radio", id: "lowercase", name: "case", oninput: update}),
-		$("label", {for: "lowercase"}, "lowercase")
-	);
+// 	function update() {
+// 		if (font) {
+// 			sortedDict = sortDict(dictionary.languages.ukacd.words);	
+// 		}
 
-	const el = $("fieldset.case-controls",
-		lcRadio,
-		capRadio,
-		uppRadio
-		);
+// 		if (el.onchange !== null) {
+// 			el.onchange();
+// 		}
+// 	}
 
-	function update() {
-		let active = [capRadio, uppRadio, lcRadio].filter(radio => radio.firstChild.checked)[0].firstChild;
-		filter = active.id;
+// 	update();
 
-		if (font) {
-			sortedDict = sortDict(dictionary.languages.ukacd.words);	
-		}
-
-		if (el.oninput !== null) {
-			el.oninput();	
-		}
-	}
-
-	// update();
-
-	return el;
-}
+// 	return el;
+// }
 
 function SizeSlider(lineWidth = layout.lineWidth) {
-	const sizeLabel = $("label", {for: "line-width"});
-	const sizeInput = $("input", {name: "line-width", type: "range", min: 50, max: 1000, value: lineWidth, oninput: update});
+	const sizeLabel = $("input", {type: "number", name: "line-width-label", value: lineWidth, oninput: labelInput});
+	const sizeInput = $("input", {name: "line-width", type: "range", min: 50, max: 1000, value: lineWidth, oninput: rangeInput});
 
 	const el = $("div.size-slider", 
 		sizeLabel,
@@ -168,13 +153,22 @@ function SizeSlider(lineWidth = layout.lineWidth) {
 		);
 
 	function update(e) {
-		lineWidth = sizeInput.value;
-		sizeLabel.textContent = lineWidth;
+		sizeInput.value = lineWidth;
+		sizeLabel.value = lineWidth;
 
 		if (el.oninput !== null) {
 			el.oninput();	
 		}
-		
+	}
+
+	function labelInput() {
+		lineWidth = sizeLabel.value;
+		update();
+	}
+
+	function rangeInput() {
+		lineWidth = sizeInput.value;
+		update();
 	}
 
 	update();
@@ -189,12 +183,24 @@ function SizeSlider(lineWidth = layout.lineWidth) {
 }
 
 function FontItem() {
-	const el = $('div.font-item', {});
+	const label = $('span.font-item-label');
+	const el = $('div.font-item',
+		label,
+		$('button.font-item-remove', {onclick: remove}, 'x')
+	);
 
-	if (font) el.textContent = font.name;
+	if (font) label.textContent = font.name;
 
 	function update() {
-		el.textContent = font.name;
+		label.textContent = font.name;
+	}
+
+	function remove(e) {
+		e.preventDefault();
+
+		font = null;
+		localStorage.clear();
+		Specimen.update();
 	}
 
 	el.update = update;
@@ -203,11 +209,14 @@ function FontItem() {
 };
 
 function fontForm() {
+	const fontItem = FontItem();
+
 	if (localStorage['fontData']) {
 		font = {
 			name: localStorage['fontName'],
 			data: localStorage['fontData']
 		}
+		update();
 	}
 
 	function handleDragOver(e) {
@@ -229,8 +238,6 @@ function fontForm() {
 		});
 	}
 
-	const fontItem = FontItem();
-
 	function update() {
 		const fontFaceRule = `@font-face { font-family: ${font.name}; src: url('${font.data}') }`;
 		document.styleSheets[0].insertRule(fontFaceRule, 0);
@@ -240,14 +247,12 @@ function fontForm() {
 	}
 
 	const el = 
-	$("form",
+	$("form.form",
 		fontItem,
 		$("div.drop-zone", {ondrop: handleDrop, ondragover: handleDragOver},
 				"Drop font files here"
 		)
 	);
-
-	update();
 
 	return el;
 }
@@ -283,15 +288,28 @@ const Specimen = (function() {
 	const slider = SizeSlider();
 	slider.oninput = update;
 
-	const caseControls = CaseControls();
-	caseControls.oninput = update;
+	const caseSelect = $("select.case-select", {name: 'case'},
+			$("option", {value: 'lowercase'}, "Lowercase"),
+			$("option", {value: 'uppercase'}, "Uppercase"),
+			$("option", {value: 'capitalised', selected: 'selected'}, "Capitalised"),
+		);
+	caseSelect.onchange = function() {
+		filter = caseSelect.options[caseSelect.selectedIndex].value;
+
+		if (font) {
+			sortedDict = sortDict(dictionary.languages.ukacd.words);
+			update();
+		}
+	};
 
 	const lines = List($("div.lines"), sizes, Line);
 
 	const el =  
 	$("div.specimen",
-		slider,
-		caseControls,
+		$('div.controls',
+			slider,
+			caseSelect
+		),
 		lines,
 		$("div.line.add-line", 
 			$("button", {onclick: addLine}, "+")
@@ -299,13 +317,12 @@ const Specimen = (function() {
 	);
 
 	function addLine() {
-		// lines.append(Line(36, layout));
 		lines.add(Line(36, layout), UID());
 	}
 
 	function update() {
 		layout.lineWidth = slider.value;
-		lines.update();
+		lines.update();	
 	}
 
 	el.update = update;

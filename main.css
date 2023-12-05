@@ -4,16 +4,88 @@
 	font-weight: 400;
 }
 
+@font-face {
+	font-family: "Plomb Sans";
+	src: url("fonts/PlombSans-Bold.otf") format("opentype");
+	font-weight: 700;
+}
+
+fieldset {
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+
 button {
 	color: inherit;
 }
 
+select {
+    background: transparent;
+    color: inherit;
+    border: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+input[type="number"] {
+	border: 0;
+	width: 4ch;
+}
+
+input[type=number] { 
+    -moz-appearance: textfield;
+    appearance: textfield;
+    margin: 0; 
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 15rem;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: white;
+  height: 1px;
+}
+
+input[type="range"]::-moz-range-track {
+  background: black;
+  height: 1px;
+}
+
+/***** Thumb Styles *****/
+input[type="range"]::-moz-range-thumb {
+    border: 0.2rem solid white;
+    border-radius: 0.25rem;
+    background-color: black;
+    height: 0.65rem;
+    width: 0.65rem;
+}
+input[type="range"]::-webkit-slider-thumb {
+   -webkit-appearance: none;
+   appearance: none;
+/*   margin-top: -12px; /* Centers thumb on the track */
+   background-color: black;
+   height: 0.65rem;
+   width: 0.65rem;    
+}
+
 body {
-	background: black;
-	color: white;
 	margin: 2rem;
 	font-family: Plomb Sans;
 	line-height: 1.2;
+	font-size: 14px;
 }
 
 button {
@@ -24,8 +96,22 @@ button {
 	background-color: transparent;
 }
 
-.specimen {
+.form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
 
+.font-item {
+	font-weight: 700;
+}
+
+.controls {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	padding: 0.5rem 0;
+	margin: 0.5rem 0;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
 }
 
 .line {
@@ -47,6 +133,19 @@ button {
 .text,
 .refresh {
 	border-bottom: 1px dashed;
+}
+
+.size-slider {
+	display: flex;
+	align-items: center;
+}
+
+.size-slider label {
+	margin-right: 0.5rem;
+}
+
+.case-select {
+	margin-right: auto;
 }
 
 /*.size-select,
