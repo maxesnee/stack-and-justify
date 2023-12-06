@@ -1,14 +1,211 @@
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
-const container = document.querySelector('#app');
-let sortedDict = null;
-let filter = 'capitalised';
-const fontWeight = 300;
-const layout = {
-	lineWidth: 606
-}
-let font = null;
+const root = document.querySelector('#app');
 const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
+let sortedDict = null;
+let font = null;
+
+const Filters = (function() {
+	let selected = 2;
+
+	const list = [
+		{ value: 'lowercase', label: 'Lowercase'},
+		{ value: 'uppercase', label: 'Uppercase'},
+		{ value: 'capitalised', label: 'Capitalised'}
+	];
+
+	function select(i) {
+		selected = i;
+		sortedDict = sortDict(dictionary.languages.ukacd.words);
+		Layout.lines.forEach(line => line.update());
+	}
+
+	return {
+		list,
+		get selected() {
+			return selected
+		},
+		select
+	}
+})();
+
+const Layout = (function() {
+	let width = 600;
+	let lines = [
+		Line(60),
+		Line(60)
+	];
+
+	function Line(size) {
+		let text = getWord(size, width);
+
+		function update() {
+			text = getWord(size, width);
+		}
+		return {
+			get size() {
+				return size;
+			},
+			set size(value) {
+				size = value;
+				update();
+			},
+			update,
+			get text() {
+				return text;
+			}
+		}
+	}
+
+	function addLine() {
+		lines.push(Line(60));
+	}
+
+	return {
+		get width() {
+				return width;
+		},
+		set width(value) {
+			width = value;
+			lines.forEach(line => line.update());
+		},
+		lines,
+		addLine
+	}
+})();
+
+
+const App = {
+	view: function(vnode) {
+		return [
+			m(FontForm),
+			m(Specimen)
+		]
+	}
+}
+
+function SizeSlider(initialVnode) {
+
+	return {
+		view: function(vnode) {
+			return m('div.size-slider', 
+				m("input", {type: "number", name: "line-width-label", value: Layout.width, oninput: (e) => {Layout.width = e.currentTarget.value}}),
+				m("input", {name: "line-width", type: "range", min: 50, max: 1000, value: Layout.width, oninput: (e) => {Layout.width = e.currentTarget.value}})
+			)
+		}
+	}
+}
+
+function CaseSelect(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m("select", {class: 'case-select', name: 'case', onchange: (e) => Filters.select(e.currentTarget.selectedIndex)},
+				Filters.list.map((filter, i) => {
+					return m("option", {value: filter.value, selected: Filters.selected == i}, filter.label)
+				})
+			)
+		}
+	}
+}
+
+function Line(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('div', {class: 'line'},
+				m('div', {class: 'size-select'}, 
+					m('button', {onclick: () => vnode.attrs.line.size -= 1}, "◀︎"),
+					m('span', {style: {userSelect: "none"}}, vnode.attrs.line.size),
+					m('button', {onclick: () => vnode.attrs.line.size += 1}, "▶︎")
+				),
+				font ?
+				m('div', {class: 'text', style: {
+					whiteSpace: "nowrap",
+					fontSize: vnode.attrs.line.size + 'px',
+					width: Layout.width + 'px',
+					fontFamily: font.name
+				}}, vnode.attrs.line.text) : '',
+				m("div", {class: "refresh"},
+					m("button", {onclick: vnode.attrs.line.update}, '↩︎')
+				)
+			);
+		}
+	}
+}
+
+function Specimen(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('div', {class: 'specimen'},
+				m('div', {class: 'controls'},
+					m(SizeSlider),
+					m(CaseSelect)
+				),
+				font ?
+					Layout.lines.map((line, i) => m(Line, {key: i, line: line})) : '',
+				m('div', {class: 'line add-line'},
+					m('button', {onclick: Layout.addLine}, "+")
+				)
+			)
+		}
+	}
+}
+
+function FontForm(initialVnode) {
+
+	if (localStorage['fontData']) {
+		font = {
+			name: localStorage['fontName'],
+			data: localStorage['fontData']
+		}
+		update();
+	}
+
+	function handleDragOver(e) {
+		e.preventDefault();
+	}
+
+	function handleDrop(e) {
+		e.preventDefault();
+
+		let files = e.dataTransfer.files;
+		handleFile(files[0], function(_fontName, _fontData) {
+			if (font === null) { font = { name: '', data: '' }};
+
+			font.name = _fontName;
+			font.data = _fontData;
+
+			update();
+		});
+	}
+
+	function update() {
+		const fontFaceRule = `@font-face { font-family: ${font.name}; src: url('${font.data}') }`;
+		document.styleSheets[0].insertRule(fontFaceRule, 0);
+		sortedDict = sortDict(dictionary.languages.ukacd.words);
+		Layout.lines.forEach(line => line.update());
+	}
+
+	function remove(e) {
+		e.preventDefault();
+
+		font = null;
+		localStorage.clear();
+		Layout.lines.forEach(line => line.update());
+	}
+
+	return {
+		view: function(vnode) {
+			return m("form", {class: 'form'},
+				font ?
+				m('div', {class: 'font-item'},
+					m('span', {class: 'font-item-label'}, font.name),
+					m('button', {class: 'font-item-remove', onclick: remove}, 'x')
+				) : '',
+				m('div', {class: 'drop-zone', ondrop: handleDrop, ondragover: handleDragOver},
+					"Drop font files here"
+				)
+			)
+		}
+	}
+}
 
 function sortDict(dict) {
 	const canvas = document.createElement('canvas');
@@ -45,7 +242,7 @@ function getWord(size, width) {
 function applyFilter(string) {
 	let filteredString = string;
 
-	switch (filter) {
+	switch (Filters.list[Filters.selected].value) {
 		case 'lowercase':
 			filteredString = filteredString.toLowerCase()
 			break;
@@ -57,204 +254,6 @@ function applyFilter(string) {
 			break;
 	}
 	return filteredString;
-
-}
-
-const UID = (function() {
-	let lastId = -1;
-
-	function newId() {
-		lastId += 1;
-		return lastId;
-	}
-
-	return function() {
-		return newId();
-	}
-})();
-
-
-function Line(size) {
-	let text = "";
-	const sizeLabel = $('span', {style: {userSelect: "none"}});
-	const textBlock = $('div.text', {style: {whiteSpace: "nowrap"}});
-
-	const el = $("div.line",
-		$("div.size-select",
-			$("button", {onclick: decrementSize }, "◀︎"),
-			sizeLabel,
-			$("button", {onclick: incrementSize}, "▶︎")
-			),
-		textBlock,
-		$("div", {class: "refresh"},
-			$("button", {onclick: update}, '↩︎')
-			)
-		);
-
-	function decrementSize() {
-		size--;
-		update();
-	}
-
-	function incrementSize() {
-		size++;
-		update();
-	}
-
-	function update() {
-		sizeLabel.textContent = size;
-
-		if (font) {
-			text = getWord(size, layout.lineWidth);
-			textBlock.textContent = text;
-			textBlock.style.fontSize = size + "px"; 
-			textBlock.style.width = layout.lineWidth + "px";
-			textBlock.style.fontWeight = fontWeight;
-			textBlock.style.fontFamily = font.name;
-		}
-	}
-
-	update();
-
-	el.update = update;
-
-	return el;
-}
-
-// function CaseSelect() {
-// 	const el = $("select.case-select", {name: 'case'},
-// 			$("option", {value: 'lowercase'}, "Lowercase"),
-// 			$("option", {value: 'uppercase'}, "Uppercase"),
-// 			$("option", {value: 'capitalised', selected: 'selected'}, "Capitalised"),
-// 		);
-
-// 	function update() {
-// 		if (font) {
-// 			sortedDict = sortDict(dictionary.languages.ukacd.words);	
-// 		}
-
-// 		if (el.onchange !== null) {
-// 			el.onchange();
-// 		}
-// 	}
-
-// 	update();
-
-// 	return el;
-// }
-
-function SizeSlider(lineWidth = layout.lineWidth) {
-	const sizeLabel = $("input", {type: "number", name: "line-width-label", value: lineWidth, oninput: labelInput});
-	const sizeInput = $("input", {name: "line-width", type: "range", min: 50, max: 1000, value: lineWidth, oninput: rangeInput});
-
-	const el = $("div.size-slider", 
-		sizeLabel,
-		sizeInput
-		);
-
-	function update(e) {
-		sizeInput.value = lineWidth;
-		sizeLabel.value = lineWidth;
-
-		if (el.oninput !== null) {
-			el.oninput();	
-		}
-	}
-
-	function labelInput() {
-		lineWidth = sizeLabel.value;
-		update();
-	}
-
-	function rangeInput() {
-		lineWidth = sizeInput.value;
-		update();
-	}
-
-	update();
-
-	Object.defineProperty(el, "value", {
-		get: () => {
-			return lineWidth
-		}
-	});
-
-	return el;
-}
-
-function FontItem() {
-	const label = $('span.font-item-label');
-	const el = $('div.font-item',
-		label,
-		$('button.font-item-remove', {onclick: remove}, 'x')
-	);
-
-	if (font) label.textContent = font.name;
-
-	function update() {
-		label.textContent = font.name;
-	}
-
-	function remove(e) {
-		e.preventDefault();
-
-		font = null;
-		localStorage.clear();
-		Specimen.update();
-	}
-
-	el.update = update;
-
-	return el;
-};
-
-function fontForm() {
-	const fontItem = FontItem();
-
-	if (localStorage['fontData']) {
-		font = {
-			name: localStorage['fontName'],
-			data: localStorage['fontData']
-		}
-		update();
-	}
-
-	function handleDragOver(e) {
-		e.preventDefault();
-	}
-
-	function handleDrop(e) {
-		e.preventDefault();
-
-		let files = e.dataTransfer.files;
-		handleFile(files[0], function(_fontName, _fontData) {
-			// e.target.innerText = files[0].name;
-			if (font === null) { font = { name: '', data: '' }};
-
-			font.name = _fontName;
-			font.data = _fontData;
-
-			update();
-		});
-	}
-
-	function update() {
-		const fontFaceRule = `@font-face { font-family: ${font.name}; src: url('${font.data}') }`;
-		document.styleSheets[0].insertRule(fontFaceRule, 0);
-		sortedDict = sortDict(dictionary.languages.ukacd.words);
-		Specimen.update();
-		fontItem.update();
-	}
-
-	const el = 
-	$("form.form",
-		fontItem,
-		$("div.drop-zone", {ondrop: handleDrop, ondragover: handleDragOver},
-				"Drop font files here"
-		)
-	);
-
-	return el;
 }
 
 function handleFile(file, callback) {
@@ -279,54 +278,4 @@ function handleFile(file, callback) {
 	reader.readAsDataURL(file);
 }
 
-
-
-const Specimen = (function() {
-	// const sizes = [100, 92, 84, 76, 58, 50, 42, 34, 30, 26, 22];
-	const sizes = [60, 60, 60, 60, 60, 60, 60];
-
-	const slider = SizeSlider();
-	slider.oninput = update;
-
-	const caseSelect = $("select.case-select", {name: 'case'},
-			$("option", {value: 'lowercase'}, "Lowercase"),
-			$("option", {value: 'uppercase'}, "Uppercase"),
-			$("option", {value: 'capitalised', selected: 'selected'}, "Capitalised"),
-		);
-	caseSelect.onchange = function() {
-		filter = caseSelect.options[caseSelect.selectedIndex].value;
-
-		if (font) {
-			sortedDict = sortDict(dictionary.languages.ukacd.words);
-			update();
-		}
-	};
-
-	const lines = List($("div.lines"), sizes, Line);
-
-	const el =  
-	$("div.specimen",
-		$('div.controls',
-			slider,
-			caseSelect
-		),
-		lines,
-		$("div.line.add-line", 
-			$("button", {onclick: addLine}, "+")
-		)
-	);
-
-	function addLine() {
-		lines.add(Line(36, layout), UID());
-	}
-
-	function update() {
-		layout.lineWidth = slider.value;
-		lines.update();	
-	}
-
-	el.update = update;
-	return el;
-})();
-
-container.append(fontForm(), Specimen);
+m.mount(root, App);
