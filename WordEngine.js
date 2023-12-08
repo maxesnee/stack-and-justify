@@ -2,38 +2,36 @@ import { dictionary } from "./dictionary.js";
 
 
 export const WordEngine = (function() {
+	const filters = ["lowercase", "uppercase", "capitalised"];
 	let sortedDict = null;
 	let font = null;
-	let filter = "capitalised";
 	let words = dictionary.languages.ukacd.words;
 
 	function setFont(_font) {
 		font = _font;
 	}
 
-	function setFilter(_filter) {
-		filter = _filter;
-	}
-
 	function sort() {
 		const canvas = document.createElement('canvas');
 		const ctx = canvas.getContext('2d');
 		ctx.font = `100px ${font.name}`;
-		const sorted = {};
+		sortedDict = {};
 
-		for (let word of words) {
-			let filteredWord = applyFilter(word);
-			let width = Math.floor(ctx.measureText(filteredWord).width);
-			if (sorted[width] === undefined) {
-				sorted[width] = []
+		for (let filter of filters) {
+			sortedDict[filter] = {};
+
+			for (let word of words) {
+				let filteredWord = applyFilter(word, filter);
+				let width = Math.floor(ctx.measureText(filteredWord).width);
+				if (sortedDict[filter][width] === undefined) {
+					sortedDict[filter][width] = []
+				}
+				sortedDict[filter][width].push(filteredWord)
 			}
-			sorted[width].push(filteredWord)
 		}
-		
-		sortedDict = sorted;
 	}
 
-	function applyFilter(string) {
+	function applyFilter(string, filter) {
 		let filteredString = string;
 
 		switch (filter) {
@@ -50,7 +48,7 @@ export const WordEngine = (function() {
 		return filteredString;
 	}
 
-	function getWord(size, width) {
+	function getWord(size, width, filter) {
 		let tolerance = 5;
 		let words = [];
 		let scaledWidth = Math.round(width * (100 / size));
@@ -58,8 +56,8 @@ export const WordEngine = (function() {
 		if (size == 0) return '';
 
 		for (let i = scaledWidth - tolerance; i <= scaledWidth + tolerance; i++) {
-			if (sortedDict !== null && sortedDict[i] !== undefined) {
-				words.push(...sortedDict[i]);	
+			if (sortedDict !== null && sortedDict[filter][i] !== undefined) {
+				words.push(...sortedDict[filter][i]);	
 			}
 		}
 
@@ -70,8 +68,7 @@ export const WordEngine = (function() {
 	return {
 		getWord,
 		sort,
-		setFont,
-		setFilter
+		setFont
 	}
 })();
 

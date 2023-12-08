@@ -1,4 +1,5 @@
 import { WordEngine } from "./WordEngine.js";
+import { Filters } from "./Filters.js";
 
 export const Layout = (function() {
 	let width = localStorage['width'] || 600;
@@ -8,11 +9,14 @@ export const Layout = (function() {
 	];
 
 	function Line(size) {
-		let text = WordEngine.getWord(size, width);
+		let text = "";
 
 		function update() {
-			text = WordEngine.getWord(size, width);
+			text = WordEngine.getWord(size, width, Filters.selected);
 		}
+
+		update();
+
 		return {
 			get size() {
 				return size;

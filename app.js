@@ -28,11 +28,16 @@ function SizeSlider(initialVnode) {
 }
 
 function CaseSelect(initialVnode) {
+	function onchange(e) {
+		Filters.select(e.currentTarget.selectedIndex);
+		Layout.lines.forEach(line => line.update());
+	}
+
 	return {
 		view: function(vnode) {
-			return m("select", {class: 'case-select', name: 'case', onchange: (e) => Filters.select(e.currentTarget.selectedIndex)},
+			return m("select", {class: 'case-select', name: 'case', onchange},
 				Filters.list.map((filter, i) => {
-					return m("option", {value: filter.value, selected: Filters.selected == i}, filter.label)
+					return m("option", {value: filter.value, selected: Filters.selected == filter.value}, filter.label)
 				})
 			)
 		}
