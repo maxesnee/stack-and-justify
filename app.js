@@ -1,77 +1,10 @@
+import { Layout } from "./Layout.js";
+import { Filters } from "./Filters.js";
+import { WordEngine } from "./WordEngine.js";
+
 const root = document.querySelector('#app');
 const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
-let sortedDict = null;
 let font = null;
-
-const Filters = (function() {
-	let selected = 2;
-
-	const list = [
-		{ value: 'lowercase', label: 'Lowercase'},
-		{ value: 'uppercase', label: 'Uppercase'},
-		{ value: 'capitalised', label: 'Capitalised'}
-	];
-
-	function select(i) {
-		selected = i;
-		sortedDict = sortDict(dictionary.languages.ukacd.words);
-		Layout.lines.forEach(line => line.update());
-	}
-
-	return {
-		list,
-		get selected() {
-			return selected
-		},
-		select
-	}
-})();
-
-const Layout = (function() {
-	let width = 600;
-	let lines = [
-		Line(60),
-		Line(60)
-	];
-
-	function Line(size) {
-		let text = getWord(size, width);
-
-		function update() {
-			text = getWord(size, width);
-		}
-		return {
-			get size() {
-				return size;
-			},
-			set size(value) {
-				size = value;
-				update();
-			},
-			update,
-			get text() {
-				return text;
-			}
-		}
-	}
-
-	function addLine() {
-		lines.push(Line(60));
-	}
-
-	return {
-		get width() {
-				return width;
-		},
-		set width(value) {
-			width = value;
-			lines.forEach(line => line.update());
-		},
-		lines,
-		addLine
-	}
-})();
-
 
 const App = {
 	view: function(vnode) {
@@ -112,7 +45,13 @@ function Line(initialVnode) {
 			return m('div', {class: 'line'},
 				m('div', {class: 'size-select'}, 
 					m('button', {onclick: () => vnode.attrs.line.size -= 1}, "◀︎"),
-					m('span', {style: {userSelect: "none"}}, vnode.attrs.line.size),
+					m('input', {
+						type: 'number', 
+						name: 'line-size', 
+						value: vnode.attrs.line.size,
+						oninput: (e) => {vnode.attrs.line.size = e.currentTarget.value}, 
+						style: {userSelect: "none"}
+					}),
 					m('button', {onclick: () => vnode.attrs.line.size += 1}, "▶︎")
 				),
 				font ?
@@ -179,7 +118,8 @@ function FontForm(initialVnode) {
 	function update() {
 		const fontFaceRule = `@font-face { font-family: ${font.name}; src: url('${font.data}') }`;
 		document.styleSheets[0].insertRule(fontFaceRule, 0);
-		sortedDict = sortDict(dictionary.languages.ukacd.words);
+		WordEngine.setFont(font);
+		WordEngine.sort();
 		Layout.lines.forEach(line => line.update());
 	}
 
@@ -205,55 +145,6 @@ function FontForm(initialVnode) {
 			)
 		}
 	}
-}
-
-function sortDict(dict) {
-	const canvas = document.createElement('canvas');
-	const ctx = canvas.getContext('2d');
-	ctx.font = `100px ${font.name}`;
-	const sorted = {};
-
-	for (word of dict) {
-		let filteredWord = applyFilter(word);
-		let width = Math.floor(ctx.measureText(filteredWord).width);
-		if (sorted[width] === undefined) {
-			sorted[width] = []
-		}
-		sorted[width].push(filteredWord)
-	}
-	return sorted;
-}
-
-function getWord(size, width) {
-	let tolerance = 5;
-	let words = [];
-	let scaledWidth = Math.round(width * (100 / size));
-
-	for (let i = scaledWidth - tolerance; i <= scaledWidth + tolerance; i++) {
-		if (sortedDict !== null && sortedDict[i] !== undefined) {
-			words.push(...sortedDict[i]);	
-		}
-	}
-
-	let randomIndex = Math.floor(Math.random()*words.length);
-	return words[randomIndex] ?? "";
-}
-
-function applyFilter(string) {
-	let filteredString = string;
-
-	switch (Filters.list[Filters.selected].value) {
-		case 'lowercase':
-			filteredString = filteredString.toLowerCase()
-			break;
-		case 'capitalised':
-			filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
-			break;
-		case 'uppercase':
-			filteredString = filteredString.toUpperCase();
-			break;
-	}
-	return filteredString;
 }
 
 function handleFile(file, callback) {
