@@ -109,7 +109,7 @@ button:active {
 }
 
 .size-input input {
-	width: 3ch;
+	width: 5ch;
 	text-align: center;
 	display: inline-block;
 	margin-left: 0.5rem;
@@ -140,7 +140,8 @@ button:active {
 }
 
 .width-input input {
-	width: 4ch;
+	border: none;
+	width: 8ch;
 	text-align: center;
 	margin-left: 0.5rem;
 	margin-right: 0.5rem;
@@ -183,6 +184,7 @@ button:active {
 	display: flex;
 	align-items: start;
 	padding-top: 1rem;
+	padding-bottom: 1rem;
 }
 
 .update-button,
@@ -203,6 +205,10 @@ button:active {
 	display: flex;
 	justify-content: space-between;
 	border-bottom: 1px dotted;
+}
+
+.specimen-line .text {
+	align-self: center;
 }
 
 .size-slider {

@@ -34,7 +34,8 @@ input {
     padding: 0;
 }
 
-input[type="number"] {
+input[type="number"],
+input[type="text"] {
 	border: 0;
 }
 

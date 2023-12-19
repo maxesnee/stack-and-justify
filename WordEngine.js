@@ -55,7 +55,7 @@ export const WordEngine = (function() {
 
 		if (size == 0) return '';
 
-		for (let i = scaledWidth - tolerance; i <= scaledWidth + tolerance; i++) {
+		for (let i = scaledWidth - tolerance; i <= scaledWidth; i++) {
 			if (sortedDict !== null && sortedDict[filter][i] !== undefined) {
 				words.push(...sortedDict[filter][i]);	
 			}

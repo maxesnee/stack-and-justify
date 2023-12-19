@@ -2,6 +2,7 @@ import { Layout } from "./Layout.js";
 import { Filters } from "./Filters.js";
 import { WordEngine } from "./WordEngine.js";
 
+
 const root = document.querySelector('#app');
 const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 let font = null;
@@ -42,7 +43,7 @@ function Header(initialVnode) {
 		view: function(vnode) {
 			return m('header.header',
 				m(FontUploader),
-				m('h1.logo', "AutoSpecimen"),
+				m('h1.logo', "Stack and Justify"),
 				m('span', "Drop a font here ↓"),
 				m('div.header-btns',
 					m('button.dark-mode-btn', "◒"),
@@ -83,17 +84,6 @@ function FontUploader(initialVnode) {
 	}
 }
 
-function SizeSlider(initialVnode) {
-
-	return {
-		view: function(vnode) {
-			return m('div.size-slider', 
-				m("input", {type: "number", name: "line-width-label", value: Layout.width, oninput: (e) => {Layout.width = e.currentTarget.value}}),
-				m("input", {name: "line-width", type: "range", min: 50, max: 1000, value: Layout.width, oninput: (e) => {Layout.width = e.currentTarget.value}})
-			)
-		}
-	}
-}
 
 function Line(initialVnode) {
 	return {
@@ -104,8 +94,8 @@ function Line(initialVnode) {
 				font ?
 				m('div', {class: 'text', style: {
 					whiteSpace: "nowrap",
-					fontSize: Layout.globalSize.locked ? Layout.globalSize.size + 'px' : line.size + 'px',
-					width: Layout.width + 'px',
+					fontSize: Layout.globalSize.locked ? Layout.globalSize.get() : line.size.get(),
+					width: Layout.globalWidth.get(),
 					fontFamily: font.name
 				}}, line.text) : '',
 				m('div.line-controls',
@@ -151,17 +141,17 @@ function SizeInput(initialVnode) {
 		view: function(vnode) {
 			return m('div.size-input',
 				m('button', {
-					onclick: () => { vnode.attrs.params.size -= 1 },
+					onclick: () => { vnode.attrs.params.size.decrement() },
 					disabled: Layout.globalSize.locked
 				}, '－'),
 				m('input', {
-					type: 'number', 
-					value: vnode.attrs.params.size, 
-					onchange: (e) => {vnode.attrs.params.size = e.currentTarget.value},
+					type: 'text', 
+					value: vnode.attrs.params.size.get(), 
+					onchange: (e) => {vnode.attrs.params.size.set(e.currentTarget.value)},
 					disabled: Layout.globalSize.locked
 				}),
 				m('button', {
-					onclick: () => { vnode.attrs.params.size += 1 },
+					onclick: () => { vnode.attrs.params.size.increment() },
 					disabled: Layout.globalSize.locked
 				}, '＋')
 			)
@@ -174,17 +164,17 @@ function SizeInputGlobal(initialVnode) {
 		view: function(vnode) {
 			return m('div.size-input.size-input-global',
 				m('button', { 
-					onclick: () => { Layout.globalSize.size -= 1 },
+					onclick: () => { Layout.globalSize.decrement() },
 					disabled: !Layout.globalSize.locked
 				}, '－'),
 				m('input', {
-					type: 'number', 
-					value: Layout.globalSize.size,
-					onchange: (e) => {Layout.globalSize.size = e.currentTarget.value},
+					type: 'text', 
+					value: Layout.globalSize.get(),
+					onchange: (e) => {Layout.globalSize.set(e.currentTarget.value)},
 					disabled: !Layout.globalSize.locked
 				}),
 				m('button', {
-					onclick: () => { Layout.globalSize.size += 1 },
+					onclick: () => { Layout.globalSize.increment() },
 					disabled: !Layout.globalSize.locked
 				}, '＋'),
 				m('button.size-input-lock', {
@@ -198,7 +188,7 @@ function SizeInputGlobal(initialVnode) {
 function WidthInput(initialVnode) {
 	let isDragging = false;
 	let startFromRight = null;
-	let startWidth = Layout.width;
+	let startWidth = Layout.globalWidth.getIn('px');
 	let startX = 0;
 	let dX = 0;
 
@@ -209,7 +199,7 @@ function WidthInput(initialVnode) {
 		startFromRight = e.currentTarget.classList.contains('right');
 		isDragging = true;
 		startX = e.clientX;
-		startWidth = Layout.width;
+		startWidth = Layout.globalWidth.getIn('px');
 	}
 
 	function onmousemove(e) {
@@ -227,7 +217,7 @@ function WidthInput(initialVnode) {
 			dX = dX > -startWidth ? dX : -startWidth;
 
 
-			Layout.width = startWidth + dX;
+			Layout.globalWidth.setIn('px', startWidth + dX);
 			m.redraw();
 		}
 	}
@@ -238,10 +228,10 @@ function WidthInput(initialVnode) {
 
 	return {
 		view: function(vnode) {
-			return m('div.width-input', {style: { width: `${Layout.width}px`}}, 
+			return m('div.width-input', {style: { width: Layout.globalWidth.get()}}, 
 				m('div.width-input-handle.left', {onmousedown}),
 				m('span.width-input-line'),
-				m('input', {type: 'number', value: Layout.width, onchange: (e) => {Layout.width = e.currentTarget.value}}),
+				m('input', {type: 'text', value: Layout.globalWidth.get(), onchange: (e) => {Layout.globalWidth.set(e.currentTarget.value)}}),
 				m('span.width-input-line'),
 				m('div.width-input-handle.right', {onmousedown})
 			)
@@ -332,69 +322,6 @@ function LineCount(initialVnode) {
 		}
 	}
 }
-
-// function FontForm(initialVnode) {
-
-// 	if (localStorage['fontData']) {
-// 		font = {
-// 			name: localStorage['fontName'],
-// 			data: localStorage['fontData']
-// 		}
-// 		update();
-// 	}
-
-// 	function handleDragOver(e) {
-// 		e.preventDefault();
-// 	}
-
-// 	function handleDrop(e) {
-// 		e.preventDefault();
-
-// 		let files = e.dataTransfer.files;
-// 		handleFile(files[0], function(_fontName, _fontData) {
-// 			if (font === null) { font = { name: '', data: '' }};
-
-// 			font.name = _fontName;
-// 			font.data = _fontData;
-
-// 			localStorage['fontName'] = font.name;
-// 			localStorage['fontData'] = font.data;
-
-// 			update();
-// 		});
-// 	}
-
-// 	function update() {
-// 		const fontFaceRule = `@font-face { font-family: ${font.name}; src: url('${font.data}') }`;
-// 		document.styleSheets[0].insertRule(fontFaceRule, 0);
-// 		WordEngine.setFont(font);
-// 		WordEngine.sort();
-// 		Layout.lines.forEach(line => line.update());
-// 	}
-
-// 	function remove(e) {
-// 		e.preventDefault();
-
-// 		font = null;
-// 		localStorage.clear();
-// 		Layout.lines.forEach(line => line.update());
-// 	}
-
-// 	return {
-// 		view: function(vnode) {
-// 			return m("form", {class: 'form'},
-// 				font ?
-// 				m('div', {class: 'font-item'},
-// 					m('span', {class: 'font-item-label'}, font.name),
-// 					m('button', {class: 'font-item-remove', onclick: remove}, 'x')
-// 				) : '',
-// 				m('div', {class: 'drop-zone', ondrop: handleDrop, ondragover: handleDragOver},
-// 					"Drop font files here"
-// 				)
-// 			)
-// 		}
-// 	}
-// }
 
 function handleFile(file, callback) {
 	if (!file.name.match(acceptedExtensions)) {

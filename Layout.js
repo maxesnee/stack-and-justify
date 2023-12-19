@@ -1,12 +1,29 @@
 import { WordEngine } from "./WordEngine.js";
 import { Filters } from "./Filters.js";
+import { Size } from "./Size.js";
 
 export const Layout = (function() {
-	let width = parseInt(localStorage['width']) || 600;
+	// let width = parseInt(localStorage['width']) || 600;
+	let width = Size('600px');
 	let sizeLocked = true;
-	let size = 60;
+	let size = Size('60px');
 	let filterLocked = true;
 	let filter = 2;
+
+	let globalWidth = {
+		get() {
+			return width.get()
+		},
+		set(value) {
+			width.set(value);
+			update();
+		},
+		getIn: width.getIn,
+		setIn(srcUnit, newValue) {
+			width.setIn(srcUnit, newValue);
+			update();
+		} 
+	}
 
 	let globalSize = {
 		get locked() {
@@ -15,15 +32,23 @@ export const Layout = (function() {
 		set locked(value) {
 			sizeLocked = value;
 			update();
-			
 		},
-		get size() {
-			return size;
+		get: function() {
+			return size.get();
 		},
-		set size(value) {
-			size = parseInt(value);
+		set: function(value) {
+			size.set(value);
 			update();
 		},
+		increment: function() {
+			size.increment();
+			update();
+		},
+		decrement: function() {
+			size.decrement();
+			update();
+		},
+		getIn: size.getIn
 	};
 
 	let globalFilter = {
@@ -45,18 +70,22 @@ export const Layout = (function() {
 	};
 
 	let lines = [
-		Line(60),
-		Line(60)
+		Line('60px'),
+		Line('60px')
 	];
 
-	function Line(size) {
+	function Line(_size) {
+		let size = Size(_size);
 		let text = "";
 		let filter = 2;
 
+		size.onchange = update;
+
 		function update() {
 			let outputFilter = globalFilter.locked ? globalFilter.filter : filter;
-			let outputSize = globalSize.locked ? globalSize.size : size;
-			text = WordEngine.getWord(outputSize, width, Filters.list[outputFilter].value);	
+			let outputSize = globalSize.locked ? globalSize.getIn('px') : size.getIn('px');
+			let outputWidth = globalWidth.getIn('px');
+			text = WordEngine.getWord(outputSize, outputWidth, Filters.list[outputFilter].value);	
 			
 		}
 
@@ -67,13 +96,7 @@ export const Layout = (function() {
 		update();
 
 		return {
-			get size() {
-				return size;
-			},
-			set size(value) {
-				size = parseInt(value);
-				update();
-			},
+			size,
 			get filter() {
 				return filter;
 			},
@@ -110,7 +133,7 @@ export const Layout = (function() {
 	}
 
 	function addLine() {
-		lines.push(Line(60));
+		lines.push(Line('60px'));
 	}
 
 	function removeLine() {
@@ -132,6 +155,7 @@ export const Layout = (function() {
 		setLineCount,
 		update,
 		copyText,
+		globalWidth,
 		globalSize,
 		globalFilter
 	}
