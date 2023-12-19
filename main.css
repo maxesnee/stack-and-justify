@@ -18,6 +18,14 @@
 
 body {
 	margin: 2rem;
+	background: white;
+	color: black;
+	transition: background 0.1s, color 0.2s;
+}
+
+body.dark {
+	background: black;
+	color: white;
 }
 
 *[disabled] {
@@ -44,13 +52,20 @@ button:active {
 	padding-bottom: 4rem;
 }
 
+input {
+	background: inherit;
+	color: inherit;
+}
+
 .header-btns {
 	grid-column: 4;
 	text-align: right;
 }
 
 .dark-mode-btn {
+	position: relative;
 	margin-right: 0.5rem;
+	z-index: 1;
 }
 
 .logo {
@@ -149,7 +164,7 @@ button:active {
 
 .width-input-line {
 	height: 0.75px;
-	background: black;
+	background: currentColor;
 	flex: 1;
 }
 
@@ -227,28 +242,3 @@ button:active {
 .case-select-lock {
 	margin-right: 0.5rem;
 }
-
-/*.size-select,
-.refresh {
-	opacity: 0;
-}
-
-.specimen:hover .size-select,
-.specimen:hover .refresh {
-	opacity: 1;
-}*/
-
-/*.specimen:hover .size-select,
-.specimen:hover .text,
-.specimen:hover .refresh {
-	border-color: black;
-}*/
-
-/*.drop-zone {
-	border: 1px dashed;
-	width: 10rem;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	padding:  1rem;
-}*/

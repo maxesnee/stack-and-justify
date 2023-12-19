@@ -46,7 +46,7 @@ function Header(initialVnode) {
 				m('h1.logo', "Stack and Justify"),
 				m('span', "Drop a font here ↓"),
 				m('div.header-btns',
-					m('button.dark-mode-btn', "◒"),
+					m(DarkModeButton),
 					m('button.about-btn', "❓"),
 				)
 			)
@@ -84,6 +84,16 @@ function FontUploader(initialVnode) {
 	}
 }
 
+function DarkModeButton(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('button.dark-mode-btn', {
+				onclick: () => { document.body.classList.toggle('dark') }
+			}, "◒")
+		}
+	}
+}
+
 
 function Line(initialVnode) {
 	return {
@@ -95,7 +105,7 @@ function Line(initialVnode) {
 				m('div', {class: 'text', style: {
 					whiteSpace: "nowrap",
 					fontSize: Layout.globalSize.locked ? Layout.globalSize.get() : line.size.get(),
-					width: Layout.globalWidth.get(),
+					width: Layout.width.get(),
 					fontFamily: font.name
 				}}, line.text) : '',
 				m('div.line-controls',
@@ -188,7 +198,7 @@ function SizeInputGlobal(initialVnode) {
 function WidthInput(initialVnode) {
 	let isDragging = false;
 	let startFromRight = null;
-	let startWidth = Layout.globalWidth.getIn('px');
+	let startWidth = Layout.width.getIn('px');
 	let startX = 0;
 	let dX = 0;
 
@@ -199,7 +209,7 @@ function WidthInput(initialVnode) {
 		startFromRight = e.currentTarget.classList.contains('right');
 		isDragging = true;
 		startX = e.clientX;
-		startWidth = Layout.globalWidth.getIn('px');
+		startWidth = Layout.width.getIn('px');
 	}
 
 	function onmousemove(e) {
@@ -217,7 +227,7 @@ function WidthInput(initialVnode) {
 			dX = dX > -startWidth ? dX : -startWidth;
 
 
-			Layout.globalWidth.setIn('px', startWidth + dX);
+			Layout.width.setIn('px', startWidth + dX);
 			m.redraw();
 		}
 	}
@@ -228,10 +238,10 @@ function WidthInput(initialVnode) {
 
 	return {
 		view: function(vnode) {
-			return m('div.width-input', {style: { width: Layout.globalWidth.get()}}, 
+			return m('div.width-input', {style: { width: Layout.width.get()}}, 
 				m('div.width-input-handle.left', {onmousedown}),
 				m('span.width-input-line'),
-				m('input', {type: 'text', value: Layout.globalWidth.get(), onchange: (e) => {Layout.globalWidth.set(e.currentTarget.value)}}),
+				m('input', {type: 'text', value: Layout.width.get(), onchange: (e) => {Layout.width.set(e.currentTarget.value)}}),
 				m('span.width-input-line'),
 				m('div.width-input-handle.right', {onmousedown})
 			)

@@ -1,18 +1,16 @@
 export const Size = function(_str) {
 	let value, unit;
-	let onchange = function() {
-		console.log('no onchange function defined');
-	};
+	let onchange = function() {};
 
 	({value, unit} = processStr(_str));
 
 	function processStr(str) {
 		if (typeof str === 'string' && str !== ""){
 			var split = str.match(/^([-.\d]+(?:\.\d+)?)(.*)$/);
-			return {'value': parseFloat(split[1].trim()), 'unit': split[2].trim()};
+			return {'value': parseFloat(split[1].trim()), 'unit': split[2].trim() || 'px'};
 		}
-		else{
-			return { 'value': parseFloat(str), 'unit': "" };
+		else {
+			return { 'value': parseFloat(str), 'unit': "px" };
 		}
 	}
 
