@@ -242,3 +242,48 @@ input {
 .case-select-lock {
 	margin-right: 0.5rem;
 }
+
+.lang-select {
+	position: relative;
+}
+
+.lang-select-menu {
+	position: absolute;
+	top: calc(100% + 1rem + 1px);
+	left: -1.25rem;
+	background: white;
+	border: 1px dotted;
+	border-top: 0;
+}
+
+.lang-select-menu fieldset {
+	padding-top: 0.75rem;
+	padding-bottom: 0.75rem; 
+}
+
+.lang-select-menu fieldset > * {
+	box-sizing: border-box;
+	width: 100%;
+	padding-left: 1.25rem;
+	padding-right: 1.25rem;
+}
+
+.lang-select-menu fieldset legend {
+	float: left;
+	padding-bottom: 0.75rem;
+	border-bottom: 1px dotted;
+	margin-bottom: 1rem;
+}
+
+.checkbox {
+	display: flex;
+}
+
+.checkbox input[type="checkbox"] {
+	margin-right: 0.5rem;
+}
+
+.checkbox label {
+	white-space: nowrap;
+}
+

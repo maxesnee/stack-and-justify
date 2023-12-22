@@ -1,55 +1,82 @@
-const Dictionary = (function() {
-	const dictionary = {};
-	const words = {
-		languages: ['english', 'french', 'spanish'],
-		sources: {
-			dictionaries: {
-				english: 'words/dictionaries/english.json',
-				french: 'words/dictionaries/french.json',
-				spanish: 'words/dictionaries/spanish.json',
-			},
-			wikipedia: {
-				english: 'words/wikipedia/en_wikipedia.json',
-				french: 'words/wikipedia/fr_wikipedia.json',
-				french: 'words/wikipedia/fr_wikipedia.json'	
+export const Dictionary = (function() {
+	const data = {
+		languages: [{
+			name: 'english',
+			label: 'English',
+			selected: true
+		}, {
+			name: 'french',
+			label: 'French',
+			selected: false
+		}, {
+			name: 'spanish',
+			label: 'Spanish',
+			selected: false
+		}],
+		sources: [{
+			name: 'dictionary',
+			label: 'Dictionary',
+			selected: true,
+			words: {
+				english: {
+					url: 'words/dictionaries/english.json',
+					list: null
+				},
+				french: {
+					url: 'words/dictionaries/french.json',
+					list: null
+				},
+				spanish: {
+					url: 'words/dictionaries/spanish.json',
+					list: null
+				},
+			}
+		}, {
+			name: 'wikipedia',
+			label: 'Wikipedia article titles',
+			selected: false,
+			words: {
+				english: {
+					url: 'words/wikipedia/en_wikipedia.json',
+					list: null
+				},
+				french: {
+					url: 'words/wikipedia/fr_wikipedia.json',
+					list: null
+				},
+				spanish: {
+					url: 'words/wikipedia/es_wikipedia.json',
+					list: null
+				}
+			}
+		}]
+	}
+
+	function loadFile(url) {
+		return fetch(url)
+			.then(response => response.json())
+			.then(data => data.words)
+			.catch(error => console.error('Error loading JSON file:', error));
+	}
+
+	async function getWords() {
+		const words = [];
+		for (const source of data.sources.filter(source => source.selected)) {
+			for (const language of data.languages.filter(lang => lang.selected)) {
+				const listObject = source.words[language.name];
+				if (listObject.list === null) {
+					listObject.list = await loadFile(listObject.url);
+				}
+				words.push(...listObject.list);
 			}
 		}
-	}
-	const settings = {
-		languages: ['english'],
-		sources: ['dictionaries', 'wikipedia']
+		return words;
 	}
 
-	function getFiles() {
-		const files = {};
 
-		for (const source of settings.sources) {
-			files[source] = {};
-			for (const language of settings.languages ) {
-				files[source][language] = [];
-				files[source][language].push(words.sources[source][language]);
-			}
-		}
-		return files;
-	}
-	
-	const files = getFiles();
-	const promises = [];
-	for (const source in files) {
-		dictionary[source] = {};
-		for (const language in files[source]) {
-			dictionary[source][language] = [];
-			promises.push(
-				fetch(files[source][language])
-				.then(response => response.json())
-				.then(data => {
-					dictionary[source][language].push(...data.words);
-				})
-				.catch(error => console.error('Error loading JSON file:', error))
-			);
-		}
-	}
-
-	Promise.all(promises).then(console.log(dictionary));
+	return {
+		getWords,
+		data
+	};
 
 })();

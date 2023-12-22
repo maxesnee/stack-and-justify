@@ -1,6 +1,7 @@
 import { Layout } from "./Layout.js";
 import { Filters } from "./Filters.js";
 import { WordEngine } from "./WordEngine.js";
+import { Dictionary } from "./Dictionary.js";
 
 
 const root = document.querySelector('#app');
@@ -25,8 +26,9 @@ function updateFont() {
 	const fontFaceRule = `@font-face { font-family: ${font.name}; src: url('${font.data}') }`;
 	document.styleSheets[0].insertRule(fontFaceRule, 0);
 	WordEngine.setFont(font);
-	WordEngine.sort();
-	Layout.lines.forEach(line => line.update());
+	WordEngine.sort().then(() => {
+		Layout.lines.forEach(line => line.update());	
+	});
 }
 
 const App = {
@@ -313,9 +315,38 @@ function FontItem(initialVnode) {
 }
 
 function LanguageSelect(initialVnode) {
+
+	async function oninput(e) {
+		Dictionary.data[e.currentTarget.name].find(lang => lang.name == e.currentTarget.value).selected = e.currentTarget.checked;
+		await WordEngine.sort();
+		Layout.lines.forEach(line => line.update());
+	}
+
 	return {
 		view: function(vnode) {
-			return m('div.language-select', "Languages ▿")
+			return m('div.lang-select', 
+				m('button.lang-select-button', "Words ▿"),
+				m('form.lang-select-menu', 
+					m('fieldset',
+						m('legend', 'Languages'),
+						Dictionary.data.languages.map(lang => {
+							return m('div.checkbox', 
+								m('input', {oninput, name: 'languages', type: 'checkbox', id:lang.name, value: lang.name, checked: lang.selected}),
+								m('label', {for: lang.name}, lang.label)
+							)
+						})
+					),
+					m('fieldset', 
+						m('legend', 'Sources'),
+						Dictionary.data.sources.map(source => {
+							return m('div.checkbox',
+								m('input', {oninput, name: 'sources', type: 'checkbox', id:source.name, value: source.name, checked: source.selected}),
+								m('label', {for: source.name}, source.label)
+							)
+						})
+					)
+				)
+			)
 		}
 	}
 }

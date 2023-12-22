@@ -61,12 +61,12 @@ export const Layout = (function() {
 
 		size.onchange = update;
 
-		function update() {
+		async function update() {
 			let outputFilter = globalFilter.locked ? globalFilter.filter : filter;
 			let outputSize = globalSize.locked ? globalSize.getIn('px') : size.getIn('px');
 			let outputWidth = width.getIn('px');
-			text = WordEngine.getWord(outputSize, outputWidth, Filters.list[outputFilter].value);	
-			
+			text = await WordEngine.getWord(outputSize, outputWidth, Filters.list[outputFilter].value);	
+			m.redraw();
 		}
 
 		function copyText() {
@@ -105,7 +105,6 @@ export const Layout = (function() {
 		if (n > lines.length) {
 			while (n > lines.length) {
 				addLine();
-				n;
 			}
 		} else {
 			lines.length = n;
@@ -121,14 +120,6 @@ export const Layout = (function() {
 	}
 
 	return {
-		// get width() {
-		// 	return width;
-		// },
-		// set width(value) {
-		// 	width = parseInt(value);
-		// 	localStorage['width'] = width;
-		// 	lines.forEach(line => line.update());
-		// },
 		lines,
 		addLine,
 		removeLine,
