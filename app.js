@@ -1,35 +1,30 @@
 import { Layout } from "./Layout.js";
 import { Filters } from "./Filters.js";
-import { WordEngine } from "./WordEngine.js";
-import { Dictionary } from "./Dictionary.js";
-
+import { Words } from "./Words.js";
+import { Fonts } from "./Fonts.js";
+import { Font } from "./Font.js";
 
 const root = document.querySelector('#app');
 const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
-let font = null;
 
-if (localStorage['fontData']) {
-	font = {
-		name: localStorage['fontName'],
-		data: localStorage['fontData']
+function handleFile(file, callback) {
+	if (!file.name.match(acceptedExtensions)) {
+		return;
 	}
-	updateFont();
-}
 
-function removeFont() {
-	font = null;
-	localStorage.clear();
-	Layout.lines.forEach(line => line.update());
-}
+	// Removes file extension from name
+	let fileName = file.name.replace(/\..+$/, "");
+	// Replace any non alpha numeric characters with -
+	fileName = fileName.replace(/\W+/g, "-");
 
-function updateFont() {
-	const fontFaceRule = `@font-face { font-family: ${font.name}; src: url('${font.data}') }`;
-	document.styleSheets[0].insertRule(fontFaceRule, 0);
-	WordEngine.setFont(font);
-	WordEngine.sort().then(() => {
-		Layout.update();
-		// Layout.lines.forEach(line => line.update());	
-	});
+	const reader = new FileReader();
+
+	reader.onloadend = function(e) {
+		let data = e.target.result;
+		callback(fileName, data);
+	}
+
+	reader.readAsDataURL(file);
 }
 
 const App = {
@@ -68,15 +63,7 @@ function FontUploader(initialVnode) {
 
 		let files = e.dataTransfer.files;
 		handleFile(files[0], function(_fontName, _fontData) {
-			if (font === null) { font = { name: '', data: '' }};
-
-			font.name = _fontName;
-			font.data = _fontData;
-
-			localStorage['fontName'] = font.name;
-			localStorage['fontData'] = font.data;
-
-			updateFont();
+			Fonts.add(Font(_fontName, _fontData));
 		});
 	}
 
@@ -103,15 +90,18 @@ function Line(initialVnode) {
 		view: function(vnode) {
 			let line = vnode.attrs.line;
 			return m('div', {class: 'specimen-line'},
-				m(SizeInput, {params: line}),
-				font ?
+				m('div.line-controls-left',
+					m(SizeInput, {params: line}),
+					m(FontSelect, {params: line})
+				),
+				line.font ?
 				m('div', {class: 'text', style: {
 					whiteSpace: "nowrap",
 					fontSize: Layout.globalSize.locked ? Layout.globalSize.get() : line.size.get(),
 					width: Layout.width.get(),
-					fontFamily: font.name
+					fontFamily: line.font?.name
 				}}, line.text) : '',
-				m('div.line-controls',
+				m('div.line-controls-right',
 					m(CaseSelect, {params: line}),
 					m(CopyButton, {onclick: line.copyText}),
 					m(UpdateButton, {onclick: line.update})
@@ -122,20 +112,27 @@ function Line(initialVnode) {
 }
 
 function Specimen(initialVnode) {
+	Layout.addLine('60px');
+	Layout.addLine('60px');
+
+
 	return {
 		view: function(vnode) {
 			return m('div', {class: 'specimen'},
 				m('header.specimen-header',
-					font ? m(FontItem) : '',
+					m(FontItems),
 					m('div.specimen-header-controls',
 						m(WordsSelect),
 						m(LineCount)
 					)
 				),
 				m('div.specimen-controls',
-					m(SizeInputGlobal),
+					m('div.line-controls-left',
+						m(SizeInputGlobal),
+						m(FontSelectGlobal)
+					),
 					m(WidthInput),
-					m('div.line-controls',
+					m('div.line-controls-right',
 						m(CaseSelectGlobal),
 						m(CopyButton, {onclick: Layout.copyText}),
 						m(UpdateButton, {onclick: Layout.update})
@@ -144,6 +141,49 @@ function Specimen(initialVnode) {
 				m('div.specimen-lines', 
 					Layout.lines.map((line) => m(Line, {line}))
 				)
+			)
+		}
+	}
+}
+
+function FontItems(initialVnode) {
+	let scrollState = 'start';
+
+	function onscroll(e) {
+		const scrollFromStart = e.target.scrollLeft;
+		const scrollFromEnd = (e.target.scrollWidth - e.target.offsetWidth) - e.target.scrollLeft;
+
+		if (0 <= scrollFromStart && scrollFromStart < 100) {
+			scrollState = 'start';
+		} else if (0 <= scrollFromEnd && scrollFromEnd < 100) {
+			scrollState = 'end';
+		} else {
+			scrollState = 'middle';
+		}
+	}
+
+	function scrollToStart() {
+		const scroller = document.querySelector('.font-items-scroller');
+		scroller.scrollTo(0, 0);
+	}
+
+	function scrollToEnd() {
+		const scroller = document.querySelector('.font-items-scroller');
+		scroller.scrollTo(scroller.scrollWidth, 0);
+	}
+
+	return {
+		view: function(vnode) {
+			return m('div.font-items',
+				scrollState !== 'start' ? m('button.scroll-left-button', {onclick: scrollToStart}, '◁') : '',
+				scrollState !== 'start' ? m('div.scroll-left-overlay') : '',
+				m('div.font-items-scroller', {onscroll},
+					Fonts.list.map(font => {
+						return m(FontItem, {font})
+					})
+				),
+				scrollState !== 'end' ? m('div.scroll-right-overlay') : '',
+				scrollState !== 'end' ? m('button.scroll-right-button', {onclick: scrollToEnd}, '▷') : '',
 			)
 		}
 	}
@@ -304,13 +344,62 @@ function CaseSelectGlobal(initialVnode) {
 	}
 }
 
+function FontSelect(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('div.font-select', 
+				m('select.font-select', {
+					oninput: (e) => {vnode.attrs.params.fontId = e.currentTarget.selectedIndex},
+					disabled: Layout.globalFont.locked
+				},
+				Fonts.list.map((font, i) => {
+					return m('option', { value: font.name, selected: vnode.attrs.params.fontId == i}, font.name)
+				}))
+			)
+		}
+	}
+}
+
+function FontSelectGlobal(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('div.font-select', 
+				m('select.font-select', {
+					oninput: (e) => {vnode.attrs.params.fontId = e.currentTarget.selectedIndex},
+					disabled: !Layout.globalFont.locked
+				},
+					Fonts.list.map((font, i) => {
+						return m('option', { value: font.name, selected: Layout.globalFont.id == i}, font.name)
+					})
+				),
+				m('button.font-select-lock', {
+					onclick: () => {Layout.globalFont.locked = !Layout.globalFont.locked}
+				}, Layout.globalFont.locked ? '🔒' : '🔓'),
+			)
+		}
+	}
+}
+
+
 function FontItem(initialVnode) {
 	return {
 		view: function(vnode) {
-			return m('div', {class: 'font-item'},
-				m('span', {class: 'font-item-label'}, font.name),
-				m('button', {class: 'font-item-remove', onclick: removeFont}, '❌')
+			return m('div', {class: `font-item ${vnode.attrs.font.isLoading ? 'loading' : ''}`},
+				m('span', {class: 'font-item-label'}, vnode.attrs.font.name),
+				vnode.attrs.font.isLoading ? 
+					m(IconSpinning) : 
+					m('button.font-item-remove', {onclick: () => { Fonts.remove(vnode.attrs.font); }}, '❌'),
 			)
+		}
+	}
+}
+
+function IconSpinning(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('svg.icon-spinning', {xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 1357 1358', width: 9.5, height: 9.5, fill:'currentColor'},
+					m('path', {d: 'M677 215c60 0 109-49 109-107C786 48 737 0 677 0c-58 0-109 49-107 108 2 58 49 107 107 107Zm-403 976c60 0 109-50 107-107-2-61-47-107-107-107-58 0-107 48-107 107 0 58 49 107 107 107ZM107 786c59 0 108-47 108-107 0-58-49-107-108-107C47 572 0 621 0 679c0 60 47 107 107 107Zm572 572c58 0 107-49 107-108 0-58-49-107-107-107-60 0-107 49-107 107 0 59 48 108 107 108ZM274 382c57 0 107-47 107-107 0-59-47-108-107-107-59 1-108 48-107 107s49 107 107 107Zm809 808c57 0 107-43 107-107 0-60-48-107-107-107-61 0-107 47-107 107s46 107 107 107Zm167-404c59 0 107-48 107-107v-1c0-59-48-110-107-108-60 2-107 49-107 109 0 59 49 107 107 107Zm-168-404c60 0 107-47 107-107 0-61-47-106-107-107-59-1-107 46-107 107 0 59 49 107 107 107Z'})
+				)
 		}
 	}
 }
@@ -335,7 +424,7 @@ function WordsSelect(initialVnode) {
 		const selectedLanguages = formData.getAll('languages');
 		const selectedSources = formData.getAll('sources');
 
-		for (const language of Dictionary.data.languages) {
+		for (const language of Words.data.languages) {
 			if (selectedLanguages.includes(language.name)) {
 				language.selected = true
 			} else {
@@ -343,7 +432,7 @@ function WordsSelect(initialVnode) {
 			}
 		}
 
-		for (const source of Dictionary.data.sources) {
+		for (const source of Words.data.sources) {
 			if (selectedSources.includes(source.name)) {
 				source.selected = true
 			} else {
@@ -351,7 +440,7 @@ function WordsSelect(initialVnode) {
 			}
 		}
 
-		await WordEngine.sort();
+		await Fonts.update();
 		Layout.lines.forEach(line => line.update());
 
 	}
@@ -363,7 +452,7 @@ function WordsSelect(initialVnode) {
 				m('form.lang-select-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					m('fieldset',
 						m('legend', 'Languages'),
-						Dictionary.data.languages.map(lang => {
+						Words.data.languages.map(lang => {
 							return m('div.checkbox', 
 								m('input', {name: 'languages', type: 'checkbox', id:lang.name, value: lang.name, checked: lang.selected}),
 								m('label', {for: lang.name}, lang.label)
@@ -372,7 +461,7 @@ function WordsSelect(initialVnode) {
 					),
 					m('fieldset', 
 						m('legend', 'Sources'),
-						Dictionary.data.sources.map(source => {
+						Words.data.sources.map(source => {
 							return m('div.checkbox',
 								m('input', {name: 'sources', type: 'checkbox', id:source.name, value: source.name, checked: source.selected}),
 								m('label', {for: source.name}, source.label)
@@ -399,26 +488,6 @@ function LineCount(initialVnode) {
 			)
 		}
 	}
-}
-
-function handleFile(file, callback) {
-	if (!file.name.match(acceptedExtensions)) {
-		return;
-	}
-
-	// Removes file extension from name
-	let fileName = file.name.replace(/\..+$/, "");
-	// Replace any non alpha numeric characters with -
-	fileName = fileName.replace(/\W+/g, "-");
-
-	const reader = new FileReader();
-
-	reader.onloadend = function(e) {
-		let data = e.target.result;
-		callback(fileName, data);
-	}
-
-	reader.readAsDataURL(file);
 }
 
 m.mount(root, App);

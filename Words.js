@@ -1,4 +1,4 @@
-export const Dictionary = (function() {
+export const Words = (function() {
 	const data = {
 		languages: [{
 			name: 'english',
@@ -59,7 +59,7 @@ export const Dictionary = (function() {
 			.catch(error => console.error('Error loading JSON file:', error));
 	}
 
-	async function getWords() {
+	async function get() {
 		const words = [];
 		for (const source of data.sources.filter(source => source.selected)) {
 			for (const language of data.languages.filter(lang => lang.selected)) {
@@ -75,7 +75,7 @@ export const Dictionary = (function() {
 
 
 	return {
-		getWords,
+		get,
 		data
 	};
 

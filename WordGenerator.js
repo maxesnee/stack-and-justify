@@ -1,22 +1,16 @@
-import { Dictionary } from "./Dictionary.js";
+import { Words } from "./Words.js";
 import { random, shuffle } from "./Helpers.js";
 
-
-export const WordEngine = (function() {
+export const WordGenerator = function(fontName) {
 	const filters = ["lowercase", "uppercase", "capitalised"];
 	let sortedDict = null;
-	let font = null;
-
-	function setFont(_font) {
-		font = _font;
-	}
 
 	async function sort() {
 		const canvas = document.createElement('canvas');
 		const ctx = canvas.getContext('2d');
-		ctx.font = `100px ${font.name}`;
+		ctx.font = `100px ${fontName}`;
+		let words = await Words.get();
 		sortedDict = {};
-		let words = await Dictionary.getWords();
 
 		for (let filter of filters) {
 			sortedDict[filter] = {};
@@ -58,8 +52,6 @@ export const WordEngine = (function() {
 
 		if (sortedDict === null) return words;
 
-		sortedDict = await sortedDict;
-
 		let scaledSpaceWidth = Math.round(sortedDict.spaceWidth * (size / 100));
 
 		for (let i = scaledWidth - tolerance; i <= scaledWidth; i++) {
@@ -97,8 +89,6 @@ export const WordEngine = (function() {
 	return {
 		getWords,
 		getLine,
-		sort,
-		setFont
+		sort
 	}
-})();
-
+};

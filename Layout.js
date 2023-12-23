@@ -1,5 +1,5 @@
-import { WordEngine } from "./WordEngine.js";
 import { Filters } from "./Filters.js";
+import { Fonts } from "./Fonts.js";
 import { Size } from "./Size.js";
 
 export const Layout = (function() {
@@ -28,7 +28,6 @@ export const Layout = (function() {
 	let filterLocked = localStorage['filterLocked'] === 'false' ? false : true;
 	let filter = localStorage['filter'] || 2;
 
-
 	let globalFilter = {
 		get locked() {
 			return filterLocked;
@@ -49,23 +48,56 @@ export const Layout = (function() {
 		},
 	};
 
-	let lines = [
-		Line('60px'),
-		Line('60px')
-	];
+	let fontLocked = localStorage['fontLocked'] === 'false' ? false : true;
+	// let fontId = localStorage['fontId'] || 0;
+	let fontId = 0;
 
-	function Line(_size) {
-		let size = Size(_size);
+	let globalFont = {
+		get locked() {
+			return fontLocked;
+		},
+		set locked(value) {
+			fontLocked = value;
+			localStorage['fontLocked'] = value;
+			update();	
+		},
+		get id() {
+			if (fontId >= Fonts.list.length) fontId = Fonts.list.length - 1;
+			return fontId;
+		},
+		set id(value) {
+			fontId = parseInt(value);
+			// localStorage['fontId'] = value;
+			update();
+		},
+		get font() {
+			return Fonts.list[fontId];
+		}
+	}
+
+	let lines = [];
+
+	function Line(size, fontId=0) {
+		if (typeof size === 'string') {
+			size = Size(size)
+		} else {
+			size = Size(size.get());
+		}
+
 		let text = "";
 		let filter = 2;
 
 		size.onchange = update;
 
 		async function update() {
-			let outputFilter = globalFilter.locked ? globalFilter.filter : filter;
-			let outputSize = globalSize.locked ? globalSize.getIn('px') : size.getIn('px');
-			let outputWidth = width.getIn('px');
-			text = await WordEngine.getLine(outputSize, outputWidth, Filters.list[outputFilter].value);
+			const outputFontId = globalFont.locked ? globalFont.id : fontId;
+			const outputFont = Fonts.list[outputFontId];
+			if (!outputFont) return;
+
+			const outputFilter = globalFilter.locked ? globalFilter.filter : filter;
+			const outputSize = globalSize.locked ? globalSize.getIn('px') : size.getIn('px');
+			const outputWidth = width.getIn('px');
+			text = await outputFont.wordGenerator.getLine(outputSize, outputWidth, Filters.list[outputFilter].value);
 			m.redraw();
 		}
 
@@ -91,6 +123,17 @@ export const Layout = (function() {
 			set text(value) {
 				text = value;
 			},
+			get fontId() {
+				return fontId
+			},
+			set fontId(value) {
+				fontId = parseInt(value);
+				update();
+			},
+			get font() {
+				// return Fonts.list[fontId]
+				return fontLocked ? Layout.globalFont.font : Fonts.list[fontId];
+			},
 			copyText,
 			locked: false
 		}
@@ -115,8 +158,13 @@ export const Layout = (function() {
 		}
 	}
 
-	function addLine() {
-		lines.push(Line('60px'));
+	function addLine(size, fontId) {
+		if (!size || !fontId && lines.length) {
+			const lastLine = lines[lines.length-1];
+			size = lastLine.size;
+			fontId = lastLine.fontId;
+		}
+		lines.push(Line(size, fontId));
 	}
 
 	function removeLine() {
@@ -132,6 +180,7 @@ export const Layout = (function() {
 		copyText,
 		width,
 		globalSize,
-		globalFilter
+		globalFilter,
+		globalFont
 	}
 })();
