@@ -253,6 +253,9 @@ input {
 	left: -1.25rem;
 	background: white;
 	border: 1px dotted;
+	border-bottom-left-radius: 0.35rem;
+	border-bottom-right-radius: 0.35rem;
+	box-shadow: 1px 2px 2px rgba(0,0,0,0.25);
 	border-top: 0;
 }
 
@@ -270,9 +273,22 @@ input {
 
 .lang-select-menu fieldset legend {
 	float: left;
+	padding-top: 0.75rem;
 	padding-bottom: 0.75rem;
+	border-top: 1px dotted;
 	border-bottom: 1px dotted;
 	margin-bottom: 1rem;
+}
+
+.lang-select-menu fieldset:first-of-type legend {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.lang-select-update {
+	text-align: right;
+	border-top: 1px dotted;
+	padding: 0.75rem 1.25rem;
 }
 
 .checkbox {

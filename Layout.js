@@ -65,7 +65,7 @@ export const Layout = (function() {
 			let outputFilter = globalFilter.locked ? globalFilter.filter : filter;
 			let outputSize = globalSize.locked ? globalSize.getIn('px') : size.getIn('px');
 			let outputWidth = width.getIn('px');
-			text = await WordEngine.getWord(outputSize, outputWidth, Filters.list[outputFilter].value);	
+			text = await WordEngine.getLine(outputSize, outputWidth, Filters.list[outputFilter].value);
 			m.redraw();
 		}
 
@@ -88,16 +88,20 @@ export const Layout = (function() {
 			get text() {
 				return text;
 			},
+			set text(value) {
+				text = value;
+			},
 			copyText,
 			locked: false
 		}
 	}
 
 	function copyText() {
+		// Write plain text to the clipboard
 		navigator.clipboard.writeText(lines.map(line => line.text).join('\n'));
 	}
 
-	function update() {
+	async function update() {
 		lines.forEach(line => {line.update()});
 	}
 

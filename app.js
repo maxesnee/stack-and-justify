@@ -27,7 +27,8 @@ function updateFont() {
 	document.styleSheets[0].insertRule(fontFaceRule, 0);
 	WordEngine.setFont(font);
 	WordEngine.sort().then(() => {
-		Layout.lines.forEach(line => line.update());	
+		Layout.update();
+		// Layout.lines.forEach(line => line.update());	
 	});
 }
 
@@ -127,7 +128,7 @@ function Specimen(initialVnode) {
 				m('header.specimen-header',
 					font ? m(FontItem) : '',
 					m('div.specimen-header-controls',
-						m(LanguageSelect),
+						m(WordsSelect),
 						m(LineCount)
 					)
 				),
@@ -314,24 +315,57 @@ function FontItem(initialVnode) {
 	}
 }
 
-function LanguageSelect(initialVnode) {
+function WordsSelect(initialVnode) {
+	let open = false;
 
-	async function oninput(e) {
-		Dictionary.data[e.currentTarget.name].find(lang => lang.name == e.currentTarget.value).selected = e.currentTarget.checked;
+	document.onclick = (e) => {
+		const menu = document.querySelector('.lang-select-menu');
+		const btn = document.querySelector('.lang-select-button');
+		
+		if (!menu.contains(e.target) && e.target !== btn && open) {
+			open = false;
+			m.redraw();
+		}
+	}
+
+	async function update(e) {
+		e.preventDefault();
+		const form = document.querySelector('.lang-select-menu');
+		const formData = new FormData(form);
+		const selectedLanguages = formData.getAll('languages');
+		const selectedSources = formData.getAll('sources');
+
+		for (const language of Dictionary.data.languages) {
+			if (selectedLanguages.includes(language.name)) {
+				language.selected = true
+			} else {
+				language.selected = false;
+			}
+		}
+
+		for (const source of Dictionary.data.sources) {
+			if (selectedSources.includes(source.name)) {
+				source.selected = true
+			} else {
+				source.selected = false;
+			}
+		}
+
 		await WordEngine.sort();
 		Layout.lines.forEach(line => line.update());
+
 	}
 
 	return {
 		view: function(vnode) {
 			return m('div.lang-select', 
-				m('button.lang-select-button', "Words ▿"),
-				m('form.lang-select-menu', 
+				m('button.lang-select-button', {onclick: () => { open = !open }}, "Words ▿"),
+				m('form.lang-select-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					m('fieldset',
 						m('legend', 'Languages'),
 						Dictionary.data.languages.map(lang => {
 							return m('div.checkbox', 
-								m('input', {oninput, name: 'languages', type: 'checkbox', id:lang.name, value: lang.name, checked: lang.selected}),
+								m('input', {name: 'languages', type: 'checkbox', id:lang.name, value: lang.name, checked: lang.selected}),
 								m('label', {for: lang.name}, lang.label)
 							)
 						})
@@ -340,10 +374,13 @@ function LanguageSelect(initialVnode) {
 						m('legend', 'Sources'),
 						Dictionary.data.sources.map(source => {
 							return m('div.checkbox',
-								m('input', {oninput, name: 'sources', type: 'checkbox', id:source.name, value: source.name, checked: source.selected}),
+								m('input', {name: 'sources', type: 'checkbox', id:source.name, value: source.name, checked: source.selected}),
 								m('label', {for: source.name}, source.label)
 							)
 						})
+					),
+					m('div.lang-select-update', 
+						m('button', {onclick: update},'↻ Update')
 					)
 				)
 			)
