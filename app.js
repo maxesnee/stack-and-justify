@@ -97,9 +97,9 @@ function Line(initialVnode) {
 				line.font ?
 				m('div', {class: 'text', style: {
 					whiteSpace: "nowrap",
-					fontSize: Layout.globalSize.locked ? Layout.globalSize.get() : line.size.get(),
+					fontSize: Layout.size.locked ? Layout.size.get() : line.size.get(),
 					width: Layout.width.get(),
-					fontFamily: Layout.globalFont.locked ? Layout.globalFont.font?.name : line.font.name
+					fontFamily: Layout.fontLocked ? Layout.font?.name : line.font.name
 				}}, line.text) : '',
 				m('div.line-controls-right',
 					m(CaseSelect, {params: line}),
@@ -191,7 +191,7 @@ function FontItems(initialVnode) {
 				scroll && scrollState !== 'start' ? m('div.scroll-left-overlay') : '',
 				m('div.font-items-scroller', {onscroll},
 					Fonts.list.map(font => {
-						return m(FontItem, {font})
+						return m(FontItem, {key: font.id, font: font})
 					})
 				),
 				scroll && scrollState !== 'end' ? m('div.scroll-right-overlay') : '',
@@ -207,17 +207,17 @@ function SizeInput(initialVnode) {
 			return m('div.size-input',
 				m('button', {
 					onclick: () => { vnode.attrs.params.size.decrement() },
-					disabled: Layout.globalSize.locked
+					disabled: Layout.size.locked
 				}, '－'),
 				m('input', {
 					type: 'text', 
 					value: vnode.attrs.params.size.get(), 
 					onchange: (e) => {vnode.attrs.params.size.set(e.currentTarget.value)},
-					disabled: Layout.globalSize.locked
+					disabled: Layout.size.locked
 				}),
 				m('button', {
 					onclick: () => { vnode.attrs.params.size.increment() },
-					disabled: Layout.globalSize.locked
+					disabled: Layout.size.locked
 				}, '＋')
 			)
 		}
@@ -229,22 +229,22 @@ function SizeInputGlobal(initialVnode) {
 		view: function(vnode) {
 			return m('div.size-input.size-input-global',
 				m('button', { 
-					onclick: () => { Layout.globalSize.decrement() },
-					disabled: !Layout.globalSize.locked
+					onclick: () => { Layout.size.decrement() },
+					disabled: !Layout.size.locked
 				}, '－'),
 				m('input', {
 					type: 'text', 
-					value: Layout.globalSize.get(),
-					onchange: (e) => {Layout.globalSize.set(e.currentTarget.value)},
-					disabled: !Layout.globalSize.locked
+					value: Layout.size.get(),
+					onchange: (e) => {Layout.size.set(e.currentTarget.value)},
+					disabled: !Layout.size.locked
 				}),
 				m('button', {
-					onclick: () => { Layout.globalSize.increment() },
-					disabled: !Layout.globalSize.locked
+					onclick: () => { Layout.size.increment() },
+					disabled: !Layout.size.locked
 				}, '＋'),
 				m('button.size-input-lock', {
-					onclick: () => {Layout.globalSize.locked = !Layout.globalSize.locked}
-				}, `${Layout.globalSize.locked ? '🔒' : '🔓'}`)
+					onclick: () => {Layout.size.locked = !Layout.size.locked}
+				}, `${Layout.size.locked ? '🔒' : '🔓'}`)
 			)
 		}
 	}
@@ -326,7 +326,7 @@ function CaseSelect(initialVnode) {
 		view: function(vnode) {
 			return m('select.case-select', {
 					onchange: (e) => {vnode.attrs.params.filter = e.currentTarget.selectedIndex},
-					disabled: Layout.globalFilter.locked
+					disabled: Layout.filterLocked
 				},
 				m('option', {value: 'lowercase', selected: vnode.attrs.params.filter == 0}, 'Lowercase'),
 				m('option', {value: 'uppercase', selected: vnode.attrs.params.filter == 1}, 'Uppercase'),
@@ -341,15 +341,15 @@ function CaseSelectGlobal(initialVnode) {
 		view: function(vnode) {
 			return m('div.case-select', 
 				m('button.case-select-lock', {
-					onclick: () => {Layout.globalFilter.locked = !Layout.globalFilter.locked}
-				}, Layout.globalFilter.locked ? '🔒' : '🔓'),
+					onclick: () => {Layout.filterLocked = !Layout.filterLocked}
+				}, Layout.filterLocked ? '🔒' : '🔓'),
 				m('select.case-select', {
-					onchange: (e) => {Layout.globalFilter.filter = e.currentTarget.selectedIndex},
-					disabled: !Layout.globalFilter.locked
+					onchange: (e) => {Layout.filter = e.currentTarget.selectedIndex},
+					disabled: !Layout.filterLocked
 				},
-					m('option', {value: 'lowercase', selected: Layout.globalFilter.filter == 0}, 'Lowercase'),
-					m('option', {value: 'uppercase', selected: Layout.globalFilter.filter == 1}, 'Uppercase'),
-					m('option', {value: 'capitalised', selected: Layout.globalFilter.filter == 2}, 'Capitalised')
+					m('option', {value: 'lowercase', selected: Layout.filter == 0}, 'Lowercase'),
+					m('option', {value: 'uppercase', selected: Layout.filter == 1}, 'Uppercase'),
+					m('option', {value: 'capitalised', selected: Layout.filter == 2}, 'Capitalised')
 				)
 			)
 		}
@@ -369,7 +369,7 @@ function FontSelect(initialVnode) {
 				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, vnode.attrs.params.font?.name),
 				m('select.font-select', {
 					oninput: (e) => {vnode.attrs.params.fontId = e.target.options[e.target.selectedIndex].value },
-					disabled: Layout.globalFont.locked
+					disabled: Layout.fontLocked
 				},
 				Fonts.list.map((font) => {
 					return m('option', { value: font.id, selected: vnode.attrs.params.fontId == font.id}, font.name)
@@ -389,18 +389,18 @@ function FontSelectGlobal(initialVnode) {
 		},
 		view: function(vnode) {
 			return m('div.font-select', 
-				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, Layout.globalFont.font?.name),
+				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, Layout.font?.name),
 				m('select.font-select', {
-					oninput: (e) => {Layout.globalFont.id = e.target.options[e.target.selectedIndex].value},
-					disabled: !Layout.globalFont.locked
+					oninput: (e) => {Layout.fontId = e.target.options[e.target.selectedIndex].value},
+					disabled: !Layout.fontLocked
 				},
 					Fonts.list.map((font) => {
-						return m('option', { value: font.id, selected: Layout.globalFont.id == font.id}, font.name)
+						return m('option', { value: font.id, selected: Layout.fontId == font.id}, font.name)
 					})
 				),
 				m('button.font-select-lock', {
-					onclick: () => {Layout.globalFont.locked = !Layout.globalFont.locked}
-				}, Layout.globalFont.locked ? '🔒' : '🔓'),
+					onclick: () => {Layout.fontLocked = !Layout.fontLocked}
+				}, Layout.fontLocked ? '🔒' : '🔓'),
 			)
 		}
 	}

@@ -13,6 +13,17 @@ export const Font = function(name, data) {
 
 		wordGenerator.sort().then(() => {
 			isLoading = false;
+
+			// Dispatch event
+			const event = new CustomEvent("font-added", {detail: {fontId: id}});
+			window.dispatchEvent(event);
+		});
+	}
+
+	function update() {
+		isLoading = true;
+		wordGenerator.sort().then(() => {
+			isLoading = false;
 			m.redraw();
 		});
 	}
@@ -23,6 +34,7 @@ export const Font = function(name, data) {
 		name,
 		data,
 		id,
+		update,
 		get isLoading() {
 			return isLoading;
 		},

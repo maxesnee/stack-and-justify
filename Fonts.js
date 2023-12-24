@@ -12,12 +12,8 @@ export const Fonts = (function() {
 
 	function add(font) {
 		list.push(font);
-		font.wordGenerator.sort().then(() => {
-			// Dispatch event
-			const event = new CustomEvent("font-added", {detail: {fontId: font.id}});
-			window.dispatchEvent(event);
-		});
 		localStorage['fontList'] = JSON.stringify(list);
+		m.redraw();
 	}
 
 	function remove(font) {
@@ -37,11 +33,16 @@ export const Fonts = (function() {
 		return Fonts.list[0] || null;
 	}
 
+	function update() {
+		Fonts.list.forEach(font => { font.update() });
+	}
+
 	return {
 		list,
 		add,
 		get,
 		first,
+		update,
 		remove
 	}
 })();
