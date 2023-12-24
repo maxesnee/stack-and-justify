@@ -99,7 +99,7 @@ function Line(initialVnode) {
 					whiteSpace: "nowrap",
 					fontSize: Layout.globalSize.locked ? Layout.globalSize.get() : line.size.get(),
 					width: Layout.width.get(),
-					fontFamily: Layout.globalFont.locked ? Layout.globalFont.font.name : line.font.name
+					fontFamily: Layout.globalFont.locked ? Layout.globalFont.font?.name : line.font.name
 				}}, line.text) : '',
 				m('div.line-controls-right',
 					m(CaseSelect, {params: line}),
@@ -366,13 +366,13 @@ function FontSelect(initialVnode) {
 		},
 		view: function(vnode) {
 			return m('div.font-select', 
-				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, vnode.attrs.params.font.name),
+				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, vnode.attrs.params.font?.name),
 				m('select.font-select', {
-					oninput: (e) => {vnode.attrs.params.fontId = e.currentTarget.selectedIndex},
+					oninput: (e) => {vnode.attrs.params.fontId = e.target.options[e.target.selectedIndex].value },
 					disabled: Layout.globalFont.locked
 				},
-				Fonts.list.map((font, i) => {
-					return m('option', { value: font.name, selected: vnode.attrs.params.fontId == i}, font.name)
+				Fonts.list.map((font) => {
+					return m('option', { value: font.id, selected: vnode.attrs.params.fontId == font.id}, font.name)
 				}))
 			)
 		}
@@ -383,19 +383,19 @@ function FontSelectGlobal(initialVnode) {
 	return {
 		onupdate: function(vnode) {
 			// Get the width of the hidden label and update the width of the select
-			// 15 is the size of the arrow
+			// 15 is the size of the arrows
 			const width = vnode.dom.querySelector('.font-select-hidden-label').offsetWidth + 15;
 			vnode.dom.querySelector('select.font-select').style.width = width + 'px';
 		},
 		view: function(vnode) {
 			return m('div.font-select', 
-				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, Layout.globalFont.font.name),
+				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, Layout.globalFont.font?.name),
 				m('select.font-select', {
-					oninput: (e) => {Layout.globalFont.id = e.currentTarget.selectedIndex},
+					oninput: (e) => {Layout.globalFont.id = e.target.options[e.target.selectedIndex].value},
 					disabled: !Layout.globalFont.locked
 				},
-					Fonts.list.map((font, i) => {
-						return m('option', { value: font.name, selected: Layout.globalFont.id == i}, font.name)
+					Fonts.list.map((font) => {
+						return m('option', { value: font.id, selected: Layout.globalFont.id == font.id}, font.name)
 					})
 				),
 				m('button.font-select-lock', {

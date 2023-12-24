@@ -1,9 +1,11 @@
 import { WordGenerator } from "./WordGenerator.js";
 import { Layout } from "./Layout.js";
+import { generateUID } from "./Helpers.js";
 
 export const Font = function(name, data) {
 	const wordGenerator = WordGenerator(name);
 	let isLoading = true;
+	const id = generateUID();
 
 	function init() {
 		const fontFaceRule = `@font-face { font-family: ${name}; src: url('${data}') }`;
@@ -20,6 +22,7 @@ export const Font = function(name, data) {
 	return {
 		name,
 		data,
+		id,
 		get isLoading() {
 			return isLoading;
 		},

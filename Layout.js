@@ -49,7 +49,7 @@ export const Layout = (function() {
 	};
 
 	let fontLocked = localStorage['fontLocked'] === 'false' ? false : true;
-	let fontId = 0;
+	let fontId = Fonts.first()?.id;
 
 	let globalFont = {
 		get locked() {
@@ -61,21 +61,37 @@ export const Layout = (function() {
 			update();	
 		},
 		get id() {
-			if (fontId >= Fonts.list.length) fontId = Fonts.list.length - 1;
 			return fontId;
 		},
 		set id(value) {
-			fontId = parseInt(value);
+			fontId = value;
 			update();
 		},
 		get font() {
-			return Fonts.list[fontId];
+			return Fonts.get(fontId);
 		}
 	}
 
+	window.addEventListener('font-added', (e) => {
+		// If there's was no font before, select the one that's been added
+		if (fontId == null) {
+			fontId = e.detail.fontId;
+		}
+		update();
+	});
+
+	window.addEventListener('font-removed', (e) => {
+		// The selected font has been removed, we need to select another one
+		if (fontId == e.detail.fontId) {
+			fontId = Fonts.first()?.id;
+		}
+
+		update();
+	});
+
 	let lines = [];
 
-	function Line(size, fontId=0) {
+	function Line(size, fontId=Fonts.first()?.id) {
 		if (typeof size === 'string') {
 			size = Size(size)
 		} else {
@@ -87,15 +103,32 @@ export const Layout = (function() {
 
 		size.onchange = update;
 
+		window.addEventListener('font-added', (e) => {
+			// If there's was no font before, select the one that's been added
+			if (fontId == null) {
+				fontId = e.detail.fontId;
+			}
+			update();
+		});
+
+		window.addEventListener('font-removed', (e) => {
+			// The selected font has been removed, we need to select another one
+			if (fontId == e.detail.fontId) {
+				fontId = Fonts.first()?.id;
+			}
+			update();
+		});
+
 		async function update() {
 			const outputFontId = globalFont.locked ? globalFont.id : fontId;
-			const outputFont = Fonts.list[outputFontId];
+			const outputFont = Fonts.get(outputFontId);
 			if (!outputFont) return;
 
 			const outputFilter = globalFilter.locked ? globalFilter.filter : filter;
 			const outputSize = globalSize.locked ? globalSize.getIn('px') : size.getIn('px');
 			const outputWidth = width.getIn('px');
 			text = await outputFont.wordGenerator.getLine(outputSize, outputWidth, Filters.list[outputFilter].value);
+
 			m.redraw();
 		}
 
@@ -125,11 +158,11 @@ export const Layout = (function() {
 				return fontId
 			},
 			set fontId(value) {
-				fontId = parseInt(value);
+				fontId = value;
 				update();
 			},
 			get font() {
-				return Fonts.list[fontId];
+				return Fonts.get(fontId);
 			},
 			copyText,
 			locked: false

@@ -1,5 +1,4 @@
 import { Font } from './Font.js';
-import { Layout } from './Layout.js';
 
 export const Fonts = (function() {
 	let list = [];
@@ -9,36 +8,40 @@ export const Fonts = (function() {
 		localStorageList.forEach(font => {
 			add(Font(font.name, font.data));
 		})
-		update();
-	}
-
-	async function update() {
-		const promises = [];
-		list.forEach(font => {
-			promises.push(font.wordGenerator.sort());
-		});
-		await Promise.all(promises);
-		Layout.update();
 	}
 
 	function add(font) {
 		list.push(font);
+		font.wordGenerator.sort().then(() => {
+			// Dispatch event
+			const event = new CustomEvent("font-added", {detail: {fontId: font.id}});
+			window.dispatchEvent(event);
+		});
 		localStorage['fontList'] = JSON.stringify(list);
-		console.log(list);
 	}
 
 	function remove(font) {
 		list.splice(list.indexOf(font), 1);
 		localStorage['fontList'] = JSON.stringify(list);
-		Layout.update();
-		console.log(list);
+
+		// Dispatch event
+		const event = new CustomEvent("font-removed", {detail: {fontId: font.id}});
+		window.dispatchEvent(event);
+	}
+
+	function get(id) {
+		return Fonts.list.find(font => font.id == id) || null;
+	}
+
+	function first() {
+		return Fonts.list[0] || null;
 	}
 
 	return {
 		list,
 		add,
-		remove,
-		update
+		get,
+		first,
+		remove
 	}
-
 })();
