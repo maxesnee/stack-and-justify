@@ -3,21 +3,21 @@ import { Layout } from "./Layout.js";
 import { generateUID } from "./Helpers.js";
 
 export const Font = function(name, data) {
-	const wordGenerator = WordGenerator(name);
+	const wordGenerator = WordGenerator(name, data);
 	let isLoading = true;
 	const id = generateUID();
 
-	function init() {
-		const fontFaceRule = `@font-face { font-family: ${name}; src: url('${data}') }`;
-		document.styleSheets[0].insertRule(fontFaceRule, 0);
+	async function init() {
+		const fontFace = new FontFace(name, data);
+		document.fonts.add(fontFace);
+		await fontFace.load()
 
-		wordGenerator.sort().then(() => {
-			isLoading = false;
+		await wordGenerator.sort();
+		isLoading = false;
 
-			// Dispatch event
-			const event = new CustomEvent("font-added", {detail: {fontId: id}});
-			window.dispatchEvent(event);
-		});
+		// Dispatch event
+		const event = new CustomEvent("font-added", {detail: {fontId: id}});
+		window.dispatchEvent(event);
 	}
 
 	function update() {

@@ -24,7 +24,7 @@ function handleFile(file, callback) {
 		callback(fileName, data);
 	}
 
-	reader.readAsDataURL(file);
+	reader.readAsArrayBuffer(file);
 }
 
 const App = {

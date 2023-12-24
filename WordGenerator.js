@@ -1,48 +1,20 @@
 import { Words } from "./Words.js";
 import { random, shuffle } from "./Helpers.js";
 
-export const WordGenerator = function(fontName) {
+export const WordGenerator = function(fontName, fontData) {
 	const filters = ["lowercase", "uppercase", "capitalised"];
 	let sortedDict = null;
 
 	async function sort() {
-		const canvas = document.createElement('canvas');
-		const ctx = canvas.getContext('2d');
-		ctx.font = `100px ${fontName}`;
 		let words = await Words.get();
-		sortedDict = {};
+		const sortDictionaryWorker = new Worker('sortDictionaryWorker.js');
+		sortDictionaryWorker.postMessage([words, fontName, fontData]);
 
-		for (let filter of filters) {
-			sortedDict[filter] = {};
-
-			for (let word of words) {
-				let filteredWord = applyFilter(word, filter);
-				let width = Math.floor(ctx.measureText(filteredWord).width);
-				if (sortedDict[filter][width] === undefined) {
-					sortedDict[filter][width] = []
-				}
-				sortedDict[filter][width].push(filteredWord)
+		sortedDict = await new Promise(resolve => {
+			sortDictionaryWorker.onmessage = (e) => {
+				resolve(e.data);
 			}
-
-			sortedDict.spaceWidth = Math.floor(ctx.measureText(' ').width);
-		}
-	}
-
-	function applyFilter(string, filter) {
-		let filteredString = string;
-
-		switch (filter) {
-			case 'lowercase':
-				filteredString = filteredString.toLowerCase()
-				break;
-			case 'capitalised':
-				filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
-				break;
-			case 'uppercase':
-				filteredString = filteredString.toUpperCase();
-				break;
-		}
-		return filteredString;
+		});
 	}
 
 	async function getWords(size, width, filter) {
