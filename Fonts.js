@@ -24,12 +24,14 @@ export const Fonts = (function() {
 	function add(font) {
 		list.push(font);
 		localStorage['fontList'] = JSON.stringify(list);
+		console.log(list);
 	}
 
 	function remove(font) {
 		list.splice(list.indexOf(font), 1);
-		font.remove();
 		localStorage['fontList'] = JSON.stringify(list);
+		Layout.update();
+		console.log(list);
 	}
 
 	return {

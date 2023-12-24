@@ -49,7 +49,6 @@ export const Layout = (function() {
 	};
 
 	let fontLocked = localStorage['fontLocked'] === 'false' ? false : true;
-	// let fontId = localStorage['fontId'] || 0;
 	let fontId = 0;
 
 	let globalFont = {
@@ -67,7 +66,6 @@ export const Layout = (function() {
 		},
 		set id(value) {
 			fontId = parseInt(value);
-			// localStorage['fontId'] = value;
 			update();
 		},
 		get font() {
@@ -131,8 +129,7 @@ export const Layout = (function() {
 				update();
 			},
 			get font() {
-				// return Fonts.list[fontId]
-				return fontLocked ? Layout.globalFont.font : Fonts.list[fontId];
+				return Fonts.list[fontId];
 			},
 			copyText,
 			locked: false

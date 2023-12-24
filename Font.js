@@ -15,12 +15,6 @@ export const Font = function(name, data) {
 		});
 	}
 
-	function remove() {
-		Layout.update();
-
-		return null;
-	}
-
 	init();
 
 	return {
@@ -29,7 +23,6 @@ export const Font = function(name, data) {
 		get isLoading() {
 			return isLoading;
 		},
-		remove,
 		wordGenerator
 	}
 }

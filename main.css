@@ -94,6 +94,10 @@ input {
 	justify-content: space-between;
 }
 
+.line-count {
+	white-space: nowrap;
+}
+
 .line-count-label {
 	margin-right: 1rem;
 }
@@ -351,6 +355,8 @@ input {
 }
 
 .lang-select {
+	margin-right: 2rem;
+	white-space: nowrap;
 	position: relative;
 }
 

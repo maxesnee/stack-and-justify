@@ -92,14 +92,14 @@ function Line(initialVnode) {
 			return m('div', {class: 'specimen-line'},
 				m('div.line-controls-left',
 					m(SizeInput, {params: line}),
-					m(FontSelect, {params: line})
+					Fonts.list.length ? m(FontSelect, {params: line}) : ''
 				),
 				line.font ?
 				m('div', {class: 'text', style: {
 					whiteSpace: "nowrap",
 					fontSize: Layout.globalSize.locked ? Layout.globalSize.get() : line.size.get(),
 					width: Layout.width.get(),
-					fontFamily: line.font?.name
+					fontFamily: Layout.globalFont.locked ? Layout.globalFont.font.name : line.font.name
 				}}, line.text) : '',
 				m('div.line-controls-right',
 					m(CaseSelect, {params: line}),
@@ -129,7 +129,7 @@ function Specimen(initialVnode) {
 				m('div.specimen-controls',
 					m('div.line-controls-left',
 						m(SizeInputGlobal),
-						m(FontSelectGlobal)
+						Fonts.list.length ? m(FontSelectGlobal) : ''
 					),
 					m(WidthInput),
 					m('div.line-controls-right',
@@ -148,14 +148,16 @@ function Specimen(initialVnode) {
 
 function FontItems(initialVnode) {
 	let scrollState = 'start';
+	let scroll = false;
 
 	function onscroll(e) {
+		const scrollAmount = e.target.scrollWidth - e.target.offsetWidth;
 		const scrollFromStart = e.target.scrollLeft;
-		const scrollFromEnd = (e.target.scrollWidth - e.target.offsetWidth) - e.target.scrollLeft;
+		const scrollFromEnd = scrollAmount - e.target.scrollLeft;
 
-		if (0 <= scrollFromStart && scrollFromStart < 100) {
+		if (0 <= scrollFromStart && scrollFromStart < scrollAmount * 0.1) {
 			scrollState = 'start';
-		} else if (0 <= scrollFromEnd && scrollFromEnd < 100) {
+		} else if (0 <= scrollFromEnd && scrollFromEnd < scrollAmount * 0.1) {
 			scrollState = 'end';
 		} else {
 			scrollState = 'middle';
@@ -173,17 +175,27 @@ function FontItems(initialVnode) {
 	}
 
 	return {
+		oncreate: function(vnode) {
+			const scrollObserver = new MutationObserver(() => {
+				m.redraw();
+			}).observe(vnode.dom.querySelector('.font-items-scroller'), {childList: true});
+		},
 		view: function(vnode) {
+			scroll = (() => {
+				const scroller = document.querySelector('.font-items-scroller');
+				if (!scroller) return false;
+				return scroller.scrollWidth > scroller.offsetWidth;
+			})();
 			return m('div.font-items',
-				scrollState !== 'start' ? m('button.scroll-left-button', {onclick: scrollToStart}, '◁') : '',
-				scrollState !== 'start' ? m('div.scroll-left-overlay') : '',
+				scroll && scrollState !== 'start' ? m('button.scroll-left-button', {onclick: scrollToStart}, '◁') : '',
+				scroll && scrollState !== 'start' ? m('div.scroll-left-overlay') : '',
 				m('div.font-items-scroller', {onscroll},
 					Fonts.list.map(font => {
 						return m(FontItem, {font})
 					})
 				),
-				scrollState !== 'end' ? m('div.scroll-right-overlay') : '',
-				scrollState !== 'end' ? m('button.scroll-right-button', {onclick: scrollToEnd}, '▷') : '',
+				scroll && scrollState !== 'end' ? m('div.scroll-right-overlay') : '',
+				scroll && scrollState !== 'end' ? m('button.scroll-right-button', {onclick: scrollToEnd}, '▷') : '',
 			)
 		}
 	}
@@ -346,8 +358,15 @@ function CaseSelectGlobal(initialVnode) {
 
 function FontSelect(initialVnode) {
 	return {
+		onupdate: function(vnode) {
+			// Get the width of the hidden label and update the width of the select
+			// 15 is the size of the arrow
+			const width = vnode.dom.querySelector('.font-select-hidden-label').offsetWidth + 15;
+			vnode.dom.querySelector('select.font-select').style.width = width + 'px';
+		},
 		view: function(vnode) {
 			return m('div.font-select', 
+				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, vnode.attrs.params.font.name),
 				m('select.font-select', {
 					oninput: (e) => {vnode.attrs.params.fontId = e.currentTarget.selectedIndex},
 					disabled: Layout.globalFont.locked
@@ -362,10 +381,17 @@ function FontSelect(initialVnode) {
 
 function FontSelectGlobal(initialVnode) {
 	return {
+		onupdate: function(vnode) {
+			// Get the width of the hidden label and update the width of the select
+			// 15 is the size of the arrow
+			const width = vnode.dom.querySelector('.font-select-hidden-label').offsetWidth + 15;
+			vnode.dom.querySelector('select.font-select').style.width = width + 'px';
+		},
 		view: function(vnode) {
 			return m('div.font-select', 
+				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, Layout.globalFont.font.name),
 				m('select.font-select', {
-					oninput: (e) => {vnode.attrs.params.fontId = e.currentTarget.selectedIndex},
+					oninput: (e) => {Layout.globalFont.id = e.currentTarget.selectedIndex},
 					disabled: !Layout.globalFont.locked
 				},
 					Fonts.list.map((font, i) => {
