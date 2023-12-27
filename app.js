@@ -32,8 +32,9 @@ const App = {
 		return [
 			m(Header),
 			m(FontUploader),
-			Fonts.list.length ? m(Specimen) : m(SplashScreen)
-			]
+			Fonts.list.length ? m(Specimen) : m(SplashScreen),
+			m(Footer)
+		]
 	}
 }
 
@@ -42,17 +43,46 @@ function Header(initialVnode) {
 		view: function(vnode) {
 			return m('header.header',
 				m('h1.logo',
-					m(SVG, {src: 'svg/logo.svg'}), 
+					m(SVG, {src: 'svg/logo02.svg'}), 
 					m('span', 'Stack and Justify')
 					),
-				m('div.drop-message',
-					m('span', "Drop your fonts anywhere or browse your computer ↗"),
-					),
+				m(FontInput),
 				m('div.header-btns',
 					m(DarkModeButton),
 					m('button.about-btn', "❓"),
 					)
 				)
+		}
+	}
+}
+
+function FontInput(initialVnode) {
+	return {
+		oncreate: function(vnode) {
+			const input = vnode.dom.querySelector('input[type="file"');
+			vnode.dom.querySelector('a').addEventListener('click', (e) => {
+				e.preventDefault();
+				input.click();
+			});
+
+			input.addEventListener('change', (e) => {
+				let files = input.files;
+				
+				Array.from(files).forEach(file => {
+					handleFile(file, function(fontName, fontData) {
+						Fonts.add(Font(fontName, fontData));
+					});
+				});
+			});
+		},
+		view: function(vnode) {
+			return m('form.drop-message',
+				m('input', {type: 'file', id:'uploader', multiple:'multiple', accept: 'font/otf, font/ttf, font/woff, font/woff2, .otf, .ttf, .woff, .woff2', style:{display: 'none'}}),
+				m('span', 'Drop your fonts anywhere or '),
+				m('label', {for: 'file-upload'}, 
+					m('a', 'browse your computer ↗')
+				)
+			)
 		}
 	}
 }
@@ -64,7 +94,7 @@ function SVG(initialVnode) {
 			.then(response => response.text())
 			.then(svgStr =>{
 				const parser = new DOMParser();
-				const svg = parser.parseFromString(svgStr, 'image/svg+xml').activeElement;
+				const svg = parser.parseFromString(svgStr, 'image/svg+xml').childNodes[0];
 				vnode.dom.replaceWith(svg);
 			})
 
@@ -76,24 +106,20 @@ function SVG(initialVnode) {
 }
 
 function FontUploader(initialVnode) {
-	
-
-	function ondrop(e) {
-		e.preventDefault();
-
-		let files = e.dataTransfer.files;
-		handleFile(files[0], function(_fontName, _fontData) {
-			Fonts.add(Font(_fontName, _fontData));
-		});
-	}
-
 	return {
 		oncreate: function(vnode) {
 			let  lastTarget = null;
 
+			window.addEventListener('dragover', function(e) {
+				e.preventDefault();
+				e.dataTransfer.dropEffect = "copy";
+			});
+
 			window.addEventListener('dragenter', function(e) {
 				lastTarget = e.target;
+				e.dataTransfer.effectAllowed = "copy";
 
+				
 				vnode.dom.classList.add('active');
 			});
 
@@ -108,17 +134,16 @@ function FontUploader(initialVnode) {
 
 				let files = e.dataTransfer.files;
 				
-				console.log(files);
 				Array.from(files).forEach(file => {
-					handleFile(file, function(_fontName, _fontData) {
-						Fonts.add(Font(_fontName, _fontData));
+					handleFile(file, function(fontName, fontData) {
+						Fonts.add(Font(fontName, fontData));
 					});
 				});
 				vnode.dom.classList.remove('active');
 			});
 		},
 		view: function(vnode) {
-			return m('div.drop-zone', {ondrop})
+			return m('div.drop-zone')
 		}
 	}
 }
@@ -141,8 +166,9 @@ function SplashScreen(initialVnode) {
 					m(SVGAnimation, {src: 'svg/font-files-animation.svg', frames: 18}),
 					m('p.t-big', 'To start, drop one or more font files anywhere on the window.'),
 					m('p.splash-screen-notice', 'You fonts aren’t uploaded, they stay cached locally in your browser only.'),
-					)
+					// m(SVGAnimation, {src: 'svg/stack-and-justify-animation.svg', frames: 75}),
 				)
+			)
 		}
 	}
 }
@@ -158,7 +184,6 @@ function SVGAnimation(initialVnode) {
 			if (start === undefined) start = timestamp;
 			const elapsed = timestamp - start;
 			const frameCount = Math.floor(elapsed / (1000/fps))%frames;
-
 			if (frameCount !== lastFrameCount) {
 				svg.children[lastFrameCount].setAttribute('display', 'none');
 				svg.children[frameCount].setAttribute('display', 'block');
@@ -175,13 +200,26 @@ function SVGAnimation(initialVnode) {
 			.then(response => response.text())
 			.then(svgStr => {
 				const parser = new DOMParser();
-				const svg = parser.parseFromString(svgStr, 'image/svg+xml').activeElement;
+				const svg = parser.parseFromString(svgStr, 'image/svg+xml').childNodes[0];
 				vnode.dom.replaceWith(svg);
 				animate(svg, vnode.attrs.frames);
 			})
 		},
 		view: function(vnode) {
 			return m('div.svg-animation');
+		}
+	}
+}
+
+function Footer(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('footer.footer',
+				m('div.credit',
+					m('span', 'Created by '),
+					m('a', 'Max Esnée ↗')
+				)
+			)
 		}
 	}
 }
