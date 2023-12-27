@@ -31,8 +31,9 @@ const App = {
 	view: function(vnode) {
 		return [
 			m(Header),
-			m(Specimen)
-		]
+			m(FontUploader),
+			Fonts.list.length ? m(Specimen) : m(SplashScreen)
+			]
 	}
 }
 
@@ -40,23 +41,42 @@ function Header(initialVnode) {
 	return {
 		view: function(vnode) {
 			return m('header.header',
-				m(FontUploader),
-				m('h1.logo', "Stack and Justify"),
-				m('span', "Drop a font here ↓"),
+				m('h1.logo',
+					m(SVG, {src: 'svg/logo.svg'}), 
+					m('span', 'Stack and Justify')
+					),
+				m('div.drop-message',
+					m('span', "Drop your fonts anywhere or browse your computer ↗"),
+					),
 				m('div.header-btns',
 					m(DarkModeButton),
 					m('button.about-btn', "❓"),
+					)
 				)
-			)
+		}
+	}
+}
+
+function SVG(initialVnode) {
+	return {
+		oninit: function(vnode) {
+			fetch(vnode.attrs.src)
+			.then(response => response.text())
+			.then(svgStr =>{
+				const parser = new DOMParser();
+				const svg = parser.parseFromString(svgStr, 'image/svg+xml').activeElement;
+				vnode.dom.replaceWith(svg);
+			})
+
+		},
+		view: function(vnode) {
+			return m('div.svg');
 		}
 	}
 }
 
 function FontUploader(initialVnode) {
-
-	function ondragover(e) {
-		e.preventDefault();
-	}
+	
 
 	function ondrop(e) {
 		e.preventDefault();
@@ -68,8 +88,37 @@ function FontUploader(initialVnode) {
 	}
 
 	return {
+		oncreate: function(vnode) {
+			let  lastTarget = null;
+
+			window.addEventListener('dragenter', function(e) {
+				lastTarget = e.target;
+
+				vnode.dom.classList.add('active');
+			});
+
+			window.addEventListener('dragleave', function(e) {
+				if(e.target === lastTarget || e.target === document) {
+					vnode.dom.classList.remove('active');	
+				}
+			});
+
+			vnode.dom.addEventListener('drop', function(e) {
+				e.preventDefault();
+
+				let files = e.dataTransfer.files;
+				
+				console.log(files);
+				Array.from(files).forEach(file => {
+					handleFile(file, function(_fontName, _fontData) {
+						Fonts.add(Font(_fontName, _fontData));
+					});
+				});
+				vnode.dom.classList.remove('active');
+			});
+		},
 		view: function(vnode) {
-			return m('div.drop-zone', {ondrop, ondragover})
+			return m('div.drop-zone', {ondrop})
 		}
 	}
 }
@@ -84,6 +133,59 @@ function DarkModeButton(initialVnode) {
 	}
 }
 
+function SplashScreen(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('div.splash-screen',
+				m('div.splash-screen-text',
+					m(SVGAnimation, {src: 'svg/font-files-animation.svg', frames: 18}),
+					m('p.t-big', 'To start, drop one or more font files anywhere on the window.'),
+					m('p.splash-screen-notice', 'You fonts aren’t uploaded, they stay cached locally in your browser only.'),
+					)
+				)
+		}
+	}
+}
+
+function SVGAnimation(initialVnode) {
+	function animate(svg, frames) {
+		const fps = 12;
+		let start;
+		let lastFrameCount = 0;
+		requestAnimationFrame(step);
+
+		function step(timestamp) {
+			if (start === undefined) start = timestamp;
+			const elapsed = timestamp - start;
+			const frameCount = Math.floor(elapsed / (1000/fps))%frames;
+
+			if (frameCount !== lastFrameCount) {
+				svg.children[lastFrameCount].setAttribute('display', 'none');
+				svg.children[frameCount].setAttribute('display', 'block');
+			}
+
+			lastFrameCount = frameCount;
+			requestAnimationFrame(step);
+		}
+	}
+
+	return {
+		oninit: function(vnode) {
+			fetch(vnode.attrs.src)
+			.then(response => response.text())
+			.then(svgStr => {
+				const parser = new DOMParser();
+				const svg = parser.parseFromString(svgStr, 'image/svg+xml').activeElement;
+				vnode.dom.replaceWith(svg);
+				animate(svg, vnode.attrs.frames);
+			})
+		},
+		view: function(vnode) {
+			return m('div.svg-animation');
+		}
+	}
+}
+
 
 function Line(initialVnode) {
 	return {
@@ -93,7 +195,7 @@ function Line(initialVnode) {
 				m('div.line-controls-left',
 					m(SizeInput, {params: line}),
 					Fonts.list.length ? m(FontSelect, {params: line}) : ''
-				),
+					),
 				line.font ?
 				m('div', {class: 'text', style: {
 					whiteSpace: "nowrap",
@@ -105,8 +207,8 @@ function Line(initialVnode) {
 					m(CaseSelect, {params: line}),
 					m(CopyButton, {onclick: line.copyText}),
 					m(UpdateButton, {onclick: line.update})
-				)
-			);
+					)
+				);
 		}
 	}
 }
@@ -124,24 +226,24 @@ function Specimen(initialVnode) {
 					m('div.specimen-header-controls',
 						m(WordsSelect),
 						m(LineCount)
-					)
-				),
+						)
+					),
 				m('div.specimen-controls',
 					m('div.line-controls-left',
 						m(SizeInputGlobal),
 						Fonts.list.length ? m(FontSelectGlobal) : ''
-					),
+						),
 					m(WidthInput),
 					m('div.line-controls-right',
 						m(CaseSelectGlobal),
 						m(CopyButton, {onclick: Layout.copyText}),
 						m(UpdateButton, {onclick: Layout.update})
-					)
-				),
+						)
+					),
 				m('div.specimen-lines', 
 					Layout.lines.map((line) => m(Line, {line}))
+					)
 				)
-			)
 		}
 	}
 }
@@ -193,10 +295,10 @@ function FontItems(initialVnode) {
 					Fonts.list.map(font => {
 						return m(FontItem, {key: font.id, font: font})
 					})
-				),
+					),
 				scroll && scrollState !== 'end' ? m('div.scroll-right-overlay') : '',
 				scroll && scrollState !== 'end' ? m('button.scroll-right-button', {onclick: scrollToEnd}, '▷') : '',
-			)
+				)
 		}
 	}
 }
@@ -219,7 +321,7 @@ function SizeInput(initialVnode) {
 					onclick: () => { vnode.attrs.params.size.increment() },
 					disabled: Layout.size.locked
 				}, '＋')
-			)
+				)
 		}
 	}
 }
@@ -245,7 +347,7 @@ function SizeInputGlobal(initialVnode) {
 				m('button.size-input-lock', {
 					onclick: () => {Layout.size.locked = !Layout.size.locked}
 				}, `${Layout.size.locked ? '🔒' : '🔓'}`)
-			)
+				)
 		}
 	}
 }
@@ -299,7 +401,7 @@ function WidthInput(initialVnode) {
 				m('input', {type: 'text', value: Layout.width.get(), onchange: (e) => {Layout.width.set(e.currentTarget.value)}}),
 				m('span.width-input-line'),
 				m('div.width-input-handle.right', {onmousedown})
-			)
+				)
 		}
 	}
 }
@@ -325,17 +427,17 @@ function CaseSelect(initialVnode) {
 	return {
 		view: function(vnode) {
 			return m('select.case-select', {
-					onchange: (e) => {vnode.attrs.params.filter = e.currentTarget.selectedIndex},
-					disabled: Layout.filterLocked
-				},
-				m('option', {value: 'lowercase', selected: vnode.attrs.params.filter == 0}, 'Lowercase'),
-				m('option', {value: 'uppercase', selected: vnode.attrs.params.filter == 1}, 'Uppercase'),
-				m('option', {value: 'capitalised', selected: vnode.attrs.params.filter == 2}, 'Capitalised')
+				onchange: (e) => {vnode.attrs.params.filter = e.currentTarget.selectedIndex},
+				disabled: Layout.filterLocked
+			},
+			m('option', {value: 'lowercase', selected: vnode.attrs.params.filter == 0}, 'Lowercase'),
+			m('option', {value: 'uppercase', selected: vnode.attrs.params.filter == 1}, 'Uppercase'),
+			m('option', {value: 'capitalised', selected: vnode.attrs.params.filter == 2}, 'Capitalised')
 			)
 		}
 	}
 }
-	
+
 function CaseSelectGlobal(initialVnode) {
 	return {
 		view: function(vnode) {
@@ -347,11 +449,11 @@ function CaseSelectGlobal(initialVnode) {
 					onchange: (e) => {Layout.filter = e.currentTarget.selectedIndex},
 					disabled: !Layout.filterLocked
 				},
-					m('option', {value: 'lowercase', selected: Layout.filter == 0}, 'Lowercase'),
-					m('option', {value: 'uppercase', selected: Layout.filter == 1}, 'Uppercase'),
-					m('option', {value: 'capitalised', selected: Layout.filter == 2}, 'Capitalised')
+				m('option', {value: 'lowercase', selected: Layout.filter == 0}, 'Lowercase'),
+				m('option', {value: 'uppercase', selected: Layout.filter == 1}, 'Uppercase'),
+				m('option', {value: 'capitalised', selected: Layout.filter == 2}, 'Capitalised')
 				)
-			)
+				)
 		}
 	}
 }
@@ -374,7 +476,7 @@ function FontSelect(initialVnode) {
 				Fonts.list.map((font) => {
 					return m('option', { value: font.id, selected: vnode.attrs.params.fontId == font.id}, font.name)
 				}))
-			)
+				)
 		}
 	}
 }
@@ -394,14 +496,14 @@ function FontSelectGlobal(initialVnode) {
 					oninput: (e) => {Layout.fontId = e.target.options[e.target.selectedIndex].value},
 					disabled: !Layout.fontLocked
 				},
-					Fonts.list.map((font) => {
-						return m('option', { value: font.id, selected: Layout.fontId == font.id}, font.name)
-					})
+				Fonts.list.map((font) => {
+					return m('option', { value: font.id, selected: Layout.fontId == font.id}, font.name)
+				})
 				),
 				m('button.font-select-lock', {
 					onclick: () => {Layout.fontLocked = !Layout.fontLocked}
 				}, Layout.fontLocked ? '🔒' : '🔓'),
-			)
+				)
 		}
 	}
 }
@@ -413,9 +515,9 @@ function FontItem(initialVnode) {
 			return m('div', {class: `font-item ${vnode.attrs.font.isLoading ? 'loading' : ''}`},
 				m('span', {class: 'font-item-label'}, vnode.attrs.font.name),
 				vnode.attrs.font.isLoading ? 
-					m(IconSpinning) : 
-					m('button.font-item-remove', {onclick: () => { Fonts.remove(vnode.attrs.font); }}, '❌'),
-			)
+				m(IconSpinning) : 
+				m('button.font-item-remove', {onclick: () => { Fonts.remove(vnode.attrs.font); }}, '❌'),
+				)
 		}
 	}
 }
@@ -424,7 +526,7 @@ function IconSpinning(initialVnode) {
 	return {
 		view: function(vnode) {
 			return m('svg.icon-spinning', {xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 1357 1358', width: 9.5, height: 9.5, fill:'currentColor'},
-					m('path', {d: 'M677 215c60 0 109-49 109-107C786 48 737 0 677 0c-58 0-109 49-107 108 2 58 49 107 107 107Zm-403 976c60 0 109-50 107-107-2-61-47-107-107-107-58 0-107 48-107 107 0 58 49 107 107 107ZM107 786c59 0 108-47 108-107 0-58-49-107-108-107C47 572 0 621 0 679c0 60 47 107 107 107Zm572 572c58 0 107-49 107-108 0-58-49-107-107-107-60 0-107 49-107 107 0 59 48 108 107 108ZM274 382c57 0 107-47 107-107 0-59-47-108-107-107-59 1-108 48-107 107s49 107 107 107Zm809 808c57 0 107-43 107-107 0-60-48-107-107-107-61 0-107 47-107 107s46 107 107 107Zm167-404c59 0 107-48 107-107v-1c0-59-48-110-107-108-60 2-107 49-107 109 0 59 49 107 107 107Zm-168-404c60 0 107-47 107-107 0-61-47-106-107-107-59-1-107 46-107 107 0 59 49 107 107 107Z'})
+				m('path', {d: 'M677 215c60 0 109-49 109-107C786 48 737 0 677 0c-58 0-109 49-107 108 2 58 49 107 107 107Zm-403 976c60 0 109-50 107-107-2-61-47-107-107-107-58 0-107 48-107 107 0 58 49 107 107 107ZM107 786c59 0 108-47 108-107 0-58-49-107-108-107C47 572 0 621 0 679c0 60 47 107 107 107Zm572 572c58 0 107-49 107-108 0-58-49-107-107-107-60 0-107 49-107 107 0 59 48 108 107 108ZM274 382c57 0 107-47 107-107 0-59-47-108-107-107-59 1-108 48-107 107s49 107 107 107Zm809 808c57 0 107-43 107-107 0-60-48-107-107-107-61 0-107 47-107 107s46 107 107 107Zm167-404c59 0 107-48 107-107v-1c0-59-48-110-107-108-60 2-107 49-107 109 0 59 49 107 107 107Zm-168-404c60 0 107-47 107-107 0-61-47-106-107-107-59-1-107 46-107 107 0 59 49 107 107 107Z'})
 				)
 		}
 	}
@@ -482,23 +584,23 @@ function WordsSelect(initialVnode) {
 							return m('div.checkbox', 
 								m('input', {name: 'languages', type: 'checkbox', id:lang.name, value: lang.name, checked: lang.selected}),
 								m('label', {for: lang.name}, lang.label)
-							)
+								)
 						})
-					),
+						),
 					m('fieldset', 
 						m('legend', 'Sources'),
 						Words.data.sources.map(source => {
 							return m('div.checkbox',
 								m('input', {name: 'sources', type: 'checkbox', id:source.name, value: source.name, checked: source.selected}),
 								m('label', {for: source.name}, source.label)
-							)
+								)
 						})
-					),
+						),
 					m('div.lang-select-update', 
 						m('button', {onclick: update},'↻ Update')
+						)
 					)
 				)
-			)
 		}
 	}
 }
@@ -511,7 +613,7 @@ function LineCount(initialVnode) {
 				m('button', {onclick: Layout.removeLine}, '－'),
 				m('input.line-count-input', {type: 'number', id: 'line-count', value: Layout.lines.length, min: 1, max: 99, onchange: (e) => Layout.setLineCount(e.currentTarget.value)}),
 				m('button', {onclick: Layout.addLine}, '＋')
-			)
+				)
 		}
 	}
 }
