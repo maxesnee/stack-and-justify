@@ -1,3 +1,5 @@
+// Convert .txt file with one word per line into JSON
+
 const fs = require('fs');
 const readline = require('readline');
 

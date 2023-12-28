@@ -1,7 +1,9 @@
+// Read a wikipedia dump and extract article title for a specific language and clean up the data
+const lang = 'de';
+const filePath = 'dump.txt';
+const titleLimit = 30000;
 const fs = require('fs');
 const readline = require('readline');
-
-const filePath = 'dump.txt'; // Replace with your file path
 
 const lines = [];
 
@@ -12,7 +14,7 @@ const rl = readline.createInterface({
 });
 
 rl.on('line', (line) => {
-  if (line.startsWith('es ')) {
+  if (line.startsWith(`${lang} `)) {
     lines.push(line);
   }
 });
@@ -32,17 +34,17 @@ rl.on('close', () => {
     return cleanedTitle;
   });
 
-  // Filter out titles with specific prefixes
-  const filteredTitles = cleanTitles.filter((title) => {
-    const excludedPrefixes = ['Category:', 'Help:', 'List of ', 'User:', 'File:', 'Talk:', 'Wikipedia talk:', 'Special:', 'Spécial:', 'Wikipédia:', 'Wikipedia', 'Catégorie:', 'Liste de', 'Liste des', 'Spécial:', 'Discussion:', 'Fichier:', 'Utilisateur:', 'Discussion utilisateur:', 'Aide:', 'Especial:', 'Anexo:', 'Ayuda:', 'Portal:', 'Categoría:', 'Archivo:']; // Add more prefixes as needed
-    return !excludedPrefixes.some((prefix) => title.startsWith(prefix));
-  });
+// Filter out titles starting with a word and a colon using a regular expression
+const filteredTitles = cleanTitles.filter((title) => {
+  const excludedPrefixRegex = /^\w+:/; // Matches any word followed by a colon
+
+  return !excludedPrefixRegex.test(title);
+});
 
     // Remove duplicates using a Set
   const uniqueTitles = [...new Set(filteredTitles)];
 
   // Print sorted lines
-  uniqueTitles.forEach((line) => {
-    console.log(line);
-  });
+  for (let i = 0; i < titleLimit; i++) 
+    console.log(uniqueTitles[i]);
 });

@@ -12,6 +12,10 @@ export const Words = (function() {
 			name: 'spanish',
 			label: 'Spanish',
 			selected: false
+		}, {
+			name: 'german',
+			label: 'German',
+			selected: false
 		}],
 		sources: [{
 			name: 'dictionary',
@@ -30,6 +34,10 @@ export const Words = (function() {
 					url: 'words/dictionaries/spanish.json',
 					list: null
 				},
+				german: {
+					url: 'words/dictionaries/german.json',
+					list: null
+				}
 			}
 		}, {
 			name: 'wikipedia',
@@ -46,6 +54,10 @@ export const Words = (function() {
 				},
 				spanish: {
 					url: 'words/wikipedia/es_wikipedia.json',
+					list: null
+				},
+				german: {
+					url: 'words/wikipedia/de_wikipedia.json',
 					list: null
 				}
 			}
