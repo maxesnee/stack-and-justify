@@ -1,68 +1,119 @@
 export const Words = (function() {
-	const data = {
-		languages: [{
+	const languages = [
+		{
+			name: 'catalan',
+			label: 'Catalan',
+			code: 'ca',
+			selected: false
+		}, {
+			name: 'czech',
+			label: 'Czech',
+			code: 'cs',
+			selected: false
+		}, {
+			name: 'danish',
+			label: 'Danish',
+			code: 'da',
+			selected: false
+		}, {
+			name: 'dutch',
+			label: 'Dutch',
+			code: 'nl',
+			selected: false
+		}, {
 			name: 'english',
 			label: 'English',
+			code: 'en',
 			selected: true
+		}, {
+			name: 'finnish',
+			label: 'Finnish',
+			code: 'fi',
+			selected: false
 		}, {
 			name: 'french',
 			label: 'French',
-			selected: false
-		}, {
-			name: 'spanish',
-			label: 'Spanish',
+			code: 'fr',
 			selected: false
 		}, {
 			name: 'german',
 			label: 'German',
+			code: 'de',
 			selected: false
-		}],
-		sources: [{
+		}, {
+			name: 'hungarian',
+			label: 'Hungarian',
+			code: 'hu',
+			selected: false
+		}, {
+			name: 'icelandic',
+			label: 'Icelandic',
+			code: 'is',
+			selected: false
+		}, {
+			name: 'italian',
+			label: 'Italian',
+			code: 'it',
+			selected: false
+		}, {
+			name: 'latin',
+			label: 'Latin',
+			code: 'la',
+			selected: false
+		}, {
+			name: 'norwegian',
+			label: 'Norwegian',
+			code: 'no',
+			selected: false
+		}, {
+			name: 'polish',
+			label: 'Polish',
+			code: 'pl',
+			selected: false
+		}, {
+			name: 'slovak',
+			label: 'Slovak',
+			code: 'sk',
+			selected: false
+		}, {
+			name: 'spanish',
+			label: 'Spanish',
+			code: 'es',
+			selected: false
+		}
+	];
+
+	const sources = [
+		{
 			name: 'dictionary',
 			label: 'Dictionary',
 			selected: true,
-			words: {
-				english: {
-					url: 'words/dictionaries/english.json',
-					list: null
-				},
-				french: {
-					url: 'words/dictionaries/french.json',
-					list: null
-				},
-				spanish: {
-					url: 'words/dictionaries/spanish.json',
-					list: null
-				},
-				german: {
-					url: 'words/dictionaries/german.json',
-					list: null
-				}
-			}
+			words: (function() {
+				const obj = {};
+				languages.forEach(language => {
+					obj[language.name] = {
+						url: `words/dictionaries/${language.name}.json`,
+						list: null
+					}
+				});
+				return obj;
+			})()
 		}, {
 			name: 'wikipedia',
 			label: 'Wikipedia article titles',
 			selected: false,
-			words: {
-				english: {
-					url: 'words/wikipedia/en_wikipedia.json',
-					list: null
-				},
-				french: {
-					url: 'words/wikipedia/fr_wikipedia.json',
-					list: null
-				},
-				spanish: {
-					url: 'words/wikipedia/es_wikipedia.json',
-					list: null
-				},
-				german: {
-					url: 'words/wikipedia/de_wikipedia.json',
-					list: null
-				}
-			}
-		}]
-	}
+			words: (function() {
+				const obj = {};
+				languages.forEach(language => {
+					obj[language.name] = {
+						url: `words/wikipedia/${language.code}_wikipedia.json`,
+						list: null
+					}
+				});
+				return obj;
+			})()
+		}
+	]
 
 	function loadFile(url) {
 		return fetch(url)
@@ -73,8 +124,8 @@ export const Words = (function() {
 
 	async function get() {
 		const words = [];
-		for (const source of data.sources.filter(source => source.selected)) {
-			for (const language of data.languages.filter(lang => lang.selected)) {
+		for (const source of sources.filter(source => source.selected)) {
+			for (const language of languages.filter(lang => lang.selected)) {
 				const listObject = source.words[language.name];
 				if (listObject.list === null) {
 					listObject.list = await loadFile(listObject.url);
@@ -88,7 +139,10 @@ export const Words = (function() {
 
 	return {
 		get,
-		data
+		data: {
+			languages,
+			sources
+		}
 	};
 
 })();
