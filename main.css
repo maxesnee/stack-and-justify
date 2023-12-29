@@ -22,6 +22,7 @@
 }
 
 html {
+	display: flex;
 	min-height: 100vh;
 }
 
@@ -32,6 +33,7 @@ body {
 	background: white;
 	color: black;
 	display: flex;
+	flex: 1;
 	min-height: 100vh;
 	transition: background 0.1s, color 0.2s;
 }
@@ -177,6 +179,50 @@ body.dark .logo svg .fill {
 	justify-content: space-between;
 }
 
+.specimen-body {
+	display: grid;
+	grid-template-columns: [left] 1fr [middle] auto [right] 1fr;
+	grid-column-gap: 2rem;
+}
+
+.specimen-controls {
+	height: 4.5rem;
+	border-bottom: 1px dotted;
+}
+
+.specimen-line {
+	display: grid;
+	grid-column: span all;
+	grid-template-columns: subgrid;
+	border-bottom: 1px dotted;
+}
+
+.specimen-line .text {
+	align-self: center;
+}
+
+.line-left-col {
+	grid-column: left;
+	display: flex;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+}
+
+.line-middle-col {
+	grid-column: middle;
+	display: flex;
+	justify-content: center;
+}
+
+.line-right-col {
+	grid-column: right;
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-start;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+}
+
 .line-count {
 	white-space: nowrap;
 }
@@ -193,21 +239,12 @@ body.dark .logo svg .fill {
 	margin-right: 0.5rem;
 }
 
-.specimen-controls {
+.size-input {
 	position: relative;
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	height: 4.5rem;
-	border-bottom: 1px dotted;
-}
-
-.size-input {
-	display: flex;
 	align-items: start;
-	margin-right: 2rem;
+	margin-right: 3rem;
 }
-
 
 .size-input-global {
 	padding-top: 0;
@@ -222,15 +259,14 @@ body.dark .logo svg .fill {
 }
 
 .size-input-lock {
-	margin-left: 0.5rem;
+	position: absolute;
+	right: -1rem;
 	cursor: pointer;
 }
 
 .width-input {
 	display: flex;
-	flex-shrink: 0;
 	position: relative;
-	margin: auto;
 	align-items: center;
 }
 
@@ -285,22 +321,6 @@ body.dark .logo svg .fill {
 .width-input-line-cap-right {
 	position: relative;
 	left: -100%;
-}
-
-.line-controls-left {
-	display: flex;
-	flex: 2;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-}
-
-.line-controls-right {
-	display: flex;
-	flex: 2;
-	justify-content: flex-end;
-	align-items: flex-start;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
 }
 
 .update-button,
@@ -402,15 +422,6 @@ body.dark .logo svg .fill {
   }
 }
 
-.specimen-line {
-	display: flex;
-	justify-content: space-between;
-	border-bottom: 1px dotted;
-}
-
-.specimen-line .text {
-	align-self: center;
-}
 
 .size-slider {
 	display: flex;
@@ -430,11 +441,14 @@ body.dark .logo svg .fill {
 }
 
 .font-select {
+	position: relative;
+	margin-right: 2rem;
 	white-space: nowrap;
 }
 
 .font-select-lock {
-	margin-left: 0.25rem;
+	position: absolute;
+	right: -1rem;
 }
 
 .lang-select {

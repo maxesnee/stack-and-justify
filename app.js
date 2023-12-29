@@ -230,23 +230,25 @@ function Line(initialVnode) {
 		view: function(vnode) {
 			let line = vnode.attrs.line;
 			return m('div', {class: 'specimen-line'},
-				m('div.line-controls-left',
+				m('div.line-left-col',
 					m(SizeInput, {params: line}),
 					Fonts.list.length ? m(FontSelect, {params: line}) : ''
 					),
-				line.font ?
-				m('div', {class: 'text', style: {
-					whiteSpace: "nowrap",
-					fontSize: Layout.size.locked ? Layout.size.get() : line.size.get(),
-					width: Layout.width.get(),
-					fontFamily: Layout.fontLocked ? Layout.font?.name : line.font.name
-				}}, line.text) : '',
-				m('div.line-controls-right',
+				m('div.line-middle-col',
+					line.font ?
+					m('div', {class: 'text', style: {
+						whiteSpace: "nowrap",
+						fontSize: Layout.size.locked ? Layout.size.get() : line.size.get(),
+						width: Layout.width.get(),
+						fontFamily: Layout.fontLocked ? Layout.font?.name : line.font.name
+					}}, line.text) : '',
+				),
+				m('div.line-right-col',
 					m(CaseSelect, {params: line}),
 					m(CopyButton, {onclick: line.copyText}),
 					m(UpdateButton, {onclick: line.update})
-					)
-				);
+				)
+			);
 		}
 	}
 }
@@ -266,22 +268,22 @@ function Specimen(initialVnode) {
 						m(LineCount)
 						)
 					),
-				m('div.specimen-controls',
-					m('div.line-controls-left',
-						m(SizeInputGlobal),
-						Fonts.list.length ? m(FontSelectGlobal) : ''
+				m('div.specimen-body', 
+						m('div.line-left-col',
+							m(SizeInputGlobal),
+							Fonts.list.length ? m(FontSelectGlobal) : ''
 						),
-					m(WidthInput),
-					m('div.line-controls-right',
-						m(CaseSelectGlobal),
-						m(CopyButton, {onclick: Layout.copyText}),
-						m(UpdateButton, {onclick: Layout.update})
-						)
-					),
-				m('div.specimen-lines', 
+						m('div.line-middle-col',
+							m(WidthInput)
+						),
+						m('div.line-right-col',
+							m(CaseSelectGlobal),
+							m(CopyButton, {onclick: Layout.copyText}),
+							m(UpdateButton, {onclick: Layout.update})
+						),
 					Layout.lines.map((line) => m(Line, {line}))
-					)
 				)
+			)
 		}
 	}
 }
@@ -502,12 +504,12 @@ function FontSelect(initialVnode) {
 			// Get the width of the hidden label and update the width of the select
 			// 15 is the size of the arrow
 			const width = vnode.dom.querySelector('.font-select-hidden-label').offsetWidth + 15;
-			vnode.dom.querySelector('select.font-select').style.width = width + 'px';
+			vnode.dom.querySelector('select').style.width = width + 'px';
 		},
 		view: function(vnode) {
 			return m('div.font-select', 
-				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, vnode.attrs.params.font?.name),
-				m('select.font-select', {
+				m('span.font-select-hidden-label', {style: {position: 'absolute', visibility: 'hidden'}}, vnode.attrs.params.font?.name),
+				m('select', {
 					oninput: (e) => {vnode.attrs.params.fontId = e.target.options[e.target.selectedIndex].value },
 					disabled: Layout.fontLocked
 				},
@@ -525,12 +527,12 @@ function FontSelectGlobal(initialVnode) {
 			// Get the width of the hidden label and update the width of the select
 			// 15 is the size of the arrows
 			const width = vnode.dom.querySelector('.font-select-hidden-label').offsetWidth + 15;
-			vnode.dom.querySelector('select.font-select').style.width = width + 'px';
+			vnode.dom.querySelector('select').style.width = width + 'px';
 		},
 		view: function(vnode) {
 			return m('div.font-select', 
-				m('span.font-select-hidden-label', {style: {position: 'absolute', left: '-100%'}}, Layout.font?.name),
-				m('select.font-select', {
+				m('span.font-select-hidden-label', {style: {position: 'absolute', visibility: 'hidden'}}, Layout.font?.name),
+				m('select', {
 					oninput: (e) => {Layout.fontId = e.target.options[e.target.selectedIndex].value},
 					disabled: !Layout.fontLocked
 				},
