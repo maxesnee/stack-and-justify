@@ -1,3 +1,5 @@
+/* Typographie */
+
 @font-face {
 	font-family: "Plomb Sans";
 	src: url("fonts/PlombSans-Regular.otf") format("opentype");
@@ -25,6 +27,9 @@
 	font-weight: 700;
 }
 
+
+/* Base */
+
 html {
 	display: flex;
 	min-height: 100vh;
@@ -45,20 +50,28 @@ body {
 	--fg-color: #000;
 }
 
+body.dark {
+	--bg-color: #000;
+	--fg-color: #FFF;
+}
+
 #app {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 }
 
+.main {
+	position: relative;
+	flex: 1
+}
+
 .footer {
 	margin-top: auto;
 }
 
-body.dark {
-	--bg-color: #000;
-	--fg-color: #FFF;
-}
+
+/* Links */
 
 *[disabled] {
 	color: #A0A0A0;
@@ -66,11 +79,6 @@ body.dark {
 
 button {
 	cursor: pointer;
-}
-
-input {
-	background: inherit;
-	color: inherit;
 }
 
 a {
@@ -95,66 +103,15 @@ button:active {
 	vertical-align: text-top;
 }
 
+
+/* Header */
+
 .header {
 	position: relative;
 	display: grid;
 	grid-column-gap: 2rem;
 	grid-template-columns: repeat(4, 1fr);
 	padding-bottom: 4rem;
-}
-
-.main {
-	position: relative;
-	flex: 1
-}
-
-.about {
-	position: absolute;
-	width: 100%;
-	top: 0;
-	bottom: 0;
-	background: var(--bg-color);
-	visibility: hidden;
-	opacity: 0;
-	padding-top: 3.285rem;
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	grid-column-gap: 2rem;
-	transition: visibility 175ms, opacity 175ms, background 0.1s;
-	z-index: 2;
-}
-
-.about.open {
-	visibility: visible;
-	opacity: 1;
-}
-
-.about svg {
-	max-width: 100%;
-	height: auto;
-}
-
-.about-text {
-	grid-column: span 2;
-}
-
-.about-text p {
-	margin-bottom: 2rem;
-}
-
-.drop-message {
-	grid-column: span 2;
-}
-
-.header-btns {
-	grid-column: 4;
-	text-align: right;
-}
-
-.dark-mode-btn {
-	position: relative;
-	margin-right: 0.5rem;
-	z-index: 1;
 }
 
 .logo {
@@ -177,6 +134,23 @@ body.dark .logo svg .fill {
 	fill: var(--fg-color);
 }
 
+.drop-message {
+	grid-column: span 2;
+}
+
+.header-btns {
+	grid-column: 4;
+	text-align: right;
+}
+
+.dark-mode-btn {
+	position: relative;
+	margin-right: 0.5rem;
+	z-index: 1;
+}
+
+
+/* Drop Zone */
 
 .drop-zone {
 	position: fixed;
@@ -198,6 +172,7 @@ body.dark .logo svg .fill {
 
 
 /* Splash Screen */
+
 .splash-screen {
 	border-top: 1px solid;
 	padding-top: 0.5rem;
@@ -215,6 +190,7 @@ body.dark .logo svg .fill {
 .splash-screen-notice {
 	margin-top: 1rem;
 }
+
 
 /* Specimen */
 
@@ -275,6 +251,103 @@ body.dark .logo svg .fill {
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 }
+
+.update-button,
+.copy-button {
+	margin-left: 1rem;
+}
+
+/* Font List */
+
+.font-items {
+	position: relative;
+	min-width: 0;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+}
+
+.font-items-scroller {
+	display: flex;
+	scroll-behavior: smooth;
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;  /* Firefox */
+}
+
+.font-items-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.font-items-scroller.start {
+	mask-image: linear-gradient(to left, rgb(0,0,0,0) 0%, rgb(0,0,0,1) 18%, rgb(0,0,0,1) 20%);
+}
+
+.font-items-scroller.middle {
+	mask-image: linear-gradient(to left, rgb(0,0,0,0) 0%, rgb(0,0,0,1) 18%, rgb(0,0,0,1) 82%, rgb(0,0,0,0) 100%);
+}
+
+.font-items-scroller.end {
+	mask-image: linear-gradient(to right, rgb(0,0,0,0) 0%, rgb(0,0,0,1) 18%, rgb(0,0,0,1) 20%);
+}
+
+.scroll-left-button {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	display: flex;
+	padding-right: 0.5rem;
+	justify-content: flex-start;
+	align-items: center;
+	z-index: 1;
+}
+
+.scroll-right-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
+	display: flex;
+	padding-left: 0.5rem;
+	justify-content: flex-end;
+	align-items: center;
+	z-index: 1;
+}
+
+
+.font-item {
+	white-space: nowrap;
+	font-weight: 700;
+	margin-right: 1rem;
+}
+
+.font-item.loading {
+	color: #A0A0A0;
+}
+
+.font-item-label {
+	margin-right: 0.5rem;
+}
+
+.font-item-remove {
+	cursor: pointer;
+}
+
+.icon-spinning {
+	animation: spinning 2s linear infinite;
+}
+
+@keyframes spinning {
+  from {
+	transform: rotate(0deg);
+  }
+  to {
+	transform: rotate(360deg);
+  }
+}
+
+
+/* Inputs */
 
 .line-count {
 	white-space: nowrap;
@@ -376,98 +449,6 @@ body.dark .logo svg .fill {
 	left: -100%;
 }
 
-.update-button,
-.copy-button {
-	margin-left: 1rem;
-}
-
-.font-items {
-	position: relative;
-	min-width: 0;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-}
-
-.font-items-scroller.start {
-	mask-image: linear-gradient(to left, rgb(0,0,0,0) 0%, rgb(0,0,0,1) 18%, rgb(0,0,0,1) 20%);
-}
-
-.font-items-scroller.middle {
-	mask-image: linear-gradient(to left, rgb(0,0,0,0) 0%, rgb(0,0,0,1) 18%, rgb(0,0,0,1) 82%, rgb(0,0,0,0) 100%);
-}
-
-.font-items-scroller.end {
-	mask-image: linear-gradient(to right, rgb(0,0,0,0) 0%, rgb(0,0,0,1) 18%, rgb(0,0,0,1) 20%);
-}
-
-.scroll-left-button {
-	position: absolute;
-	top: 0;
-	height: 100%;
-	display: flex;
-	padding-right: 0.5rem;
-	justify-content: flex-start;
-	align-items: center;
-	z-index: 1;
-}
-
-.scroll-right-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	height: 100%;
-	display: flex;
-	padding-left: 0.5rem;
-	justify-content: flex-end;
-	align-items: center;
-	z-index: 1;
-}
-
-.font-items-scroller {
-	display: flex;
-	scroll-behavior: smooth;
-	overflow-x: auto;
-	overscroll-behavior-x: contain;
-	-ms-overflow-style: none;  /* IE and Edge */
-	scrollbar-width: none;  /* Firefox */
-}
-
-.font-items-scroller::-webkit-scrollbar {
-  display: none;
-}
-
-.font-item {
-	white-space: nowrap;
-	font-weight: 700;
-	margin-right: 1rem;
-}
-
-.font-item.loading {
-	color: #A0A0A0;
-}
-
-.font-item-label {
-	margin-right: 0.5rem;
-}
-
-.font-item-remove {
-	cursor: pointer;
-}
-
-.icon-spinning {
-	animation: spinning 2s linear infinite;
-}
-
-@keyframes spinning {
-  from {
-	transform: rotate(0deg);
-  }
-  to {
-	transform: rotate(360deg);
-  }
-}
-
-
 .size-slider {
 	display: flex;
 	align-items: center;
@@ -559,3 +540,38 @@ body.dark .logo svg .fill {
 	white-space: nowrap;
 }
 
+/* About */
+
+.about {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	bottom: 0;
+	background: var(--bg-color);
+	visibility: hidden;
+	opacity: 0;
+	padding-top: 3.285rem;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-column-gap: 2rem;
+	transition: visibility 175ms, opacity 175ms, background 0.1s;
+	z-index: 2;
+}
+
+.about.open {
+	visibility: visible;
+	opacity: 1;
+}
+
+.about svg {
+	max-width: 100%;
+	height: auto;
+}
+
+.about-text {
+	grid-column: span 2;
+}
+
+.about-text p {
+	margin-bottom: 2rem;
+}
