@@ -44,6 +44,9 @@ input {
 	background: inherit;
 	color: inherit;
 	padding: 0;
+	font-size: inherit;
+  	font-family: inherit;
+  	line-height: inherit;
 }
 
 input[type="number"],

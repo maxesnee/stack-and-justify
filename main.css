@@ -530,9 +530,28 @@ body.dark .logo svg .fill {
 
 .checkbox {
 	display: flex;
+	margin-bottom: 0.15rem;
 }
 
-.checkbox input[type="checkbox"] {
+input[type="checkbox"] {
+	appearance: none;
+}
+
+.checkbox label {
+	cursor: pointer;
+}
+
+.checkbox:hover label:before {
+	color: #00b47c;
+}
+
+input[type="checkbox"] + label::before {
+	content: '☐';
+	margin-right: 0.5rem;
+}
+
+input[type="checkbox"]:checked + label::before {
+	content: '☒';
 	margin-right: 0.5rem;
 }
 

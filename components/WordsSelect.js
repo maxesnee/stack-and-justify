@@ -67,7 +67,7 @@ export function WordsSelect(initialVnode) {
 						})
 						),
 					m('div.lang-select-update', 
-						m('button', {onclick: update},'↻ Update')
+						m('button.bold', {onclick: update},'↻ Update')
 						)
 					)
 				)

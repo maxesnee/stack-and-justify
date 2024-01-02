@@ -13,7 +13,7 @@ export function Header(initialVnode) {
 				m(FontInput),
 				m('div.header-btns',
 					m(DarkModeButton),
-					m('button.about-btn', {onclick: () => vnode.attrs.AppState.showAbout = !vnode.attrs.AppState.showAbout }, "❓"),
+					m('button.about-btn', {onclick: () => vnode.attrs.AppState.showAbout = !vnode.attrs.AppState.showAbout }, vnode.attrs.AppState.showAbout ? "❎" : "❓"),
 					)
 				)
 		}
