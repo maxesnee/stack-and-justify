@@ -11,6 +11,15 @@ p {
 	margin: 0;
 }
 
+a, a:hover, a:active, a:visited {
+	color: inherit;
+	text-decoration: none;
+}
+
+em {
+	font-style: normal;
+}
+
 button {
 	color: inherit;
 	font-size: inherit;

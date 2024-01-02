@@ -5,9 +5,11 @@ import { Fonts } from "./Fonts.js";
 import { Font } from "./Font.js";
 
 const root = document.querySelector('#app');
-const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
+let showAbout = false;
 
 function handleFile(file, callback) {
+	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
+
 	if (!file.name.match(acceptedExtensions)) {
 		return;
 	}
@@ -31,8 +33,11 @@ const App = {
 	view: function(vnode) {
 		return [
 			m(Header),
-			m(FontUploader),
-			Fonts.list.length ? m(Specimen) : m(SplashScreen),
+			m(DropZone),
+			m('main.main',			
+				Fonts.list.length ? m(Specimen) : m(SplashScreen),
+				m(About)
+			),
 			m(Footer)
 		]
 	}
@@ -49,9 +54,31 @@ function Header(initialVnode) {
 				m(FontInput),
 				m('div.header-btns',
 					m(DarkModeButton),
-					m('button.about-btn', "❓"),
+					m('button.about-btn', {onclick: () => showAbout = !showAbout }, "❓"),
 					)
 				)
+		}
+	}
+}
+
+function About(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('section.about', {class: showAbout ? 'open' : ''},
+				m(SVGAnimation, {src: 'svg/stack-and-justify-animation.svg', frames: 75}),
+				m('div.about-text', 
+					m('p.t-big', 
+						m('em.bold', "Stack & Justify"),
+						m('span', " is a tool to help create type specimens by finding words or phrases of the same width. Published by Max Esnée and free to use.")
+					),
+					m('p.t-big', "Your fonts are not uploaded, they remain stored locally in your browser."),
+					m('p.t-big', 
+						m('span', "For a similar tool, also check "),
+						m('a.big-link', {target: '_blank', href: "https://workshop.mass-driver.com/waterfall"}, "Mass Driver’s Waterfall"),
+						m('span', " from which this tool was inspired.")
+					)
+				),
+			)
 		}
 	}
 }
@@ -105,7 +132,7 @@ function SVG(initialVnode) {
 	}
 }
 
-function FontUploader(initialVnode) {
+function DropZone(initialVnode) {
 	return {
 		oncreate: function(vnode) {
 			let  lastTarget = null;
@@ -165,8 +192,7 @@ function SplashScreen(initialVnode) {
 				m('div.splash-screen-text',
 					m(SVGAnimation, {src: 'svg/font-files-animation.svg', frames: 18}),
 					m('p.t-big', 'To start, drop one or more font files anywhere on the window.'),
-					m('p.splash-screen-notice', 'You fonts aren’t uploaded, they stay cached locally in your browser only.'),
-					// m(SVGAnimation, {src: 'svg/stack-and-justify-animation.svg', frames: 75}),
+					m('p.splash-screen-notice', 'You fonts aren’t uploaded, they stay cached locally in your browser only.')
 				)
 			)
 		}
@@ -292,10 +318,11 @@ function FontItems(initialVnode) {
 	let scrollState = 'start';
 	let scroll = false;
 
-	function onscroll(e) {
-		const scrollAmount = e.target.scrollWidth - e.target.offsetWidth;
-		const scrollFromStart = e.target.scrollLeft;
-		const scrollFromEnd = scrollAmount - e.target.scrollLeft;
+	function onscroll() {
+		const scroller = document.querySelector('.font-items-scroller');
+		const scrollAmount = scroller.scrollWidth - scroller.offsetWidth;
+		const scrollFromStart = scroller.scrollLeft;
+		const scrollFromEnd = scrollAmount - scroller.scrollLeft;
 
 		if (0 <= scrollFromStart && scrollFromStart < scrollAmount * 0.1) {
 			scrollState = 'start';
@@ -304,6 +331,9 @@ function FontItems(initialVnode) {
 		} else {
 			scrollState = 'middle';
 		}
+
+		scroller.classList.remove('start', 'middle', 'end');
+		scroller.classList.add(scrollState);
 	}
 
 	function scrollToStart() {
@@ -316,11 +346,15 @@ function FontItems(initialVnode) {
 		scroller.scrollTo(scroller.scrollWidth, 0);
 	}
 
+
 	return {
 		oncreate: function(vnode) {
 			const scrollObserver = new MutationObserver(() => {
+				onscroll();
 				m.redraw();
 			}).observe(vnode.dom.querySelector('.font-items-scroller'), {childList: true});
+
+			onscroll();
 		},
 		view: function(vnode) {
 			scroll = (() => {
@@ -330,13 +364,11 @@ function FontItems(initialVnode) {
 			})();
 			return m('div.font-items',
 				scroll && scrollState !== 'start' ? m('button.scroll-left-button', {onclick: scrollToStart}, '◁') : '',
-				scroll && scrollState !== 'start' ? m('div.scroll-left-overlay') : '',
 				m('div.font-items-scroller', {onscroll},
 					Fonts.list.map(font => {
 						return m(FontItem, {key: font.id, font: font})
 					})
-					),
-				scroll && scrollState !== 'end' ? m('div.scroll-right-overlay') : '',
+				),
 				scroll && scrollState !== 'end' ? m('button.scroll-right-button', {onclick: scrollToEnd}, '▷') : '',
 				)
 		}
