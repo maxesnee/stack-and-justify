@@ -12,8 +12,8 @@ import { CopyButton } from "./CopyButton.js";
 import { UpdateButton } from "./UpdateButton.js";
 
 export function Specimen(initialVnode) {
-	Layout.addLine('60px');
-	Layout.addLine('60px');
+	Layout.addLine('60pt');
+	Layout.addLine('60pt');
 
 	return {
 		view: function(vnode) {
