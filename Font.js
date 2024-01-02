@@ -20,12 +20,11 @@ export const Font = function(name, data) {
 		window.dispatchEvent(event);
 	}
 
-	function update() {
+	async function update() {
 		isLoading = true;
-		wordGenerator.sort().then(() => {
-			isLoading = false;
-			m.redraw();
-		});
+		await wordGenerator.sort();
+		isLoading = false;
+		m.redraw();
 	}
 
 	init();

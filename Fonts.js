@@ -24,8 +24,10 @@ export const Fonts = (function() {
 		return list[0] || null;
 	}
 
-	function update() {
-		list.forEach(font => { font.update() });
+	async function update() {
+		for (const font of list) {
+			await font.update();
+		}
 	}
 
 	return {

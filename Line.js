@@ -40,7 +40,6 @@ export function Line(size, fontId=Fonts.first()?.id) {
 		const outputSize = Layout.size.locked ? Layout.size.getIn('px') : size.getIn('px');
 		const outputWidth = Layout.width.getIn('px');
 		text = await outputFont.wordGenerator.getLine(outputSize, outputWidth, Filters.list[outputFilter].value);
-
 		m.redraw();
 	}
 
