@@ -6,6 +6,7 @@ export const Size = function(_str) {
 
 	function processStr(str) {
 		if (typeof str === 'string' && str !== ""){
+			str = str.replace(',', '.');
 			var split = str.match(/^([-.\d]+(?:\.\d+)?)(.*)$/);
 			return {'value': parseFloat(split[1].trim()), 'unit': split[2].trim() || 'px'};
 		}
