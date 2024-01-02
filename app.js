@@ -243,7 +243,7 @@ function Footer(initialVnode) {
 			return m('footer.footer',
 				m('div.credit',
 					m('span', 'Created by '),
-					m('a', 'Max Esnée ↗')
+					m('a', {target: "_blank", href: "https://max-esnee.com/"}, 'Max Esnée ↗')
 				)
 			)
 		}
