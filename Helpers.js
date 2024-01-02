@@ -1,3 +1,25 @@
+export function handleFontFile(file, callback) {
+	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
+
+	if (!file.name.match(acceptedExtensions)) {
+		return;
+	}
+
+	// Removes file extension from name
+	let fileName = file.name.replace(/\..+$/, "");
+	// Replace any non alpha numeric characters with -
+	fileName = fileName.replace(/\W+/g, "-");
+
+	const reader = new FileReader();
+
+	reader.onloadend = function(e) {
+		let data = e.target.result;
+		callback(fileName, data);
+	}
+
+	reader.readAsArrayBuffer(file);
+}
+
 export function random(min, max) {
 	return Math.random() * (max - min) + min;
 }

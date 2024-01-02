@@ -1,0 +1,23 @@
+import { SVGAnimation } from "./SVGAnimation.js";
+
+export function About(initialVnode) {
+	return {
+		view: function(vnode) {
+			return m('section.about', {class: vnode.attrs.AppState.showAbout ? 'open' : ''},
+				m(SVGAnimation, {src: 'svg/stack-and-justify-animation.svg', frames: 75}),
+				m('div.about-text', 
+					m('p.t-big', 
+						m('em.bold', "Stack & Justify"),
+						m('span', " is a tool to help create type specimens by finding words or phrases of the same width. Published by Max Esnée and free to use.")
+					),
+					m('p.t-big', "Your fonts are not uploaded, they remain stored locally in your browser."),
+					m('p.t-big', 
+						m('span', "For a similar tool, also check "),
+						m('a.big-link', {target: '_blank', href: "https://workshop.mass-driver.com/waterfall"}, "Mass Driver’s Waterfall"),
+						m('span', " from which this tool was inspired.")
+					)
+				),
+			)
+		}
+	}
+}

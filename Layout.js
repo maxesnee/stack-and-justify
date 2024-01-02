@@ -1,7 +1,6 @@
-import { Filters } from "./Filters.js";
 import { Fonts } from "./Fonts.js";
-import { Size } from "./Size.js";
 import { Line } from "./Line.js";
+import { Size } from "./Size.js";
 
 export const Layout = (function() {
 	let width = Size(localStorage['width'] || '600px');
@@ -30,28 +29,7 @@ export const Layout = (function() {
 	let filter = localStorage['filter'] || 2;
 
 	let fontLocked = localStorage['fontLocked'] === 'false' ? false : true;
-	let fontId = Fonts.first()?.id;
-
-	// let globalFont = {
-	// 	get locked() {
-	// 		return fontLocked;
-	// 	},
-	// 	set locked(value) {
-	// 		fontLocked = value;
-	// 		localStorage['fontLocked'] = value;
-	// 		update();	
-	// 	},
-	// 	get id() {
-	// 		return fontId;
-	// 	},
-	// 	set id(value) {
-	// 		fontId = value;
-	// 		update();
-	// 	},
-	// 	get font() {
-	// 		return Fonts.get(fontId);
-	// 	}
-	// }
+	let fontId = null;
 
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added

@@ -17,15 +17,15 @@ export const Fonts = (function() {
 	}
 
 	function get(id) {
-		return Fonts.list.find(font => font.id == id) || null;
+		return list.find(font => font.id == id) || null;
 	}
 
 	function first() {
-		return Fonts.list[0] || null;
+		return list[0] || null;
 	}
 
 	function update() {
-		Fonts.list.forEach(font => { font.update() });
+		list.forEach(font => { font.update() });
 	}
 
 	return {
