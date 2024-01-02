@@ -7,8 +7,8 @@ export function Header(initialVnode) {
 		view: function(vnode) {
 			return m('header.header',
 				m('h1.logo',
-					m(SVG, {src: 'svg/logo02.svg'}), 
-					m('span', 'Stack and Justify')
+					m(SVG, {src: 'svg/logo.svg'}), 
+					m('span', 'Stack & Justify')
 					),
 				m(FontInput),
 				m('div.header-btns',
