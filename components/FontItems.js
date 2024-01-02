@@ -5,21 +5,24 @@ export function FontItems(initialVnode) {
 	let scrollState = 'start';
 	let scroll = false;
 
-	function onscroll() {
+	function updateScrollState() {
 		const scroller = document.querySelector('.font-items-scroller');
 		const scrollAmount = scroller.scrollWidth - scroller.offsetWidth;
 		const scrollFromStart = scroller.scrollLeft;
 		const scrollFromEnd = scrollAmount - scroller.scrollLeft;
+		scroll = scrollAmount > 0;
+		scroller.classList.remove('start', 'middle', 'end');
 
-		if (0 <= scrollFromStart && scrollFromStart < scrollAmount * 0.1) {
+		if (!scroll) return;
+
+		if (scrollFromStart == 0) {
 			scrollState = 'start';
-		} else if (0 <= scrollFromEnd && scrollFromEnd < scrollAmount * 0.1) {
+		} else if (scrollFromEnd == 0) {
 			scrollState = 'end';
 		} else {
 			scrollState = 'middle';
 		}
 
-		scroller.classList.remove('start', 'middle', 'end');
 		scroller.classList.add(scrollState);
 	}
 
@@ -37,21 +40,21 @@ export function FontItems(initialVnode) {
 	return {
 		oncreate: function(vnode) {
 			const scrollObserver = new MutationObserver(() => {
-				onscroll();
+				updateScrollState();
 				m.redraw();
 			}).observe(vnode.dom.querySelector('.font-items-scroller'), {childList: true});
 
-			onscroll();
+			updateScrollState();
 		},
 		view: function(vnode) {
-			scroll = (() => {
-				const scroller = document.querySelector('.font-items-scroller');
-				if (!scroller) return false;
-				return scroller.scrollWidth > scroller.offsetWidth;
-			})();
+			// scroll = (() => {
+			// 	const scroller = document.querySelector('.font-items-scroller');
+			// 	if (!scroller) return false;
+			// 	return scroller.scrollWidth > scroller.offsetWidth;
+			// })();
 			return m('div.font-items',
 				scroll && scrollState !== 'start' ? m('button.scroll-left-button', {onclick: scrollToStart}, '◁') : '',
-				m('div.font-items-scroller', {onscroll},
+				m('div.font-items-scroller', {onscroll: updateScrollState},
 					Fonts.list.map(font => {
 						return m(FontItem, {key: font.id, font: font})
 					})

@@ -1,3 +1,4 @@
+import { Fonts } from '../Fonts.js';
 import { IconSpinning } from './IconSpinning.js';
 
 export function FontItem(initialVnode) {
