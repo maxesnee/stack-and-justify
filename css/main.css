@@ -460,6 +460,24 @@ body.dark .logo svg .fill {
 	margin-right: 0.5rem;
 }
 
+.select-wrapper {
+	position: relative;
+	padding-right: 0.75rem;
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.select-wrapper select {
+	appearance: none;
+
+}
+
+.select-wrapper::after {
+	content: '▿';
+	position: absolute;
+	right: 0;
+}
+
 .case-select {
 	white-space: nowrap;
 }

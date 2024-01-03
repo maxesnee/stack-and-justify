@@ -3,7 +3,7 @@ import { Layout } from "../Layout.js";
 export function CaseSelectGlobal(initialVnode) {
 	return {
 		view: function(vnode) {
-			return m('div.case-select', 
+			return m('div.select-wrapper', 
 				m('button.case-select-lock', {
 					onclick: () => {Layout.filterLocked = !Layout.filterLocked}
 				}, Layout.filterLocked ? '🔒' : '🔓'),
