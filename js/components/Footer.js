@@ -7,7 +7,7 @@ export function Footer(initialVnode) {
 					m('a', {target: "_blank", href: "https://max-esnee.com"}, 'Max Esnée ↗')
 				),
 				m('div.github',
-					m('span', 'Sources available on '),
+					m('span', 'Source code available on '),
 					m('a', {target: "_blank", href: "https://github.com/maxesnee/stack-and-justify"}, 'Github ↗')
 				)
 			)
