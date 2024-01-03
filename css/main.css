@@ -259,6 +259,31 @@ body.dark .logo svg .fill {
 	margin-left: 1rem;
 }
 
+.copy-button {
+	position: relative;
+}
+
+.copy-button:hover .copy-tooltip {
+	visibility: visible;
+}
+
+.copy-tooltip {
+	visibility: hidden;
+	position: absolute;
+	top: -2.1rem;
+	text-align: center;
+	transform: translateX(calc(-50%));
+	background-color: var(--bg-color);
+	background: var(--bg-color);
+	padding: 0.2rem 0.35rem;
+	border: 1px dotted;
+	border-radius: 0.35rem;
+	box-shadow: 1px 2px 2px rgba(0,0,0,0.25);
+	white-space: nowrap;
+	z-index: 1;
+	pointer-events: none;
+}
+
 /* Font List */
 
 .font-items {
