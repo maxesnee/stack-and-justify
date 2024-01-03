@@ -15,9 +15,9 @@ export function FontItems(initialVnode) {
 
 		if (!scroll) return;
 
-		if (scrollFromStart == 0) {
+		if (scrollFromStart <= 0) {
 			scrollState = 'start';
-		} else if (scrollFromEnd == 0) {
+		} else if (scrollFromEnd <= 0) {
 			scrollState = 'end';
 		} else {
 			scrollState = 'middle';
@@ -47,11 +47,6 @@ export function FontItems(initialVnode) {
 			updateScrollState();
 		},
 		view: function(vnode) {
-			// scroll = (() => {
-			// 	const scroller = document.querySelector('.font-items-scroller');
-			// 	if (!scroller) return false;
-			// 	return scroller.scrollWidth > scroller.offsetWidth;
-			// })();
 			return m('div.font-items',
 				scroll && scrollState !== 'start' ? m('button.scroll-left-button', {onclick: scrollToStart}, '◁') : '',
 				m('div.font-items-scroller', {onscroll: updateScrollState},
