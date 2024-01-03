@@ -12,7 +12,12 @@ export const Font = function(name, data) {
 		document.fonts.add(fontFace);
 		await fontFace.load()
 
-		await wordGenerator.sort();
+		try {
+			await wordGenerator.sort();	
+		} catch (error) {
+			console.log(error);
+		}
+		
 		isLoading = false;
 
 		// Dispatch event

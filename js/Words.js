@@ -123,14 +123,14 @@ export const Words = (function() {
 	}
 
 	async function get() {
-		const words = [];
+		let words = [];
 		for (const source of sources.filter(source => source.selected)) {
 			for (const language of languages.filter(lang => lang.selected)) {
 				const listObject = source.words[language.name];
 				if (listObject.list === null) {
 					listObject.list = await loadFile(listObject.url);
 				}
-				words.push(...listObject.list);
+				words = words.concat(listObject.list);
 			}
 		}
 		return words;
