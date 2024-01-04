@@ -218,10 +218,10 @@ body.dark .logo svg .fill {
 
 .specimen-controls {
 	height: 4.5rem;
-	border-bottom: 1px dotted;
 }
 
-.specimen-line {
+.specimen-line,
+.specimen-controls {
 	display: grid;
 	grid-column: span 3;
 	grid-template-columns: subgrid;
@@ -230,6 +230,11 @@ body.dark .logo svg .fill {
 
 .specimen-line .text {
 	align-self: center;
+}
+
+.specimen-controls .line-left-col,
+.specimen-controls .line-right-col {
+	align-items: center;
 }
 
 .line-left-col {

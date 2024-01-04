@@ -28,6 +28,7 @@ export function Specimen(initialVnode) {
 						)
 					),
 				m('div.specimen-body', 
+					m('div.specimen-controls',
 						m('div.line-left-col',
 							m(SizeInputGlobal),
 							Fonts.list.length ? m(FontSelectGlobal) : ''
@@ -40,6 +41,7 @@ export function Specimen(initialVnode) {
 							m(CopyButton, {onclick: Layout.copyText}),
 							m(UpdateButton, {onclick: Layout.update})
 						),
+					),
 					Layout.lines.map((line) => m(Line, {line}))
 				)
 			)
