@@ -8,8 +8,8 @@ import { SizeInputGlobal } from "./SizeInputGlobal.js";
 import { FontSelectGlobal } from "./FontSelectGlobal.js";
 import { WidthInput } from "./WidthInput.js";
 import { CaseSelectGlobal } from "./CaseSelectGlobal.js";
-import { CopyButton } from "./CopyButton.js";
-import { UpdateButton } from "./UpdateButton.js";
+import { CopyButtonGlobal } from "./CopyButtonGlobal.js";
+import { UpdateButtonGlobal } from "./UpdateButtonGlobal.js";
 
 export function Specimen(initialVnode) {
 	return {
@@ -38,8 +38,8 @@ export function Specimen(initialVnode) {
 						),
 						m('div.line-right-col',
 							m(CaseSelectGlobal),
-							m(CopyButton, {onclick: Layout.copyText}),
-							m(UpdateButton, {onclick: Layout.update})
+							m(CopyButtonGlobal, {onclick: Layout.copyText}),
+							m(UpdateButtonGlobal, {onclick: Layout.update})
 						),
 					),
 					Layout.lines.map((line) => m(Line, {line}))

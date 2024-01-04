@@ -1,5 +1,5 @@
-export function UpdateButton(initialVnode) {
-	const tooltipStr = "Refresh line";
+export function UpdateButtonGlobal(initialVnode) {
+	const tooltipStr = "Refresh all lines";
 
 	return {
 		view: function(vnode) {

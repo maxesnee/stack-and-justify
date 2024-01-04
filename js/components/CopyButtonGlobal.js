@@ -1,5 +1,5 @@
-export function CopyButton(initialVnode) {
-	const copyStr = "Copy line to clipboard";
+export function CopyButtonGlobal(initialVnode) {
+	const copyStr = "Copy all lines to clipboard";
 	const copiedStr = "Copied";
 
 	function onclick(e, vnode) {

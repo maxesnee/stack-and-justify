@@ -48,6 +48,9 @@ body {
 
 	--bg-color: #FFF;
 	--fg-color: #000;
+	--grey: #A0A0A0;
+	--green: #00b47c;
+	--green-light: #00e682;
 }
 
 body.dark {
@@ -76,7 +79,7 @@ body.dark {
 /* Links */
 
 *[disabled] {
-	color: #A0A0A0;
+	color: var(--grey);
 }
 
 button {
@@ -90,12 +93,12 @@ a {
 
 a:hover,
 button:hover {
-	color: #00b47c;
+	color: var(--green);
 }
 
 a:active,
 button:active {
-	color: #00e682;
+	color: var(--green-light);
 }
 
 .big-link::after {
@@ -261,23 +264,22 @@ body.dark .logo svg .fill {
 
 .update-button,
 .copy-button {
+	position: relative;
 	margin-left: 1rem;
 }
 
-.copy-button {
-	position: relative;
-}
-
-.copy-button:hover .copy-tooltip {
+.copy-button:hover .copy-tooltip,
+.update-button:hover .update-tooltip {
 	visibility: visible;
 }
 
-.copy-tooltip {
+.copy-tooltip,
+.update-tooltip {
+	font-size: 0.95rem;
 	visibility: hidden;
 	position: absolute;
 	top: -2.1rem;
-	text-align: center;
-	transform: translateX(calc(-50%));
+	text-align: right;
 	background-color: var(--bg-color);
 	background: var(--bg-color);
 	padding: 0.2rem 0.35rem;
@@ -287,6 +289,18 @@ body.dark .logo svg .fill {
 	white-space: nowrap;
 	z-index: 1;
 	pointer-events: none;
+}
+
+.copy-tooltip {
+	right: -3rem;
+}
+
+.copy-tooltip.copied {
+	right: -1.25rem;
+}
+
+.update-tooltip {
+	right: -1rem;
 }
 
 /* Font List */
