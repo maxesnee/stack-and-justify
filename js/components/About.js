@@ -8,9 +8,9 @@ export function About(initialVnode) {
 				m('div.about-text', 
 					m('p.t-big', 
 						m('em.bold', "Stack & Justify"),
-						m('span', " is a tool to help create type specimens by finding words or phrases of the same width. Published by Max Esnée and free to use.")
+						m('span', " is a tool to help create type specimens by finding words or phrases of the same width. It is free to use and distributed under GPLv3 license.")
 					),
-					m('p.t-big', "Your fonts are not uploaded, they remain stored locally in your browser."),
+					m('p.t-big', "Font files are not uploaded, they remain stored locally in your browser."),
 					m('p.t-big', 
 						m('span', "For a similar tool, also check "),
 						m('a.big-link', {target: '_blank', href: "https://workshop.mass-driver.com/waterfall"}, "Mass Driver’s Waterfall"),
