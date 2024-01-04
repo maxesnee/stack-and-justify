@@ -9,15 +9,17 @@ export function DropZone(initialVnode) {
 
 			window.addEventListener('dragover', function(e) {
 				e.preventDefault();
-				e.dataTransfer.dropEffect = "copy";
+				if (e.dataTransfer.items.length) {
+					e.dataTransfer.dropEffect = "copy";	
+				}
 			});
 
 			window.addEventListener('dragenter', function(e) {
 				lastTarget = e.target;
-				e.dataTransfer.effectAllowed = "copy";
-
-				
-				vnode.dom.classList.add('active');
+				if (e.dataTransfer.items.length) {
+					e.dataTransfer.effectAllowed = "copy";
+					vnode.dom.classList.add('active');
+				}
 			});
 
 			window.addEventListener('dragleave', function(e) {

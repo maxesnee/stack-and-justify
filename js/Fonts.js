@@ -16,12 +16,29 @@ export const Fonts = (function() {
 		window.dispatchEvent(event);
 	}
 
+	function move(font, to) {
+		const from = list.indexOf(font);
+		if (from === -1 || to === from) return;
+
+		const target = list[from];                         
+		const increment = to < from ? -1 : 1;
+
+		for(let k = from; k != to; k += increment){
+			list[k] = list[k + increment];
+		}
+		list[to] = target;
+	}
+
 	function get(id) {
 		return list.find(font => font.id == id) || null;
 	}
 
 	function first() {
 		return list[0] || null;
+	}
+
+	function indexOf(id) {
+		return list.indexOf(get(id));
 	}
 
 	async function update() {
@@ -34,6 +51,8 @@ export const Fonts = (function() {
 		list,
 		add,
 		get,
+		indexOf,
+		move,
 		first,
 		update,
 		remove
