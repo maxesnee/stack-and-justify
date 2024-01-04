@@ -365,8 +365,10 @@ body.dark .logo svg .fill {
 	font-weight: 700;
 	border: 1px solid var(--bg-color);
 	user-select: none;
+	-webkit-user-select: none;
   padding: 0.1rem 0.5rem;
   border-radius: 1rem;
+  cursor: default;
 }
 
 .font-item:hover,
