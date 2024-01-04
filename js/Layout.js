@@ -3,13 +3,16 @@ import { Line } from "./Line.js";
 import { Size } from "./Size.js";
 
 export const Layout = (function() {
-	let width = Size('15cm');
+	const defaultWidth = '15cm';
+	const defaultSize = '60pt';
+
+	let width = Size(defaultWidth);
 	width.onchange = () => {
 		update();
 	};
 
 	let sizeLocked = true;
-	let size = Size('60pt');
+	let size = Size(defaultSize);
 	size.onchange = () => {
 		update();
 	}
@@ -68,10 +71,13 @@ export const Layout = (function() {
 	}
 
 	function addLine(size, fontId) {
-		if (!size || !fontId && lines.length) {
+		if (!size && !fontId && lines.length) {
 			const lastLine = lines[lines.length-1];
 			size = lastLine.size;
 			fontId = lastLine.fontId;
+		}
+		if (!size) {
+			size = defaultSize;
 		}
 		lines.push(Line(size, fontId));
 	}
