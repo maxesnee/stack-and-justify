@@ -3,18 +3,14 @@ import { Line } from "./Line.js";
 import { Size } from "./Size.js";
 
 export const Layout = (function() {
-	// let width = Size(localStorage['width'] || '600px');
 	let width = Size('15cm');
 	width.onchange = () => {
-		localStorage['width'] = width.get();
 		update();
 	};
 
 	let sizeLocked = true;
-	// let size = Size(localStorage['globalSize'] || '60px');
 	let size = Size('60pt');
 	size.onchange = () => {
-		localStorage['globalSize'] = size.get();
 		update();
 	}
 	Object.defineProperty(size, 'locked', {
@@ -27,12 +23,9 @@ export const Layout = (function() {
 		}
 	});
 
-	// let filterLocked = localStorage['filterLocked'] === 'false' ? false : true;
-	// let filter = localStorage['filter'] || 2;
 	let filterLocked = true;
 	let filter = 2;
 
-	// let fontLocked = localStorage['fontLocked'] === 'false' ? false : true;
 	let fontLocked = true;
 	let fontId = null;
 
@@ -87,12 +80,19 @@ export const Layout = (function() {
 		lines.pop();
 	}
 
+	function reset() {
+		lines = [];
+	}
+
 	return {
-		lines,
+		get lines() {
+			return lines;
+		},
 		addLine,
 		removeLine,
 		setLineCount,
 		update,
+		reset,
 		copyText,
 		width,
 		size,

@@ -12,10 +12,12 @@ import { CopyButton } from "./CopyButton.js";
 import { UpdateButton } from "./UpdateButton.js";
 
 export function Specimen(initialVnode) {
-	Layout.addLine('60pt');
-	Layout.addLine('60pt');
-
 	return {
+		oninit: function(vnode) {
+			Layout.reset();
+			Layout.addLine('60pt');
+			Layout.addLine('60pt');
+		},
 		view: function(vnode) {
 			return m('div', {class: 'specimen'},
 				m('header.specimen-header',
