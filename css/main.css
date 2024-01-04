@@ -652,9 +652,10 @@ input[type="checkbox"]:checked + label::before {
 }
 
 .about-text {
-	grid-column: span 2;
+	grid-column: span 3;
 }
 
 .about-text p {
+	max-width: 51rem;
 	margin-bottom: 2rem;
 }
