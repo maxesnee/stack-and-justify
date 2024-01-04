@@ -56,6 +56,8 @@ body {
 body.dark {
 	--bg-color: #000;
 	--fg-color: #FFF;
+	--green: #00e682;
+	--green-light: #00b47c;
 }
 
 #app {
@@ -166,7 +168,7 @@ body.dark .logo svg .fill {
 	z-index: 10;
 	visibility: hidden;
 	opacity: 0;
-	background-color: #00b47c;
+	background-color: var(--green);
 	transition: visibility 175ms, opacity 175ms;
 }
 
@@ -633,7 +635,7 @@ input[type="checkbox"] {
 }
 
 .checkbox:hover {
-	color: #00b47c;
+	color: var(--green);
 }
 
 input[type="checkbox"] + label::before {
