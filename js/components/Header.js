@@ -1,7 +1,7 @@
 import { SVG } from "./SVG.js";
 import { FontInput } from "./FontInput.js";
 import { DarkModeButton } from "./DarkModeButton.js";
-import { WordsSelect} from "./WordsSelect.js";
+import { Options} from "./Options.js";
 
 export function Header(initialVnode) {
 	return {
@@ -12,7 +12,7 @@ export function Header(initialVnode) {
 					m('span', 'Stack & Justify')
 					),
 				m(FontInput),
-				m(WordsSelect),
+				m(Options),
 				m('div.header-btns',
 					m(DarkModeButton),
 					m('button.about-btn', {onclick: () => vnode.attrs.AppState.showAbout = !vnode.attrs.AppState.showAbout }, vnode.attrs.AppState.showAbout ? "❎" : "❓"),

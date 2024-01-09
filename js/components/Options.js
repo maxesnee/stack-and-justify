@@ -2,12 +2,12 @@ import { Words } from "../Words.js";
 import { Layout } from "../Layout.js";
 import { Fonts } from "../Fonts.js";
 
-export function WordsSelect(initialVnode) {
+export function Options(initialVnode) {
 	let open = false;
 
 	document.onclick = (e) => {
-		const menu = document.querySelector('.lang-select-menu');
-		const btn = document.querySelector('.lang-select-button');
+		const menu = document.querySelector('.options-menu');
+		const btn = document.querySelector('.options-button');
 		
 		if (!menu.contains(e.target) && e.target !== btn && open) {
 			open = false;
@@ -17,7 +17,7 @@ export function WordsSelect(initialVnode) {
 
 	async function update(e) {
 		e.preventDefault();
-		const form = document.querySelector('.lang-select-menu');
+		const form = document.querySelector('.options-menu');
 		const formData = new FormData(form);
 		const selectedLanguages = formData.getAll('languages');
 		const selectedSources = formData.getAll('sources');
@@ -45,9 +45,9 @@ export function WordsSelect(initialVnode) {
 
 	return {
 		view: function(vnode) {
-			return m('div.lang-select', 
-				m('button.lang-select-button', {onclick: () => { open = !open }}, "Words ▿"),
-				m('form.lang-select-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
+			return m('div.options', 
+				m('button.options-button', {onclick: () => { open = !open }}, "Options ▿"),
+				m('form.options-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					m('fieldset',
 						m('legend', 'Languages'),
 						Words.data.languages.map(lang => {
@@ -66,7 +66,7 @@ export function WordsSelect(initialVnode) {
 								)
 						})
 						),
-					m('div.lang-select-update', 
+					m('div.options-update', 
 						m('button.bold', {onclick: update},'↻ Update')
 						)
 					)

@@ -586,13 +586,13 @@ body.dark .logo svg .fill {
 	right: -1rem;
 }
 
-.lang-select {
+.options {
 	margin-right: 2rem;
 	white-space: nowrap;
 	position: relative;
 }
 
-.lang-select-menu {
+.options-menu {
 	position: absolute;
 	top: 1.75rem;
 	left: -1.25rem;
@@ -603,19 +603,19 @@ body.dark .logo svg .fill {
 	z-index: 1;
 }
 
-.lang-select-menu fieldset {
+.options-menu fieldset {
 	padding-top: 0.75rem;
 	padding-bottom: 0.75rem; 
 }
 
-.lang-select-menu fieldset > * {
+.options-menu fieldset > * {
 	box-sizing: border-box;
 	width: 100%;
 	padding-left: 1.25rem;
 	padding-right: 1.25rem;
 }
 
-.lang-select-menu fieldset legend {
+.options-menu fieldset legend {
 	float: left;
 	padding-top: 0.75rem;
 	padding-bottom: 0.75rem;
@@ -624,12 +624,12 @@ body.dark .logo svg .fill {
 	margin-bottom: 1rem;
 }
 
-.lang-select-menu fieldset:first-of-type legend {
+.options-menu fieldset:first-of-type legend {
 	padding-top: 0;
 	border-top: 0;
 }
 
-.lang-select-update {
+.options-update {
 	text-align: right;
 	border-top: 1px dotted;
 	padding: 0.75rem 1.25rem;
