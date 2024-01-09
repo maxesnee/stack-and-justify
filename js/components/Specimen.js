@@ -10,39 +10,36 @@ import { WidthInput } from "./WidthInput.js";
 import { CaseSelectGlobal } from "./CaseSelectGlobal.js";
 import { CopyButtonGlobal } from "./CopyButtonGlobal.js";
 import { UpdateButtonGlobal } from "./UpdateButtonGlobal.js";
+import { NewLineButton } from "./NewLineButton.js";
+import { DeleteButtonGlobal } from "./DeleteButtonGlobal.js";
 
 export function Specimen(initialVnode) {
 	return {
 		oninit: function(vnode) {
-			Layout.reset();
+			Layout.clear();
 			Layout.addLine('60pt');
 			Layout.addLine('60pt');
 		},
 		view: function(vnode) {
 			return m('div', {class: 'specimen'},
 				m('header.specimen-header',
-					m(FontItems),
-					m('div.specimen-header-controls',
-						m(WordsSelect),
-						m(LineCount)
-						)
+					m('div.line-left-col',
+						m(SizeInputGlobal),
+						Fonts.list.length ? m(FontSelectGlobal) : ''
 					),
-				m('div.specimen-body', 
-					m('div.specimen-controls',
-						m('div.line-left-col',
-							m(SizeInputGlobal),
-							Fonts.list.length ? m(FontSelectGlobal) : ''
-						),
-						m('div.line-middle-col',
-							m(WidthInput)
-						),
-						m('div.line-right-col',
-							m(CaseSelectGlobal),
-							m(CopyButtonGlobal, {onclick: Layout.copyText}),
-							m(UpdateButtonGlobal, {onclick: Layout.update})
-						),
+					m('div.line-middle-col',
+						m(WidthInput)
 					),
-					Layout.lines.map((line) => m(Line, {line}))
+					m('div.line-right-col',
+						m(CaseSelectGlobal),
+						m(CopyButtonGlobal, {onclick: Layout.copyText}),
+						m(UpdateButtonGlobal, {onclick: Layout.update}),
+						m(DeleteButtonGlobal, {onclick: Layout.clear})
+					),
+				),
+				m('div.specimen-body',
+					Layout.lines.map((line) => m(Line, {line})),
+					m(NewLineButton)
 				)
 			)
 		}

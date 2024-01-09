@@ -3,6 +3,7 @@ import { FontSelect } from "./FontSelect.js";
 import { CaseSelect } from "./CaseSelect.js";
 import { CopyButton } from "./CopyButton.js";
 import { UpdateButton } from "./UpdateButton.js";
+import { DeleteButton } from "./DeleteButton.js";
 import { Fonts } from "../Fonts.js";
 import { Layout } from "../Layout.js";
 
@@ -27,7 +28,8 @@ export function Line(initialVnode) {
 				m('div.line-right-col',
 					m(CaseSelect, {params: line}),
 					m(CopyButton, {onclick: line.copyText}),
-					m(UpdateButton, {onclick: line.update})
+					m(UpdateButton, {onclick: line.update}),
+					m(DeleteButton, {onclick: line.remove})
 				)
 			);
 		}

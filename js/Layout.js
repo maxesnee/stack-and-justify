@@ -6,6 +6,8 @@ export const Layout = (function() {
 	const defaultWidth = '15cm';
 	const defaultSize = '60pt';
 
+	let lines = [];
+
 	let width = Size(defaultWidth);
 	width.onchange = () => {
 		update();
@@ -16,12 +18,14 @@ export const Layout = (function() {
 	size.onchange = () => {
 		update();
 	}
+	// TODO: move it to the export at the end with the other getter/setters
 	Object.defineProperty(size, 'locked', {
 		get() {
 			return sizeLocked;
 		},
 		set(value) {
 			sizeLocked = value;
+			// TODO: don't update the line when the value don't change
 			update();
 		}
 	});
@@ -48,8 +52,6 @@ export const Layout = (function() {
 
 		update();
 	});
-
-	let lines = [];
 
 	function copyText() {
 		// Write plain text to the clipboard
@@ -82,11 +84,16 @@ export const Layout = (function() {
 		lines.push(Line(size, fontId));
 	}
 
-	function removeLine() {
-		lines.pop();
+	function removeLine(id) {
+		if (id === undefined) {
+			lines.pop();	
+		} else {
+			const index = lines.indexOf(lines.find(line => line.id === id));
+			lines.splice(index, 1);
+		}	
 	}
 
-	function reset() {
+	function clear() {
 		lines = [];
 	}
 
@@ -96,9 +103,10 @@ export const Layout = (function() {
 		},
 		addLine,
 		removeLine,
+		clear,
 		setLineCount,
 		update,
-		reset,
+		clear,
 		copyText,
 		width,
 		size,

@@ -2,6 +2,7 @@ import { Fonts } from './Fonts.js';
 import { Size } from './Size.js';
 import { Layout } from './Layout.js';
 import { Filters } from './Filters.js';
+import { generateUID } from './Helpers.js';
 
 export function Line(size, fontId=Fonts.first()?.id) {
 	if (typeof size === 'string') {
@@ -12,6 +13,7 @@ export function Line(size, fontId=Fonts.first()?.id) {
 
 	let text = "";
 	let filter = 2;
+	const id = generateUID();
 
 	size.onchange = update;
 
@@ -30,6 +32,10 @@ export function Line(size, fontId=Fonts.first()?.id) {
 		}
 		update();
 	});
+
+	function remove() {
+		Layout.removeLine(id);
+	}
 
 	async function update() {
 		const outputFontId = Layout.fontLocked ? Layout.fontId : fontId;
@@ -75,6 +81,8 @@ export function Line(size, fontId=Fonts.first()?.id) {
 		get font() {
 			return Fonts.get(fontId);
 		},
+		id,
+		remove,
 		copyText,
 		locked: false
 	}

@@ -117,7 +117,7 @@ button:active {
 	position: relative;
 	display: grid;
 	grid-column-gap: 2rem;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: 2fr 3fr 2fr 1fr;
 	padding-bottom: 4rem;
 }
 
@@ -125,6 +125,7 @@ button:active {
 	display: flex;
 	align-items: flex-start;
 	font-weight: 700;
+	user-select: none;
 }
 
 .logo svg {
@@ -142,7 +143,8 @@ body.dark .logo svg .fill {
 }
 
 .drop-message {
-	grid-column: span 2;
+/*	grid-column: span 2;*/
+	user-select: none;
 }
 
 .header-btns {
@@ -204,7 +206,7 @@ body.dark .logo svg .fill {
 .specimen-header {
 	display: grid;
 	grid-column-gap: 2rem;
-	grid-template-columns: 3fr 1fr;
+	grid-template-columns: [left] 1fr [middle] auto [right] 1fr;
 	border-bottom: 1px solid;
 }
 
@@ -303,6 +305,20 @@ body.dark .logo svg .fill {
 
 .update-tooltip {
 	right: -1rem;
+}
+
+.new-line {
+	grid-column: span 3;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px dotted;
+  cursor: pointer;
+}
+
+.new-line:hover .new-line-button {
+	color: var(--green);
 }
 
 /* Font List */
@@ -578,14 +594,12 @@ body.dark .logo svg .fill {
 
 .lang-select-menu {
 	position: absolute;
-	top: calc(100% + 1rem + 1px);
+	top: 1.75rem;
 	left: -1.25rem;
 	background: var(--bg-color);
 	border: 1px dotted;
-	border-bottom-left-radius: 0.35rem;
-	border-bottom-right-radius: 0.35rem;
+	border-radius: 0.35rem;
 	box-shadow: 1px 2px 2px rgba(0,0,0,0.25);
-	border-top: 0;
 	z-index: 1;
 }
 
@@ -687,4 +701,10 @@ input[type="checkbox"]:checked + label::before {
 .about-text p {
 	max-width: 51rem;
 	margin-bottom: 2rem;
+}
+
+/* Footer */
+.footer .credit,
+.footer .github {
+	user-select: none;
 }
