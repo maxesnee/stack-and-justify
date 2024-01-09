@@ -81,7 +81,7 @@ body.dark {
 /* Links */
 
 *[disabled] {
-	color: var(--grey);
+	opacity: 0.25;
 }
 
 button {
@@ -558,7 +558,6 @@ body.dark .logo svg .fill {
 
 .select-wrapper select {
 	appearance: none;
-
 }
 
 .select-wrapper::after {
