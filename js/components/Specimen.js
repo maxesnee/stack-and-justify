@@ -2,7 +2,6 @@ import { Layout } from "../Layout.js";
 import { Fonts } from "../Fonts.js";
 import { FontItems } from "./FontItems.js";
 import { Line } from "./Line.js";
-import { LineCount } from "./LineCount.js";
 import { SizeInputGlobal } from "./SizeInputGlobal.js";
 import { FontSelectGlobal } from "./FontSelectGlobal.js";
 import { WidthInput } from "./WidthInput.js";

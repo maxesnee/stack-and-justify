@@ -62,16 +62,6 @@ export const Layout = (function() {
 		lines.forEach(line => {line.update()});
 	}
 
-	function setLineCount(n) {
-		if (n > lines.length) {
-			while (n > lines.length) {
-				addLine();
-			}
-		} else {
-			lines.length = n;
-		}
-	}
-
 	function addLine(size, fontId) {
 		if (!size && !fontId && lines.length) {
 			const lastLine = lines[lines.length-1];
@@ -104,7 +94,6 @@ export const Layout = (function() {
 		addLine,
 		removeLine,
 		clear,
-		setLineCount,
 		update,
 		clear,
 		copyText,
