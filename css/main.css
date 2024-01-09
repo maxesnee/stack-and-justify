@@ -2,13 +2,13 @@
 
 @font-face {
 	font-family: "Plomb Sans";
-	src: url("../fonts/PlombSans-Regular.otf") format("opentype");
+	src: url("../fonts/PlombSans-Regular.woff2") format("woff2");
 	font-weight: 400;
 }
 
 @font-face {
 	font-family: "Plomb Sans";
-	src: url("../fonts/PlombSans-Bold.otf") format("opentype");
+	src: url("../fonts/PlombSans-Bold.woff2") format("woff2");
 	font-weight: 700;
 }
 
@@ -81,7 +81,7 @@ body.dark {
 /* Links */
 
 *[disabled] {
-	opacity: 0.25;
+	opacity: 0.3;
 }
 
 button {
