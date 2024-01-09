@@ -51,6 +51,10 @@ export const Layout = (function() {
 		lines.forEach(line => {line.update()});
 	}
 
+	async function updateAfterLockChange(parameter) {
+		lines.forEach(line => {line.updateAfterLockChange(parameter)});
+	}
+
 	function addLine(size, fontId) {
 		if (!size && !fontId && lines.length) {
 			const lastLine = lines[lines.length-1];
@@ -93,7 +97,7 @@ export const Layout = (function() {
 		},
 		set sizeLocked(value) {
 			sizeLocked = value;
-			update();
+			updateAfterLockChange('size');
 		},
 		get filterLocked() {
 			return filterLocked;
@@ -101,7 +105,7 @@ export const Layout = (function() {
 		set filterLocked(value) {
 			filterLocked = value;
 			localStorage['filterLocked'] = value;
-			update();
+			updateAfterLockChange('filter');
 			
 		},
 		get filter() {
@@ -118,7 +122,7 @@ export const Layout = (function() {
 		set fontLocked(value) {
 			fontLocked = value;
 			localStorage['fontLocked'] = value;
-			update();	
+			updateAfterLockChange('font');	
 		},
 		get fontId() {
 			return fontId;

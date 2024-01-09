@@ -37,6 +37,7 @@ export function Line(size, fontId=Fonts.first()?.id) {
 		Layout.removeLine(id);
 	}
 
+	// Regenerate the text
 	async function update() {
 		const outputFontId = Layout.fontLocked ? Layout.fontId : fontId;
 		const outputFont = Fonts.get(outputFontId);
@@ -49,6 +50,28 @@ export function Line(size, fontId=Fonts.first()?.id) {
 		m.redraw();
 	}
 
+	// Regenerate the text only if the line’s parameter differs from global parameters
+	async function updateAfterLockChange(parameter) {
+		switch (parameter) {
+			case 'font':
+				if (Layout.fontId !== fontId) {
+					update();
+				}
+				break;
+			case 'size':
+				if (Layout.size.get() !== size.get()) {
+					update();
+				}
+				break;
+			case 'filter':
+				if (Layout.filter !== filter) {
+					update();
+				}
+				break;
+
+		}
+	}
+
 	function copyText() {
 		navigator.clipboard.writeText(text);
 	}
@@ -56,6 +79,8 @@ export function Line(size, fontId=Fonts.first()?.id) {
 	update();
 
 	return {
+		update,
+		updateAfterLockChange,
 		size,
 		get filter() {
 			return filter;
@@ -64,7 +89,6 @@ export function Line(size, fontId=Fonts.first()?.id) {
 			filter = parseInt(value);
 			update();
 		},
-		update,
 		get text() {
 			return text;
 		},
