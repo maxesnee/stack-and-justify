@@ -21,7 +21,7 @@ export function Line(initialVnode) {
 						whiteSpace: "nowrap",
 						fontSize: Layout.size.locked ? Layout.size.get() : line.size.get(),
 						width: Layout.width.get(),
-						fontFamily: Layout.fontLocked ? Layout.font?.name : line.font.name
+						fontFamily: Layout.fontLocked ? Layout.font?.fontFaceName : line.font.fontFaceName
 					}}, line.text) : '',
 				),
 				m('div.line-right-col',

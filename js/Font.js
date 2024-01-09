@@ -3,12 +3,14 @@ import { Layout } from "./Layout.js";
 import { generateUID } from "./Helpers.js";
 
 export const Font = function(name, data) {
-	const wordGenerator = WordGenerator(name, data);
+	// Digits at the beginning of the file name prevent it from loading 
+	const fontFaceName = name.replace(/[0-9]/g, '');
+	const wordGenerator = WordGenerator(fontFaceName, data);
 	let isLoading = true;
 	const id = generateUID();
 
 	async function init() {
-		const fontFace = new FontFace(name, data);
+		const fontFace = new FontFace(fontFaceName, data);
 		document.fonts.add(fontFace);
 		await fontFace.load()
 
@@ -36,6 +38,7 @@ export const Font = function(name, data) {
 
 	return {
 		name,
+		fontFaceName,
 		data,
 		id,
 		update,
