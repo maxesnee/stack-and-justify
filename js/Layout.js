@@ -13,28 +13,17 @@ export const Layout = (function() {
 		update();
 	};
 
-	let sizeLocked = true;
 	let size = Size(defaultSize);
 	size.onchange = () => {
 		update();
 	}
-	// TODO: move it to the export at the end with the other getter/setters
-	Object.defineProperty(size, 'locked', {
-		get() {
-			return sizeLocked;
-		},
-		set(value) {
-			sizeLocked = value;
-			// TODO: don't update the line when the value don't change
-			update();
-		}
-	});
+	let sizeLocked = true;
 
-	let filterLocked = true;
 	let filter = 2;
+	let filterLocked = true;
 
-	let fontLocked = true;
 	let fontId = null;
+	let fontLocked = true;
 
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added
@@ -99,6 +88,13 @@ export const Layout = (function() {
 		copyText,
 		width,
 		size,
+		get sizeLocked() {
+			return sizeLocked;
+		},
+		set sizeLocked(value) {
+			sizeLocked = value;
+			update();
+		},
 		get filterLocked() {
 			return filterLocked;
 		},

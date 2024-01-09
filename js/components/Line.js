@@ -20,7 +20,7 @@ export function Line(initialVnode) {
 					line.font ?
 					m('div', {class: 'text', style: {
 						whiteSpace: "nowrap",
-						fontSize: Layout.size.locked ? Layout.size.get() : line.size.get(),
+						fontSize: Layout.sizeLocked ? Layout.size.get() : line.size.get(),
 						width: Layout.width.get(),
 						fontFamily: Layout.fontLocked ? Layout.font?.fontFaceName : line.font.fontFaceName
 					}}, line.text) : '',

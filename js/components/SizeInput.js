@@ -6,17 +6,17 @@ export function SizeInput(initialVnode) {
 			return m('div.size-input',
 				m('button', {
 					onclick: () => { vnode.attrs.params.size.decrement() },
-					disabled: Layout.size.locked
+					disabled: Layout.sizeLocked
 				}, '－'),
 				m('input', {
 					type: 'text', 
 					value: vnode.attrs.params.size.get(), 
 					onchange: (e) => {vnode.attrs.params.size.set(e.currentTarget.value)},
-					disabled: Layout.size.locked
+					disabled: Layout.sizeLocked
 				}),
 				m('button', {
 					onclick: () => { vnode.attrs.params.size.increment() },
-					disabled: Layout.size.locked
+					disabled: Layout.sizeLocked
 				}, '＋')
 				)
 		}
