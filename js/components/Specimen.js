@@ -14,9 +14,7 @@ import { DeleteButtonGlobal } from "./DeleteButtonGlobal.js";
 export function Specimen(initialVnode) {
 	return {
 		oninit: function(vnode) {
-			Layout.clear();
-			Layout.addLine('60pt');
-			Layout.addLine('60pt');
+			// Layout.clear();
 		},
 		view: function(vnode) {
 			return m('div', {class: 'specimen'},

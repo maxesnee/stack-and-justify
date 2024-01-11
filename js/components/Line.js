@@ -17,7 +17,7 @@ export function Line(initialVnode) {
 					Fonts.list.length ? m(FontSelect, {params: line}) : ''
 					),
 				m('div.line-middle-col',
-					line.font ?
+					// line.font ?
 					m('div', {class: 'text', style: {
 						whiteSpace: "nowrap",
 						fontSize: Layout.sizeLocked ? Layout.size.get() : line.size.get(),

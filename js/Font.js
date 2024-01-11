@@ -12,7 +12,8 @@ export const Font = function(name, data) {
 	async function init() {
 		const fontFace = new FontFace(fontFaceName, data);
 		document.fonts.add(fontFace);
-		await fontFace.load()
+
+		await fontFace.load();
 
 		try {
 			await wordGenerator.sort();	
@@ -23,7 +24,7 @@ export const Font = function(name, data) {
 		isLoading = false;
 
 		// Dispatch event
-		const event = new CustomEvent("font-added", {detail: {fontId: id}});
+		const event = new CustomEvent("font-loaded", {detail: {fontId: id}});
 		window.dispatchEvent(event);
 	}
 

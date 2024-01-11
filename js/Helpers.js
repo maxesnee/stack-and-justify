@@ -1,3 +1,19 @@
+import { sortFontStyles } from './sortFonts.js';
+
+export function handleFontFiles(files, callback) {
+	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
+
+	files = Array.from(files);
+	let validFiles = files.filter(file => file.name.match(acceptedExtensions));
+
+	// Sort the font files
+	const fileNames = validFiles.map(file => file.name);
+	let sortedNames = sortFontStyles(fileNames);
+	let sortedFiles = sortedNames.map(name => validFiles.find(file => file.name === name));
+	
+	sortedFiles.forEach(file => handleFontFile(file, callback))
+}
+
 export function handleFontFile(file, callback) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 

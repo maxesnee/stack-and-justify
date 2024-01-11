@@ -18,10 +18,13 @@ export function Line(size, fontId=Fonts.first()?.id) {
 	size.onchange = update;
 
 	window.addEventListener('font-added', (e) => {
-			// If there's was no font before, select the one that's been added
+		// If there's was no font before, select the one that's been added
 		if (fontId == null) {
 			fontId = e.detail.fontId;
 		}
+	});
+
+	window.addEventListener('font-loaded', (e) => {
 		update();
 	});
 

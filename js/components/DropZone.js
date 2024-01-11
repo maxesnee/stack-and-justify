@@ -1,11 +1,11 @@
-import { handleFontFile } from "../Helpers.js";
+import { handleFontFiles } from "../Helpers.js";
 import { Fonts } from "../Fonts.js";
 import { Font } from "../Font.js";
 
 export function DropZone(initialVnode) {
 	return {
 		oncreate: function(vnode) {
-			let  lastTarget = null;
+			let lastTarget = null;
 
 			window.addEventListener('dragover', function(e) {
 				e.preventDefault();
@@ -28,12 +28,16 @@ export function DropZone(initialVnode) {
 				e.preventDefault();
 
 				let files = e.dataTransfer.files;
-				
-				Array.from(files).forEach(file => {
-					handleFontFile(file, function(fontName, fontData) {
-						Fonts.add(Font(fontName, fontData));
-					});
+
+				handleFontFiles(files, function(fontName, fontData) {
+					Fonts.add(Font(fontName, fontData));
 				});
+				
+				// Array.from(files).forEach(file => {
+				// 	handleFontFile(file, function(fontName, fontData) {
+				// 		Fonts.add(Font(fontName, fontData));
+				// 	});
+				// });
 				vnode.dom.classList.remove('active');
 			});
 		},

@@ -1,11 +1,18 @@
 import { Font } from './Font.js';
+import { Layout } from './Layout.js';
 
 export const Fonts = (function() {
 	let list = [];
 
 	function add(font) {
 		list.push(font);
+		
+		Layout.addLine("default", font.id);
 		m.redraw();
+
+		// Dispatch event
+		const event = new CustomEvent("font-added", {detail: {fontId: font.id}});
+		window.dispatchEvent(event);
 	}
 
 	function remove(font) {
@@ -37,6 +44,10 @@ export const Fonts = (function() {
 		return list[0] || null;
 	}
 
+	function last() {
+		return list[list.length-1] || null;
+	}
+
 	function indexOf(id) {
 		return list.indexOf(get(id));
 	}
@@ -48,7 +59,9 @@ export const Fonts = (function() {
 	}
 
 	return {
-		list,
+		get list() {
+			return list;
+		},
 		add,
 		get,
 		indexOf,

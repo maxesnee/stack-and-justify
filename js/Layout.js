@@ -23,13 +23,16 @@ export const Layout = (function() {
 	let filterLocked = true;
 
 	let fontId = null;
-	let fontLocked = true;
+	let fontLocked = false;
 
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added
 		if (fontId == null) {
 			fontId = e.detail.fontId;
 		}
+	});
+
+	window.addEventListener('font-loaded', (e) => {
 		update();
 	});
 
@@ -61,9 +64,10 @@ export const Layout = (function() {
 			size = lastLine.size;
 			fontId = lastLine.fontId;
 		}
-		if (!size) {
+		if (!size || size === "default") {
 			size = defaultSize;
 		}
+
 		lines.push(Line(size, fontId));
 	}
 
