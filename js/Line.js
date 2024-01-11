@@ -25,7 +25,9 @@ export function Line(size, fontId=Fonts.first()?.id) {
 	});
 
 	window.addEventListener('font-loaded', (e) => {
-		update();
+		if (e.detail.fontId === fontId) {
+			update();	
+		}
 	});
 
 	window.addEventListener('font-removed', (e) => {

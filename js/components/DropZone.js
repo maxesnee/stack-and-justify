@@ -33,11 +33,6 @@ export function DropZone(initialVnode) {
 					Fonts.add(Font(fontName, fontData));
 				});
 				
-				// Array.from(files).forEach(file => {
-				// 	handleFontFile(file, function(fontName, fontData) {
-				// 		Fonts.add(Font(fontName, fontData));
-				// 	});
-				// });
 				vnode.dom.classList.remove('active');
 			});
 		},

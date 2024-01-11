@@ -32,10 +32,6 @@ export const Layout = (function() {
 		}
 	});
 
-	window.addEventListener('font-loaded', (e) => {
-		update();
-	});
-
 	window.addEventListener('font-removed', (e) => {
 		// The selected font has been removed, we need to select another one
 		if (fontId == e.detail.fontId) {

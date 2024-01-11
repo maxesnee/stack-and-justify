@@ -237,6 +237,25 @@ body.dark .logo svg .fill {
 
 .specimen-line .text {
 	align-self: center;
+	animation: 0.2s fadeIn;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	} 100% {
+		opacity: 1;
+	}
+}
+
+.specimen-line .loading {
+	display: flex;
+	align-items: center;
+	color: #A0A0A0;
+}
+
+.specimen-line .loading .icon-spinning {
+	margin-left: 0.35rem;
 }
 
 .specimen-controls .line-left-col,

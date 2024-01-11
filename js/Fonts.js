@@ -3,6 +3,7 @@ import { Layout } from './Layout.js';
 
 export const Fonts = (function() {
 	let list = [];
+	// const sortDictionaryWorker = new Worker('./js/SortDictionaryWorker.js');
 
 	function add(font) {
 		list.push(font);
@@ -68,6 +69,7 @@ export const Fonts = (function() {
 		move,
 		first,
 		update,
-		remove
+		remove,
+		// sortDictionaryWorker
 	}
 })();

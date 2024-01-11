@@ -39,6 +39,9 @@ export const Font = function(name, data) {
 
 	return {
 		name,
+		get isLoading() {
+			return isLoading;
+		},
 		fontFaceName,
 		data,
 		id,
