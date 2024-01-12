@@ -1,12 +1,14 @@
 import { Font } from './Font.js';
 import { Layout } from './Layout.js';
+import { sortFonts } from './sortFonts.js';
 
 export const Fonts = (function() {
 	let list = [];
-	// const sortDictionaryWorker = new Worker('./js/SortDictionaryWorker.js');
 
 	function add(font) {
 		list.push(font);
+
+		list = sortFonts(list);
 		
 		Layout.addLine("default", font.id);
 		m.redraw();
@@ -69,7 +71,6 @@ export const Fonts = (function() {
 		move,
 		first,
 		update,
-		remove,
-		// sortDictionaryWorker
+		remove
 	}
 })();
