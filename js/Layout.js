@@ -101,6 +101,10 @@ export const Layout = (function() {
 		lines = [];
 	}
 
+	function textAlreadyUsed(text) {
+		return lines.find(line => line.text === text) ? true : false;
+	}
+
 	return {
 		addLine,
 		removeLine,
@@ -113,6 +117,7 @@ export const Layout = (function() {
 		copyText,
 		width,
 		size,
+		textAlreadyUsed,
 		get lines() {
 			return lines;
 		},

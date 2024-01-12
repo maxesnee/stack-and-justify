@@ -18,7 +18,7 @@ export function SizeInput(initialVnode) {
 					onclick: () => { vnode.attrs.params.size.increment() },
 					disabled: Layout.sizeLocked
 				}, '＋')
-				)
+			)
 		}
 	}
 }

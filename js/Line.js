@@ -51,7 +51,14 @@ export function Line(size, fontId=Fonts.first()?.id) {
 		const outputFilter = Layout.filterLocked ? Layout.filter : filter;
 		const outputSize = Layout.sizeLocked ? Layout.size.getIn('px') : size.getIn('px');
 		const outputWidth = Layout.width.getIn('px');
-		text = await outputFont.wordGenerator.getLine(outputSize, outputWidth, Filters.list[outputFilter].value);
+
+		text = '';
+		const textOptions = await outputFont.wordGenerator.getWords(outputSize, outputWidth, Filters.list[outputFilter].value);
+		textOptions.forEach(option => {
+			if (!Layout.textAlreadyUsed(option)) {
+				text = option;
+			}
+		});
 		m.redraw();
 	}
 

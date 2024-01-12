@@ -9,8 +9,6 @@ export const WordGenerator = function(fontName, fontData) {
 
 	async function sort() {
 		let words = await Words.get();
-		// const sortDictionaryWorker = new Worker('./js/SortDictionaryWorker.js');
-		// Fonts.sortDictionaryWorker.postMessage([words, fontName, fontData]);
 		const result = WorkerPool.postMessage([words, fontName, fontData]);
 
 		sortedDict = await result.then(e => e.data);
