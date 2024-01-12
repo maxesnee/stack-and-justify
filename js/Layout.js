@@ -67,6 +67,27 @@ export const Layout = (function() {
 		lines.push(Line(size, fontId));
 	}
 
+	function moveLine(line, to) {
+		const from = lines.indexOf(line);
+		if (from === -1 || to === from) return;
+
+		const target = lines[from];                         
+		const increment = to < from ? -1 : 1;
+
+		for(let k = from; k != to; k += increment){
+			lines[k] = lines[k + increment];
+		}
+		lines[to] = target;
+	}
+
+	function getLine(id) {
+		return lines.find(line => line.id === id) || null;
+	}
+
+	function indexOf(id) {
+		return lines.indexOf(getLine(id));
+	}
+
 	function removeLine(id) {
 		if (id === undefined) {
 			lines.pop();	
@@ -81,17 +102,20 @@ export const Layout = (function() {
 	}
 
 	return {
-		get lines() {
-			return lines;
-		},
 		addLine,
 		removeLine,
+		getLine,
+		moveLine,
+		indexOf,
 		clear,
 		update,
 		clear,
 		copyText,
 		width,
 		size,
+		get lines() {
+			return lines;
+		},
 		get sizeLocked() {
 			return sizeLocked;
 		},
@@ -105,8 +129,7 @@ export const Layout = (function() {
 		set filterLocked(value) {
 			filterLocked = value;
 			localStorage['filterLocked'] = value;
-			updateAfterLockChange('filter');
-			
+			updateAfterLockChange('filter');	
 		},
 		get filter() {
 			return filter;

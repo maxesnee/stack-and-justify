@@ -234,27 +234,18 @@ user-select: none;
 	border-bottom: 1px dotted;
 }
 
-.specimen-line .text {
-	align-self: center;
-	animation: 0.2s fadeIn;
+.specimen-line.dragged * {
+	visibility: hidden;
 }
 
-@keyframes fadeIn {
-	0% {
-		opacity: 0;
-	} 100% {
-		opacity: 1;
-	}
-}
-
-.specimen-line .loading {
-	display: flex;
-	align-items: center;
-	color: #A0A0A0;
-}
-
-.specimen-line .loading .icon-spinning {
-	margin-left: 0.35rem;
+.specimen-line.drag-clone {
+	position: fixed;
+	background: var(--bg-color);
+	pointer-events: none;
+	z-index: 10;
+	border-top: 1px dotted;
+	bottom: 1px dotted;
+	box-shadow: 1px 2px 2px rgba(0,0,0,0.25);
 }
 
 .specimen-controls .line-left-col,
@@ -265,14 +256,54 @@ user-select: none;
 .line-left-col {
 	grid-column: left;
 	display: flex;
+	align-items: flex-start;
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 }
 
 .line-middle-col {
+	position: relative;
 	grid-column: middle;
 	display: flex;
 	justify-content: center;
+}
+
+.specimen-line .text {
+	align-self: center;
+}
+
+.specimen-line .loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #A0A0A0;
+	background: var(--bg-color);
+	transition: opacity 0.15s;
+}
+
+.specimen-line .loading.hidden {
+	opacity: 0;
+}
+
+.specimen-line .loading.visible {
+	opacity: 1;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	} 100% {
+		opacity: 1;
+	}
+}
+
+.specimen-line .loading .icon-spinning {
+	margin-left: 0.35rem;
 }
 
 .line-right-col {

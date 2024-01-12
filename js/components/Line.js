@@ -11,26 +11,23 @@ export function Line(initialVnode) {
 	return {
 		view: function(vnode) {
 			let line = vnode.attrs.line;
-			return m('div', {class: 'specimen-line'},
+			return m('div', {class: 'specimen-line', id: line.id},
 				m('div.line-left-col',
 					m(SizeInput, {params: line}),
 					Fonts.list.length ? m(FontSelect, {params: line}) : ''
 					),
 				m('div.line-middle-col',
-					line.font.isLoading ?
-					m('div', {class: 'loading', style: {
-						height: (line.size.getIn('px') * 1.2)+'px' // Get the line height
-					}},
-						m('span', "Loading"),
-						m('div.icon-spinning', "◌")
-					)
-					: m('div', {class: 'text', style: {
+					m('div.text', {style: {
 						whiteSpace: "nowrap",
 						fontSize: Layout.sizeLocked ? Layout.size.get() : line.size.get(),
 						width: Layout.width.get(),
 						fontFamily: Layout.fontLocked ? Layout.font?.fontFaceName : line.font.fontFaceName,
-						
+						height: (line.size.getIn('px') * 1.2)+'px' // Get the line height
 					}}, line.text),
+					m('div.loading', {class: line.font.isLoading ? 'visible' : 'hidden'},
+						m('span', "Loading"),
+						m('div.icon-spinning', "◌")
+					)
 				),
 				m('div.line-right-col',
 					m(CaseSelect, {params: line}),
