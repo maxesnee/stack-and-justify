@@ -553,6 +553,7 @@ user-select: none;
 	display: flex;
 	position: relative;
 	align-items: center;
+	justify-content: center;
 }
 
 .width-input::before {
@@ -568,11 +569,16 @@ user-select: none;
 }
 
 .width-input input {
+	position: relative;
 	border: none;
 	width: 8ch;
 	text-align: center;
 	margin-left: 0.5rem;
 	margin-right: 0.5rem;
+}
+
+.width-input input.small {
+	top: -1.5rem;
 }
 
 .width-input-line {

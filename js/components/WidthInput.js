@@ -31,6 +31,14 @@ export function WidthInput(initialVnode) {
 			// Prevent from getting negative width
 			dX = dX > -startWidth ? dX : -startWidth;
 
+			// Move the label if the input is too small			
+			const label = document.querySelector('.width-input input');
+			console.log(label);
+			if (label.offsetWidth > startWidth + dX) {
+				label.classList.add('small');
+			} else {
+				label.classList.remove('small');
+			}
 
 			Layout.width.setIn('px', startWidth + dX);
 			m.redraw();
