@@ -1,5 +1,6 @@
 import { Layout } from "../Layout.js";
 import { Fonts } from "../Fonts.js";
+import { Tooltip } from "./Tooltip.js";
 
 export function FontSelectGlobal(initialVnode) {
 	return {
@@ -20,10 +21,13 @@ export function FontSelectGlobal(initialVnode) {
 						})
 					),
 				),
-				m('button.font-select-lock', {
-					onclick: () => {Layout.fontLocked = !Layout.fontLocked}
-				}, Layout.fontLocked ? '🔒' : '🔓'),
+				m('div.font-select-lock',
+					m('button', {
+						onclick: () => {Layout.fontLocked = !Layout.fontLocked}
+					}, Layout.fontLocked ? '🔒' : '🔓'),
+					m(Tooltip, {label: 'Apply to all lines'})
 				)
+			)
 		}
 	}
 }

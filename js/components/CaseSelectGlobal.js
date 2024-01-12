@@ -1,12 +1,16 @@
 import { Layout } from "../Layout.js";
+import { Tooltip } from './Tooltip.js';
 
 export function CaseSelectGlobal(initialVnode) {
 	return {
 		view: function(vnode) {
 			return m('div.case-select',
-				m('button.case-select-lock', {
-						onclick: () => {Layout.filterLocked = !Layout.filterLocked}
-					}, Layout.filterLocked ? '🔒' : '🔓'),
+				m('div.case-select-lock',
+					m('button', {
+							onclick: () => {Layout.filterLocked = !Layout.filterLocked}
+						}, Layout.filterLocked ? '🔒' : '🔓'),
+					m(Tooltip, {label: 'Apply to all lines'})
+				),
 				m('div.select-wrapper', {disabled: !Layout.filterLocked},
 					m('select.case-select', {
 						onchange: (e) => {Layout.filter = e.currentTarget.selectedIndex},

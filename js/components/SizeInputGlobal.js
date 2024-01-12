@@ -1,4 +1,5 @@
 import { Layout } from "../Layout.js";
+import { Tooltip } from "./Tooltip.js";
 
 export function SizeInputGlobal(initialVnode) {
 	return {
@@ -18,10 +19,13 @@ export function SizeInputGlobal(initialVnode) {
 					onclick: () => { Layout.size.increment() },
 					disabled: !Layout.sizeLocked
 				}, '＋'),
-				m('button.size-input-lock', {
-					onclick: () => {Layout.sizeLocked = !Layout.sizeLocked}
-				}, `${Layout.sizeLocked ? '🔒' : '🔓'}`)
+				m('div.size-input-lock',
+					m('button', {
+						onclick: () => {Layout.sizeLocked = !Layout.sizeLocked}
+					}, `${Layout.sizeLocked ? '🔒' : '🔓'}`),
+					m(Tooltip, {label: 'Apply to all lines'})
 				)
+			)
 		}
 	}
 }

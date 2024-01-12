@@ -144,7 +144,7 @@ body.dark .logo svg .fill {
 
 .drop-message {
 /*	grid-column: span 2;*/
-	user-select: none;
+user-select: none;
 }
 
 .header-btns {
@@ -290,6 +290,25 @@ body.dark .logo svg .fill {
 	margin-left: 1rem;
 }
 
+.tooltip {
+	font-size: 0.95rem;
+	visibility: hidden;
+	position: absolute;
+	top: -2.1rem;
+	background: var(--bg-color);
+	padding: 0.2rem 0.35rem;
+	border: 1px dotted;
+	border-radius: 0.35rem;
+	box-shadow: 1px 2px 2px rgba(0,0,0,0.25);
+	white-space: nowrap;
+	z-index: 1;
+	pointer-events: none;
+}
+
+*:hover > .tooltip {
+	visibility: visible;
+}
+
 .copy-button:hover .copy-tooltip,
 .update-button:hover .update-tooltip {
 	visibility: visible;
@@ -315,12 +334,12 @@ body.dark .logo svg .fill {
 
 .new-line {
 	grid-column: span 3;
-  height: 5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px dotted;
-  cursor: pointer;
+	height: 5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-bottom: 1px dotted;
+	cursor: pointer;
 }
 
 .new-line:hover .new-line-button {
@@ -346,7 +365,7 @@ body.dark .logo svg .fill {
 }
 
 .font-items-scroller::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 
 .font-items-scroller.start {
@@ -390,16 +409,16 @@ body.dark .logo svg .fill {
 	border: 1px solid var(--bg-color);
 	user-select: none;
 	-webkit-user-select: none;
-  padding: 0.1rem 0.5rem;
-  border-radius: 1rem;
-  cursor: default;
+	padding: 0.1rem 0.5rem;
+	border-radius: 1rem;
+	cursor: default;
 }
 
 .font-item:hover,
 .font-item.drag-clone {
-		border: dotted 1px;
-  	background: var(--bg-color);
-  	color: var(--green);
+	border: dotted 1px;
+	background: var(--bg-color);
+	color: var(--green);
 }
 
 .font-item.drag-clone {
@@ -435,12 +454,12 @@ body.dark .logo svg .fill {
 }
 
 @keyframes spinning {
-  from {
-	transform: rotate(0deg);
-  }
-  to {
-	transform: rotate(360deg);
-  }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 
@@ -560,10 +579,12 @@ body.dark .logo svg .fill {
 	padding-right: 0.75rem;
 	white-space: nowrap;
 	display: inline-block;
+	cursor: pointer;
 }
 
 .select-wrapper select {
 	appearance: none;
+	cursor: pointer;
 }
 
 .select-wrapper::after {
@@ -577,7 +598,9 @@ body.dark .logo svg .fill {
 }
 
 .case-select-lock {
+	position: relative;
 	margin-right: 0.5rem;
+	display: inline-block;
 }
 
 .font-select {
@@ -589,6 +612,7 @@ body.dark .logo svg .fill {
 .font-select-lock {
 	position: absolute;
 	right: -1rem;
+	top: 0;
 }
 
 .options {
