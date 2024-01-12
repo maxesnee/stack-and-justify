@@ -1,4 +1,4 @@
-import { handleFontFile } from "../Helpers.js";
+import { handleFontFiles } from "../Helpers.js";
 import { Fonts } from "../Fonts.js";
 import { Font } from "../Font.js";
 
@@ -14,12 +14,8 @@ export function FontInput(initialVnode) {
 			input.addEventListener('change', (e) => {
 				let files = input.files;
 				
-				Array.from(files).forEach(file => {
-
-					handleFontFile(file, function(fontName, fontData) {
-						console.log(fontName, fontData);
-						Fonts.add(Font(fontName, fontData));
-					});
+				handleFontFiles(files, function(fontName, fontData) {
+					Fonts.add(Font(fontName, fontData));
 				});
 			});
 		},
