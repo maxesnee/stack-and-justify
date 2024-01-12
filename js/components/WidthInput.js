@@ -33,7 +33,7 @@ export function WidthInput(initialVnode) {
 
 			// Move the label if the input is too small			
 			const label = document.querySelector('.width-input input');
-			console.log(label);
+
 			if (label.offsetWidth > startWidth + dX) {
 				label.classList.add('small');
 			} else {

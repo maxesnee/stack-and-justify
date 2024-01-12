@@ -23,14 +23,20 @@ export const WordGenerator = function(fontName, fontData) {
 
 		let scaledSpaceWidth = Math.round(sortedDict.spaceWidth * (size / 100));
 
+		// If the width is too short
+		const widths = Object.keys(sortedDict[filter]).map(key => parseInt(key));
+		const minWidth = Math.min(...widths);
+		if (scaledWidth < minWidth) return words;
+
+		// Find words within the given tolerance
 		for (let i = scaledWidth - tolerance; i <= scaledWidth; i++) {
 			if (sortedDict[filter][i] !== undefined) {
-
 				words.push(...sortedDict[filter][i]);	
 			}
 		}
 
 		if (words.length == 0) {
+			// If the width is too long, concatenate multiple words
 			const randomWidth = Math.floor(random(width*0.15, width*0.667));
 			const remainingWidth = width - randomWidth - scaledSpaceWidth;
 			const firstWords = shuffle(await getWords(size, randomWidth, filter));
