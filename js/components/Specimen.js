@@ -1,3 +1,4 @@
+import { AppState } from "../AppState.js";
 import { Layout } from "../Layout.js";
 import { Fonts } from "../Fonts.js";
 import { FontItems } from "./FontItems.js";
@@ -108,7 +109,7 @@ export function Specimen(initialVnode) {
 			window.addEventListener('mouseup', onmouseup);
 		},
 		view: function(vnode) {
-			return m('div', {class: 'specimen'},
+			return m('div', {class: 'specimen', style: {display: AppState.showAbout ? 'none' : ''}},
 				m('header.specimen-header',
 					m('div.line-left-col',
 						m(SizeInputGlobal),

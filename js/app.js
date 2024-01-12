@@ -1,4 +1,3 @@
-import { AppState } from "./AppState.js";
 import { Fonts } from "./Fonts.js";
 import { Header } from "./components/Header.js";
 import { Footer } from "./components/Footer.js";
@@ -12,11 +11,11 @@ const root = document.querySelector('#app');
 const App = {
 	view: function(vnode) {
 		return [
-			m(Header, {AppState}),
+			m(Header),
 			m(DropZone),
 			m('main.main',			
 				Fonts.list.length ? m(Specimen) : m(SplashScreen),
-				m(About, {AppState})
+				m(About)
 			),
 			m(Footer)
 		]

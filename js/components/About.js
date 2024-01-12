@@ -1,9 +1,10 @@
+import { AppState } from "../AppState.js";
 import { SVGAnimation } from "./SVGAnimation.js";
 
 export function About(initialVnode) {
 	return {
 		view: function(vnode) {
-			return m('section.about', {class: vnode.attrs.AppState.showAbout ? 'open' : ''},
+			return m('section.about', {class: AppState.showAbout ? 'open' : ''},
 				m(SVGAnimation, {src: 'svg/stack-and-justify-animation.svg', frames: 75}),
 				m('div.about-text', 
 					m('p.t-big', 
