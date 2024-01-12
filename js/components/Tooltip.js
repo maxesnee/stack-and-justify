@@ -8,11 +8,14 @@ export function Tooltip(initialVnode) {
 	}
 
 	function onmouseleave(vnode) {
-		vnode.dom.textContent = vnode.attrs.label;
-		positionTooltip(vnode);
+		if (vnode.attrs.activeLabel) {
+			vnode.dom.textContent = vnode.attrs.label;
+			positionTooltip(vnode);
+		}
 	}
 
 	function positionTooltip(vnode) {
+		vnode.dom.style.transform = '';
 		const width = vnode.dom.offsetWidth;
 		const rect = vnode.dom.getBoundingClientRect();
 		const padding = parseFloat(getComputedStyle(document.body).getPropertyValue('padding-right'))/2;
