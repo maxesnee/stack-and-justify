@@ -60,6 +60,10 @@ body.dark {
 	--green-light: #00b47c;
 }
 
+input[disabled] {
+	-webkit-text-fill-color: var(--fg-color); 
+}
+
 #app {
 	flex: 1;
 	display: flex;
