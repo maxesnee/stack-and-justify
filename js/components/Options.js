@@ -39,6 +39,9 @@ export function Options(initialVnode) {
 		}
 
 		Fonts.update();
+
+		open = false;
+		m.redraw();
 	}
 
 	return {
