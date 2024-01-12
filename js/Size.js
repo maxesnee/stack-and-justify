@@ -8,10 +8,10 @@ export const Size = function(_str) {
 		if (typeof str === 'string' && str !== ""){
 			str = str.replace(',', '.');
 			var split = str.match(/^([-.\d]+(?:\.\d+)?)(.*)$/);
-			return {'value': parseFloat(split[1].trim()), 'unit': split[2].trim() || 'px'};
+			return {'value': parseFloat(split[1].trim()), 'unit': split[2].trim() || unit};
 		}
 		else {
-			return { 'value': parseFloat(str), 'unit': "px" };
+			return { 'value': value, 'unit': unit };
 		}
 	}
 
