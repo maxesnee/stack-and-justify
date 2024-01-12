@@ -126,6 +126,7 @@ button:active {
 	align-items: flex-start;
 	font-weight: 700;
 	user-select: none;
+	-webkit-user-select: none;
 }
 
 .logo svg {
@@ -143,13 +144,16 @@ body.dark .logo svg .fill {
 }
 
 .drop-message {
-/*	grid-column: span 2;*/
-user-select: none;
+	user-select: none;
+	-webkit-user-select: none;
+	white-space: nowrap;
 }
 
 .header-btns {
 	grid-column: 4;
 	text-align: right;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .dark-mode-btn {
@@ -259,6 +263,8 @@ user-select: none;
 	align-items: flex-start;
 	padding-top: 1rem;
 	padding-bottom: 1rem;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .line-middle-col {
@@ -284,6 +290,9 @@ user-select: none;
 	color: #A0A0A0;
 	background: var(--bg-color);
 	transition: opacity 0.15s;
+	pointer-events: none;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .specimen-line .loading.hidden {
@@ -304,6 +313,9 @@ user-select: none;
 	justify-content: center;
 	align-items: center;
 	white-space: nowrap;
+	pointer-events: none;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 @keyframes fadeIn {
@@ -325,6 +337,8 @@ user-select: none;
 	align-items: flex-start;
 	padding-top: 1rem;
 	padding-bottom: 1rem;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .update-button,
@@ -383,6 +397,8 @@ user-select: none;
 	align-items: center;
 	border-bottom: 1px dotted;
 	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .new-line:hover .new-line-button {
@@ -541,6 +557,8 @@ user-select: none;
 	display: inline-block;
 	margin-left: 0.5rem;
 	margin-right: 0.5rem;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .size-input-lock {
@@ -554,6 +572,8 @@ user-select: none;
 	position: relative;
 	align-items: center;
 	justify-content: center;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .width-input::before {
@@ -668,6 +688,8 @@ user-select: none;
 	margin-right: 2rem;
 	white-space: nowrap;
 	position: relative;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .options-menu {
@@ -785,4 +807,5 @@ input[type="checkbox"]:checked + label::before {
 .footer .credit,
 .footer .github {
 	user-select: none;
+	-webkit-user-select: none;
 }

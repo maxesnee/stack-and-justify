@@ -1,6 +1,7 @@
 import { Layout } from "../Layout.js";
 
 export function SizeInput(initialVnode) {
+
 	return {
 		view: function(vnode) {
 			return m('div.size-input',

@@ -37,7 +37,8 @@ export function Specimen(initialVnode) {
 		draggedEl = target.closest('.specimen-line');
 
 		// Prevent triggering text selection while dragging
-		draggedEl.style.userSelect = 'none';
+		draggedEl.parentElement.style.userSelect = 'none';
+		draggedEl.parentElement.style.webkitUserSelect = 'none';
 
 		// Deselect all text
 		window.getSelection().removeAllRanges()
@@ -90,7 +91,8 @@ export function Specimen(initialVnode) {
 		if (!isDragging) return;
 
 		draggedEl.classList.remove('dragged');
-		draggedEl.style.userSelect = '';
+		draggedEl.parentElement.style.userSelect = '';
+		draggedEl.parentElement.style.webkitUserSelect = '';
 		draggedEl = null;
 
 		draggedClone.remove();
