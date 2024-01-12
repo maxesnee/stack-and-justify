@@ -203,24 +203,23 @@ body.dark .logo svg .fill {
 
 /* Specimen */
 
-.specimen-header {
+.specimen {
 	display: grid;
 	grid-column-gap: 2rem;
-	grid-template-columns: [left] 1fr [middle] auto [right] 1fr;
-	border-bottom: 1px solid;
+	grid-template-columns: [left] 1fr [middle] auto [right] 1fr;	
 }
 
-.specimen-header-controls {
-	display: flex;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-	justify-content: space-between;
+.specimen-header {
+	display: grid;
+	grid-column: span 3;
+	grid-template-columns: subgrid;
+	border-bottom: 1px solid;
 }
 
 .specimen-body {
 	display: grid;
-	grid-template-columns: [left] 1fr [middle] auto [right] 1fr;
-	grid-column-gap: 2rem;
+	grid-column: span 3;
+	grid-template-columns: subgrid;
 }
 
 .specimen-controls {
@@ -302,7 +301,7 @@ body.dark .logo svg .fill {
 	visibility: hidden;
 	position: absolute;
 	top: -2.1rem;
-	text-align: right;
+	right: 0;
 	background-color: var(--bg-color);
 	background: var(--bg-color);
 	padding: 0.2rem 0.35rem;
@@ -312,18 +311,6 @@ body.dark .logo svg .fill {
 	white-space: nowrap;
 	z-index: 1;
 	pointer-events: none;
-}
-
-.copy-tooltip {
-	right: -3rem;
-}
-
-.copy-tooltip.copied {
-	right: -1.25rem;
-}
-
-.update-tooltip {
-	right: -1rem;
 }
 
 .new-line {

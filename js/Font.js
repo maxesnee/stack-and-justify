@@ -32,6 +32,9 @@ export const Font = function(name, data) {
 		isLoading = true;
 		await wordGenerator.sort();
 		isLoading = false;
+		// Dispatch event
+		const event = new CustomEvent("font-loaded", {detail: {fontId: id}});
+		window.dispatchEvent(event);
 		m.redraw();
 	}
 

@@ -38,9 +38,7 @@ export function Options(initialVnode) {
 			}
 		}
 
-		await Fonts.update();
-		Layout.lines.forEach(line => line.update());
-
+		Fonts.update();
 	}
 
 	return {
