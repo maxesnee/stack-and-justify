@@ -22,7 +22,7 @@ export function Line(initialVnode) {
 						fontSize: Layout.sizeLocked ? Layout.size.get() : line.size.get(),
 						width: Layout.width.get(),
 						fontFamily: Layout.fontLocked ? Layout.font?.fontFaceName : line.font.fontFaceName,
-						height: (line.size.getIn('px') * 1.2)+'px' // Get the line height
+						height: Layout.sizeLocked ? (Layout.size.getIn('px') * 1.2)+'px' : (line.size.getIn('px') * 1.2)+'px' // Get the line height
 					}}, line.text),
 					line.text === '' ? m('div.no-words-found', 'No words found ☹') : '',
 					m('div.loading', {class: line.font.isLoading ? 'visible' : 'hidden'},
