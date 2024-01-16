@@ -6,6 +6,8 @@ export function WidthInput(initialVnode) {
 	let startWidth = Layout.width.getIn('px');
 	let startX = 0;
 	let dX = 0;
+	let isFocused = false;
+	let editValue = "";
 
 	document.body.onmousemove = onmousemove;
 	document.body.onmouseup = onmouseup;
@@ -49,12 +51,34 @@ export function WidthInput(initialVnode) {
 		isDragging = false;
 	}
 
+	function onfocus(e) {
+		isFocused = true;
+		editValue = e.target.value;
+	}
+
+	function oninput(e) {
+		if (isFocused) {
+			editValue = e.target.value;
+		}	
+	}
+
+	function onblur(e) {
+		isFocused = false;
+	}
+
 	return {
 		view: function(vnode) {
 			return m('div.width-input', {style: { width: Layout.width.get()}}, 
 				m('div.width-input-handle.left', {onmousedown}),
 				m('span.width-input-line'),
-				m('input', {type: 'text', value: Layout.width.get(), onchange: (e) => {Layout.width.set(e.currentTarget.value)}}),
+				m('input', {
+					type: 'text', 
+					value: isFocused ? editValue : Layout.width.get(), 
+					onchange: (e) => {Layout.width.set(e.currentTarget.value)},
+					oninput,
+					onfocus,
+					onblur
+				}),
 				m('span.width-input-line'),
 				m('div.width-input-handle.right', {onmousedown})
 				)
