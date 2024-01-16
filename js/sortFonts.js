@@ -5,7 +5,8 @@ const testsList = {
 	"MuseoSans": ["MuseoSans-100.otf","MuseoSans-100Italic.otf","MuseoSans-300.otf","MuseoSans-300Italic.otf","MuseoSans_500.otf","MuseoSans_500_Italic.otf","MuseoSans_700.otf","MuseoSans-700Italic.otf","MuseoSans_900.otf","MuseoSans-900Italic.otf"],
 	"Ubuntu": ["UbuntuMono-R.ttf", "UbuntuMono-RI.ttf", "UbuntuMono-B.ttf", "UbuntuMono-BI.ttf",],
 	"Montserrat": ["Montserrat-Thin.ttf","Montserrat-ThinItalic.ttf","Montserrat-ExtraLight.ttf","Montserrat-ExtraLightItalic.ttf","Montserrat-Light.ttf","Montserrat-LightItalic.ttf","Montserrat-Regular.ttf","Montserrat-Italic.ttf","Montserrat-Medium.ttf","Montserrat-MediumItalic.ttf","Montserrat-SemiBold.ttf","Montserrat-SemiBoldItalic.ttf","Montserrat-Bold.ttf","Montserrat-BoldItalic.ttf","Montserrat-ExtraBold.ttf","Montserrat-ExtraBoldItalic.ttf","Montserrat-Black.ttf","Montserrat-BlackItalic.ttf"],
-	"SourceCode": ["SourceCodePro-ExtraLight.otf","SourceCodePro-ExtraLightIt.otf","SourceCodePro-Light.otf","SourceCodePro-LightIt.otf","SourceCodePro-Regular.otf","SourceCodePro-It.otf","SourceCodePro-Medium.otf","SourceCodePro-MediumIt.otf","SourceCodePro-Semibold.otf","SourceCodePro-SemiboldIt.otf","SourceCodePro-Bold.otf","SourceCodePro-BoldIt.otf","SourceCodePro-Black.otf","SourceCodePro-BlackIt.otf"]
+	"SourceCode": ["SourceCodePro-ExtraLight.otf","SourceCodePro-ExtraLightIt.otf","SourceCodePro-Light.otf","SourceCodePro-LightIt.otf","SourceCodePro-Regular.otf","SourceCodePro-It.otf","SourceCodePro-Medium.otf","SourceCodePro-MediumIt.otf","SourceCodePro-Semibold.otf","SourceCodePro-SemiboldIt.otf","SourceCodePro-Bold.otf","SourceCodePro-BoldIt.otf","SourceCodePro-Black.otf","SourceCodePro-BlackIt.otf"],
+	"GamuthText": ["GamuthText-ExtraLight.otf", "GamuthText-ExtraLightItalic.otf", "GamuthText-Light.otf", "GamuthText-LightItalic.otf", "GamuthText-Regular.otf", "GamuthText-Italic.otf", "GamuthText-Medium.otf", "GamuthText-MediumItalic.otf", "GamuthText-Bold.otf", "GamuthText-BoldItalic.otf", "GamuthText-Black.otf", "GamuthText-BlackItalic.otf"]
 };
 
 function runTests() {
@@ -199,7 +200,6 @@ export function sortFontStyles(styleNames) {
 			weight = "regular";
 		}
 		styleName.replace(weight, "");
-
 
 		return {
 			name: originalName,

@@ -1,6 +1,6 @@
 import { sortFontStyles } from './sortFonts.js';
 
-export function handleFontFiles(files, callback) {
+export async function handleFontFiles(files, callback) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 
 	files = Array.from(files);
@@ -11,29 +11,38 @@ export function handleFontFiles(files, callback) {
 	let sortedNames = sortFontStyles(fileNames);
 	let sortedFiles = sortedNames.map(name => validFiles.find(file => file.name === name));
 	
-	sortedFiles.forEach(file => handleFontFile(file, callback))
+	for (const file of sortedFiles) {
+		const result = await handleFontFile(file);
+		callback(result.fileName, result.data);
+	};
 }
 
-export function handleFontFile(file, callback) {
+export function handleFontFile(file) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 
-	if (!file.name.match(acceptedExtensions)) {
-		return;
-	}
+	return new Promise((resolve, reject) => {
 
-	// Removes file extension from name
-	let fileName = file.name.replace(/\..+$/, "");
-	// Replace any non alpha numeric characters with -
-	fileName = fileName.replace(/\W+/g, "-");
+		if (!file.name.match(acceptedExtensions)) {
+			reject("Could not upload file: wrong extension");
+		}
 
-	const reader = new FileReader();
+		// Removes file extension from name
+		let fileName = file.name.replace(/\..+$/, "");
+		// Replace any non alpha numeric characters with -
+		fileName = fileName.replace(/\W+/g, "-");
+	
+		const reader = new FileReader();
 
-	reader.onloadend = function(e) {
-		let data = e.target.result;
-		callback(fileName, data);
-	}
+		reader.onloadend = function(e) {
+			resolve({
+				fileName,
+				data: e.target.result
+			});
+			// callback(fileName, data);
+		}
 
-	reader.readAsArrayBuffer(file);
+		reader.readAsArrayBuffer(file);
+	});
 }
 
 export function random(min, max) {
