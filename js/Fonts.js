@@ -7,8 +7,6 @@ export const Fonts = (function() {
 
 	function add(font) {
 		list.push(font);
-
-		list = sortFonts(list);
 		
 		Layout.addLine("default", font.id);
 		m.redraw();

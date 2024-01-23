@@ -21,7 +21,6 @@ export function handleFontFile(file) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 
 	return new Promise((resolve, reject) => {
-
 		if (!file.name.match(acceptedExtensions)) {
 			reject("Could not upload file: wrong extension");
 		}

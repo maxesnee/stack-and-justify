@@ -136,101 +136,115 @@ export function sortFonts(list) {
 }
 
 export function sortFontStyles(styleNames) {
-	const commonPrefix = findCommonPrefix(styleNames);
+	let output = [];
 
-	// Extract the weight, width and italic from every name
-	const styles = styleNames.map(styleName => {
-		const originalName = styleName;
-		let italic;
-		let weight;
-		let width;
-		const weightMatches = [];
-		const widthMatches = [];
+	// Sort by family name in case of multiple families
+	const families = sortByFontName(styleNames);
 
-		// Remove the common prefix (family name)
-		styleName = styleName.replace(commonPrefix, "");
+	for (const family in families) {
+		const styleNames = families[family];
+		const commonPrefix = findCommonPrefix(styleNames);
 
-		// Normalize alternative spellings
-		styleName = normalizeSpelling(styleName);
+		// Extract the weight, width and italic from every name
+		const styles = styleNames.map(styleName => {
+			const originalName = styleName;
+			let italic;
+			let weight;
+			let width;
+			const weightMatches = [];
+			const widthMatches = [];
 
-		// Ignore case
-		styleName = styleName = styleName.toLowerCase();
+			// Remove the common prefix (family name)
+			styleName = styleName.replace(commonPrefix, "");
 
-		// Italics
-		FontStyles.italics.forEach(name => {
-			if (styleName.includes(name)) {
-				italic = name;
+			// Normalize alternative spellings
+			styleName = normalizeSpelling(styleName);
+
+			// Ignore case
+			styleName = styleName = styleName.toLowerCase();
+
+			// Italics
+			FontStyles.italics.forEach(name => {
+				if (styleName.includes(name)) {
+					italic = name;
+				}
+			});
+			styleName = styleName.replace(italic, "");
+
+
+			// Widths
+			FontStyles.widths.forEach(width => {
+				// Ignore "normal" as it is only in the list for sorting purposes
+				if (width === "normal") return false;
+
+				if (styleName.includes(width)) {
+					widthMatches.push(width);
+				}
+			});
+
+			// Use the longest width name to give priority to names like 'extracondensed' over 'condensed'
+			if (widthMatches.length > 0) {
+				width = getLongest(widthMatches);
+			} else {
+				width = "normal";
+			}
+			styleName = styleName.replace(width, "");
+
+
+			// Weights
+			FontStyles.weights.forEach(weight => {
+				if (styleName.includes(weight)) {
+					// if (weight === "ultra" && widthMatches.some(width => width.includes("ultra"))) return;
+
+					weightMatches.push(weight);
+				}
+			});
+
+			// Use the longest weight name to give priority to names like 'extrabold' over 'bold'
+			if (weightMatches.length > 0) {
+				weight = getLongest(weightMatches);
+			} else {
+				weight = "regular";
+			}
+			styleName.replace(weight, "");
+
+			return {
+				name: originalName,
+				width,
+				weight,
+				italic,
 			}
 		});
-		styleName = styleName.replace(italic, "");
 
-
-		// Widths
-		FontStyles.widths.forEach(width => {
-			// Ignore "normal" as it is only in the list for sorting purposes
-			if (width === "normal") return false;
-
-			if (styleName.includes(width)) {
-				widthMatches.push(width);
-			}
+		// Sort by weights
+		styles.sort((a, b) => {
+			return FontStyles.weights.indexOf(a.weight) - FontStyles.weights.indexOf(b.weight);
 		});
 
-		// Use the longest width name to give priority to names like 'extracondensed' over 'condensed'
-		if (widthMatches.length > 0) {
-			width = getLongest(widthMatches);
-		} else {
-			width = "normal";
-		}
-		styleName = styleName.replace(width, "");
-
-
-		// Weights
-		FontStyles.weights.forEach(weight => {
-			if (styleName.includes(weight)) {
-				// if (weight === "ultra" && widthMatches.some(width => width.includes("ultra"))) return;
-
-				weightMatches.push(weight);
-			}
+		// Sort by widths
+		styles.sort((a, b) => {
+			return FontStyles.widths.indexOf(a.width) - FontStyles.widths.indexOf(b.width);
 		});
 
-		// Use the longest weight name to give priority to names like 'extrabold' over 'bold'
-		if (weightMatches.length > 0) {
-			weight = getLongest(weightMatches);
-		} else {
-			weight = "regular";
-		}
-		styleName.replace(weight, "");
-
-		return {
-			name: originalName,
-			width,
-			weight,
-			italic,
-		}
-	});
-
-	// Sort by weights
-	styles.sort((a, b) => {
-		return FontStyles.weights.indexOf(a.weight) - FontStyles.weights.indexOf(b.weight);
-	});
-
-	// Sort by widths
-	styles.sort((a, b) => {
-		return FontStyles.widths.indexOf(a.width) - FontStyles.widths.indexOf(b.width);
-	});
-
-	// Place italics after roman
-	styles.sort((a, b) => {
-		if (a.weight === b.weight && a.width === b.width) {
-			if (a.italic !== undefined && b.italic === undefined) {
-				return 1;
+		// Place italics after roman
+		styles.sort((a, b) => {
+			if (a.weight === b.weight && a.width === b.width) {
+				if (a.italic !== undefined && b.italic === undefined) {
+					return 1;
+				}
 			}
-		}
-		return 0;
-	});
+			return 0;
+		});
+
+		families[family] = styles.map(style => style.name);
+	};
 
 	// Output a sorted list of style names
-	return styles.map(style => style.name);
+	for (const family in families) {
+		output.push(...families[family]);
+	}
+
+	return output;
 }
 
 function normalizeSpelling(styleName) {
@@ -277,6 +291,18 @@ function splitWords(s) {
 	}
 
 	return output;
+}
+
+function sortByFontName(arr) {
+	const fonts = {};
+
+	for (let name of arr) {
+		const fontName = name.split(/-|_/)[0];
+		if (!fonts[fontName]) fonts[fontName] = [];
+		fonts[fontName].push(name);
+	}
+
+	return fonts;
 }
 
 function findCommonPrefix(arr) {
