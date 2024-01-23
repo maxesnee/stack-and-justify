@@ -1,4 +1,5 @@
 import { Words } from "./Words.js";
+import { Layout } from "./Layout.js";
 import { Fonts } from "./Fonts.js";
 import { WorkerPool } from "./WorkerPool.js";
 import { random, shuffle } from "./Helpers.js";
@@ -34,8 +35,7 @@ export const WordGenerator = function(fontName, fontData) {
 				words.push(...sortedDict[filter][i]);	
 			}
 		}
-
-		if (words.length == 0) {
+		if (words.length <= Layout.lines.length) {
 			// If the width is too long, concatenate multiple words
 			const randomWidth = Math.floor(random(width*0.15, width*0.667));
 			const remainingWidth = width - randomWidth - scaledSpaceWidth;
