@@ -315,3 +315,12 @@ function findCommonPrefix(arr) {
 
 	return prefix;
 }
+
+if (![].toReversed) {
+	Array.prototype.toReversed = function () {
+		for (var i=(this.length - 1),arr=[]; i>=0; --i) {
+			arr.push(this[i]);
+		}
+		return arr;
+	};
+}
