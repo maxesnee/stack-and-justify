@@ -15,7 +15,7 @@ export function FontInput(initialVnode) {
 				let files = input.files;
 				
 				handleFontFiles(files, function(fontName, fontData) {
-					Fonts.add(Font(fontName, fontData));
+					Fonts.add(fontName, fontData);
 				});
 			});
 		},

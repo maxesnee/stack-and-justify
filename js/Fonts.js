@@ -5,8 +5,18 @@ import { sortFonts } from './sortFonts.js';
 export const Fonts = (function() {
 	let list = [];
 
-	function add(font) {
-		list.push(font);
+	function add(fontName, fontData) {
+		let font;
+
+		// Check if a font with the same does not exists already
+		// Prevent from adding duplicate fonts
+		if (!list.find(font => font.name === fontName)) {
+			font = Font(fontName, fontData);
+			list.push(font);
+			list = sortFonts(list);
+		} else {
+			font = list.find(font => font.name === fontName);
+		}
 		
 		Layout.addLine("default", font.id);
 		m.redraw();
