@@ -10,9 +10,16 @@ export const WordGenerator = function(fontName, fontData) {
 
 	async function sort() {
 		let words = await Words.get();
-		const result = WorkerPool.postMessage([words, fontName, fontData]);
 
-		sortedDict = await result.then(e => e.data);
+		// The workers requires the OffscreenCanvas API
+		if (window.OffscreenCanvas) {
+			const result = WorkerPool.postMessage([words, fontName, fontData]);
+			sortedDict = await result.then(e => e.data);
+		} else {
+			sortedDict = sortDictionary(words, fontName, fontData);
+		}	
+
+		
 	}
 
 	async function getWords(size, width, filter) {
@@ -67,3 +74,50 @@ export const WordGenerator = function(fontName, fontData) {
 		sort
 	}
 };
+
+// This function is to be used if the OffscreenCanvas API (and thus, workers) is not available
+function sortDictionary(words, fontName, fontData) {
+	const filters = ['lowercase', 'capitalised', 'uppercase'];
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+	const sortedDict = {};
+	// const fontFace = new FontFace(fontName, fontData);
+
+	// self.fonts.add(fontFace);
+	// await fontFace.load();
+
+	ctx.font = `100px ${fontName}`;
+
+	for (let filter of filters) {
+		sortedDict[filter] = {};
+
+		for (let word of words) {
+			let filteredWord = applyFilter(word, filter);
+			let width = Math.floor(ctx.measureText(filteredWord).width);
+			if (sortedDict[filter][width] === undefined) {
+				sortedDict[filter][width] = []
+			}
+			sortedDict[filter][width].push(filteredWord)
+		}
+
+		sortedDict.spaceWidth = Math.floor(ctx.measureText(' ').width);
+	}
+	return sortedDict;
+}
+
+function applyFilter(string, filter) {
+	let filteredString = string;
+
+	switch (filter) {
+		case 'lowercase':
+			filteredString = filteredString.toLowerCase()
+			break;
+		case 'capitalised':
+			filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
+			break;
+		case 'uppercase':
+			filteredString = filteredString.toUpperCase();
+			break;
+	}
+	return filteredString;
+}
