@@ -3,6 +3,11 @@ import { Fonts } from "../Fonts.js";
 
 export function FontSelect(initialVnode) {
 	return {
+		oncreate: function(vnode) {
+			// Get the width of the hidden label and update the width of the select
+			const width = vnode.dom.querySelector('.font-select-hidden-label').offsetWidth;
+			vnode.dom.querySelector('select').style.width = width + 'px';
+		},
 		onupdate: function(vnode) {
 			// Get the width of the hidden label and update the width of the select
 			const width = vnode.dom.querySelector('.font-select-hidden-label').offsetWidth;
