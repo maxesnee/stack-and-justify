@@ -242,6 +242,13 @@ body.dark .logo svg .fill {
 	border-bottom: 1px dotted;
 }
 
+@supports not (grid-template-columns: subgrid) {
+	.specimen-line {
+		grid-column-gap: 2rem;
+		grid-template-columns: [left] 1fr [middle] auto [right] 1fr;	
+	}
+}
+
 .specimen-line.dragged * {
 	visibility: hidden;
 }
