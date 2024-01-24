@@ -17,9 +17,7 @@ export const WordGenerator = function(fontName, fontData) {
 			sortedDict = await result.then(e => e.data);
 		} else {
 			sortedDict = sortDictionary(words, fontName, fontData);
-		}	
-
-		
+		}
 	}
 
 	async function getWords(size, width, filter) {

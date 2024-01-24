@@ -4,12 +4,14 @@ import { Layout } from './Layout.js';
 import { Filters } from './Filters.js';
 import { generateUID } from './Helpers.js';
 
-export function Line(size, fontId=Fonts.first()?.id) {
+export function Line(size, fontId) {
 	if (typeof size === 'string') {
 		size = Size(size)
 	} else {
 		size = Size(size.get());
 	}
+
+	if (!fontId && Fonts.first()) fontId = Fonts.first().id;
 
 	let text = "";
 	let filter = 2;
@@ -32,8 +34,8 @@ export function Line(size, fontId=Fonts.first()?.id) {
 
 	window.addEventListener('font-removed', (e) => {
 			// The selected font has been removed, we need to select another one
-		if (fontId == e.detail.fontId) {
-			fontId = Fonts.first()?.id;
+		if (fontId === e.detail.fontId && Fonts.first()) {
+			fontId = Fonts.first().id;
 		}
 		update();
 	});
