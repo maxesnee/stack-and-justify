@@ -20,6 +20,16 @@ function runTests() {
 	};
 }
 
+// Polyfill for Array.toReversed method
+if (![].toReversed) {
+	Array.prototype.toReversed = function () {
+		for (var i=(this.length - 1),arr=[]; i>=0; --i) {
+			arr.push(this[i]);
+		}
+		return arr;
+	};
+}
+
 const FontStyles = (function() {
 	// Initially based on: https://gist.github.com/quitequinn/601e234980b1aa563dba194fa1125e50
 	const coreCondensedStyles = ["compressed", "condensed", "narrow"];
@@ -316,11 +326,3 @@ function findCommonPrefix(arr) {
 	return prefix;
 }
 
-if (![].toReversed) {
-	Array.prototype.toReversed = function () {
-		for (var i=(this.length - 1),arr=[]; i>=0; --i) {
-			arr.push(this[i]);
-		}
-		return arr;
-	};
-}
