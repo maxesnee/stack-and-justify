@@ -230,12 +230,7 @@ body.dark .logo svg .fill {
 	grid-template-columns: subgrid;
 }
 
-.specimen-controls {
-	height: 4.5rem;
-}
-
-.specimen-line,
-.specimen-controls {
+.specimen-line {
 	display: grid;
 	grid-column: span 3;
 	grid-template-columns: subgrid;
@@ -243,7 +238,8 @@ body.dark .logo svg .fill {
 }
 
 @supports not (grid-template-columns: subgrid) {
-	.specimen-line {
+	.specimen-line,
+	.specimen-header {
 		grid-column-gap: 2rem;
 		grid-template-columns: [left] 1fr [middle] auto [right] 1fr;	
 	}
@@ -261,11 +257,6 @@ body.dark .logo svg .fill {
 	border-top: 1px dotted;
 	bottom: 1px dotted;
 	box-shadow: 1px 2px 2px rgba(0,0,0,0.25);
-}
-
-.specimen-controls .line-left-col,
-.specimen-controls .line-right-col {
-	align-items: center;
 }
 
 .line-left-col {
