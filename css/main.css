@@ -1,4 +1,4 @@
-/* Typographie */
+/* Typography */
 
 @font-face {
 	font-family: "Plomb Sans";
@@ -25,6 +25,16 @@
 
 .bold {
 	font-weight: 700;
+}
+
+@media screen and (max-width: 430px) {
+	:root {
+		font-size: 13px;
+	}
+
+	.t-big {
+		font-size: 19.5px;
+	}
 }
 
 
@@ -75,11 +85,17 @@ input[disabled] {
 	flex: 1
 }
 
-.footer {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 4rem;
+@media screen and (max-width: 430px) {
+	body {
+		max-width: 100%;
+		padding: 1.5rem;
+	}
+
+	#app {
+		max-width: 100%;
+	}
 }
+
 
 
 /* Links */
@@ -158,12 +174,65 @@ body.dark .logo svg .fill {
 	text-align: right;
 	user-select: none;
 	-webkit-user-select: none;
+	white-space: nowrap;
 }
 
 .dark-mode-btn {
 	position: relative;
 	margin-right: 0.5rem;
 	z-index: 1;
+}
+
+@media screen and (max-width: 430px) {
+	.header {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		padding-bottom: 0;
+	}
+
+	.logo {
+		order: 0;
+		margin-bottom: 0.5rem;
+	}
+
+	.header-btns {
+		order: 1;
+	}
+
+	.drop-message {
+		order: 2;
+		margin-bottom: 0.75rem;
+	}
+
+	.options {
+		order: 3;
+	}
+}
+
+/* Footer */
+
+.footer {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 4rem;
+}
+
+.footer .credit,
+.footer .github {
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+@media screen and (max-width: 430px) {
+	.footer {
+		margin-top: 0;
+		flex-wrap: wrap;
+	}
+
+	.footer .credit {
+		margin-bottom: 0.75rem;
+	}
 }
 
 
@@ -805,9 +874,19 @@ input[type="checkbox"]:checked + label::before {
 	margin-bottom: 2rem;
 }
 
-/* Footer */
-.footer .credit,
-.footer .github {
-	user-select: none;
-	-webkit-user-select: none;
+@media screen and (max-width: 430px) {
+	.about {
+		padding-top: 0;
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.about svg {
+		max-width: 50%;
+		stroke-width: 2;
+	}
+
+	.about-text p {
+		margin-bottom: 1rem;
+	}
 }
