@@ -8,8 +8,8 @@ export const Fonts = (function() {
 	function add(fontName, fontData) {
 		let font;
 
-		// Check if a font with the same does not exists already
-		// Prevent from adding duplicate fonts
+		// Check if a font with the same name does not exists already
+		// Prevents from adding duplicate fonts
 		if (!list.find(font => font.name === fontName)) {
 			font = Font(fontName, fontData);
 			list.push(font);

@@ -4,7 +4,7 @@ import { generateUID } from "./Helpers.js";
 
 export const Font = function(name, data) {
 	// Digits at the beginning of the file name prevent it from loading 
-	const fontFaceName = name.replace(/[0-9]/g, '');
+	const fontFaceName = name.replace(/^\d+/, '');
 	const wordGenerator = WordGenerator(fontFaceName, data);
 	let isLoading = true;
 	const id = generateUID();

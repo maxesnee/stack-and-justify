@@ -6,7 +6,8 @@ const testsList = {
 	"Ubuntu": ["UbuntuMono-R.ttf", "UbuntuMono-RI.ttf", "UbuntuMono-B.ttf", "UbuntuMono-BI.ttf",],
 	"Montserrat": ["Montserrat-Thin.ttf","Montserrat-ThinItalic.ttf","Montserrat-ExtraLight.ttf","Montserrat-ExtraLightItalic.ttf","Montserrat-Light.ttf","Montserrat-LightItalic.ttf","Montserrat-Regular.ttf","Montserrat-Italic.ttf","Montserrat-Medium.ttf","Montserrat-MediumItalic.ttf","Montserrat-SemiBold.ttf","Montserrat-SemiBoldItalic.ttf","Montserrat-Bold.ttf","Montserrat-BoldItalic.ttf","Montserrat-ExtraBold.ttf","Montserrat-ExtraBoldItalic.ttf","Montserrat-Black.ttf","Montserrat-BlackItalic.ttf"],
 	"SourceCode": ["SourceCodePro-ExtraLight.otf","SourceCodePro-ExtraLightIt.otf","SourceCodePro-Light.otf","SourceCodePro-LightIt.otf","SourceCodePro-Regular.otf","SourceCodePro-It.otf","SourceCodePro-Medium.otf","SourceCodePro-MediumIt.otf","SourceCodePro-Semibold.otf","SourceCodePro-SemiboldIt.otf","SourceCodePro-Bold.otf","SourceCodePro-BoldIt.otf","SourceCodePro-Black.otf","SourceCodePro-BlackIt.otf"],
-	"GamuthText": ["GamuthText-ExtraLight.otf", "GamuthText-ExtraLightItalic.otf", "GamuthText-Light.otf", "GamuthText-LightItalic.otf", "GamuthText-Regular.otf", "GamuthText-Italic.otf", "GamuthText-Medium.otf", "GamuthText-MediumItalic.otf", "GamuthText-Bold.otf", "GamuthText-BoldItalic.otf", "GamuthText-Black.otf", "GamuthText-BlackItalic.otf"]
+	"GamuthText": ["GamuthText-ExtraLight.otf", "GamuthText-ExtraLightItalic.otf", "GamuthText-Light.otf", "GamuthText-LightItalic.otf", "GamuthText-Regular.otf", "GamuthText-Italic.otf", "GamuthText-Medium.otf", "GamuthText-MediumItalic.otf", "GamuthText-Bold.otf", "GamuthText-BoldItalic.otf", "GamuthText-Black.otf", "GamuthText-BlackItalic.otf"],
+	"Optical": ["Optical-30.otf", "Optical-36.otf", "Optical-48.otf", "Optical-60.otf", "Optical-72.otf", "Optical-90.otf", "Optical-120.otf"]
 };
 
 function runTests() {
@@ -16,7 +17,7 @@ function runTests() {
 		const shuffledList = list.toSorted(() => Math.random() - 0.5);
 		const sortedList = sortFontStyles(shuffledList);
 		const result = JSON.stringify(list) === JSON.stringify(sortedList);
-		console.log(`${test}: ${result ? '✅' : '❌'}`);
+		console.log(`${test}: ${result ? '✅' : '❌'}`);;
 	};
 }
 
@@ -43,15 +44,14 @@ const FontStyles = (function() {
 	const alternativeSpelling = {
 		Extended: ["Ex"],
 		Condensed: ["Cn", "Cond"],
-		Thin: ["Thn", "Th", "100"],
-		Extralight: ["200"],
-		Light: ["Lt", "Lght", "300"],
-		Regular: ["R", "Reg", "Rg", "Roman", "400"],
-		Medium: ["Md", "500"],
-		Dark: ["Drk", "600"],
-		Bold: ["Bd", "Bld", "B", "700"],
+		Thin: ["Thn", "Th"],
+		Light: ["Lt", "Lght"],
+		Regular: ["R", "Reg", "Rg", "Roman"],
+		Medium: ["Md"],
+		Dark: ["Drk"],
+		Bold: ["Bd", "Bld", "B"],
 		Heavy: ["Hv", "800"],
-		Black: ["Blak", "Blk", "900"],
+		Black: ["Blak", "Blk"],
 		Extra: ["X", "Xt"],
 		Ultra: ["Ult", "Ultre", "Ul", "Ulta"],
 		Super: ["Supr"],
@@ -155,17 +155,27 @@ export function sortFontStyles(styleNames) {
 		const styleNames = families[family];
 		const commonPrefix = findCommonPrefix(styleNames);
 
+		// Sort by alphabetical order first
+		// styleNames.sort();
+
 		// Extract the weight, width and italic from every name
 		const styles = styleNames.map(styleName => {
 			const originalName = styleName;
 			let italic;
 			let weight;
 			let width;
+			let number;
 			const weightMatches = [];
 			const widthMatches = [];
 
 			// Remove the common prefix (family name)
 			styleName = styleName.replace(commonPrefix, "");
+
+			// Remove file extension
+			styleName = styleName.split('.')[0];
+
+			// Remove leading hyphen or underscore
+			styleName = styleName.replace(/^-|_/, '');
 
 			// Normalize alternative spellings
 			styleName = normalizeSpelling(styleName);
@@ -216,14 +226,29 @@ export function sortFontStyles(styleNames) {
 			} else {
 				weight = "regular";
 			}
-			styleName.replace(weight, "");
+			styleName = styleName.replace(weight, "");
+
+			// Remove remaining hyphen or underscore
+			styleName = styleName.replace(/-|_/, '');
+
+			// Numbers
+			if (styleName !== "" && !isNaN(styleName)) {
+				number = parseInt(styleName);
+			}
 
 			return {
 				name: originalName,
 				width,
 				weight,
 				italic,
+				number
 			}
+		});
+
+		// If style name contains numbers (could be weight in the 100-900 format, or optical sizes)
+		// Sort numerically
+		styles.sort((a, b) => {
+			return a.number - b.number;
 		});
 
 		// Sort by weights
@@ -238,7 +263,7 @@ export function sortFontStyles(styleNames) {
 
 		// Place italics after roman
 		styles.sort((a, b) => {
-			if (a.weight === b.weight && a.width === b.width) {
+			if (a.weight === b.weight && a.width === b.width && a.number === b.number) {
 				if (a.italic !== undefined && b.italic === undefined) {
 					return 1;
 				}
@@ -253,6 +278,7 @@ export function sortFontStyles(styleNames) {
 	for (const family in families) {
 		output.push(...families[family]);
 	}
+
 
 	return output;
 }
@@ -307,7 +333,7 @@ function sortByFontName(arr) {
 	const fonts = {};
 
 	for (let name of arr) {
-		const fontName = name.split(/-|_/)[0];
+		const fontName = name.split(/-|_|\./)[0];
 		if (!fonts[fontName]) fonts[fontName] = [];
 		fonts[fontName].push(name);
 	}
@@ -326,3 +352,4 @@ function findCommonPrefix(arr) {
 	return prefix;
 }
 
+// runTests();
