@@ -1,17 +1,17 @@
 import { Font } from './Font.js';
 import { Layout } from './Layout.js';
-import { sortFonts } from './sortFonts.js';
+import { sortFonts } from './Helpers.js';
 
 export const Fonts = (function() {
 	let list = [];
 
-	function add(fontName, fontData) {
+	function add(fontName, fontData, fontInfo) {
 		let font;
 
 		// Check if a font with the same name does not exists already
 		// Prevents from adding duplicate fonts
 		if (!list.find(font => font.name === fontName)) {
-			font = Font(fontName, fontData);
+			font = Font(fontName, fontData, fontInfo);
 			list.push(font);
 			list = sortFonts(list);
 		} else {

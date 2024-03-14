@@ -29,8 +29,8 @@ export function DropZone(initialVnode) {
 
 				let files = e.dataTransfer.files;
 
-				handleFontFiles(files, function(fontName, fontData) {
-					Fonts.add(fontName, fontData);
+				handleFontFiles(files, function(fontName, fontData, fontInfo) {
+					Fonts.add(fontName, fontData, fontInfo);
 				});
 				
 				vnode.dom.classList.remove('active');

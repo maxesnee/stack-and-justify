@@ -1,19 +1,20 @@
-import { sortFontStyles } from './sortFonts.js';
-
 export async function handleFontFiles(files, callback) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 
 	files = Array.from(files);
-	let validFiles = files.filter(file => file.name.match(acceptedExtensions));
+	const validFiles = files.filter(file => file.name.match(acceptedExtensions));
+	const loadedFonts = [];
 
-	// Sort the font files
-	const fileNames = validFiles.map(file => file.name);
-	let sortedNames = sortFontStyles(fileNames);
-	let sortedFiles = sortedNames.map(name => validFiles.find(file => file.name === name));
-	
-	for (const file of sortedFiles) {
+	for (const file of validFiles) {
 		const result = await handleFontFile(file);
-		callback(result.fileName, result.data);
+		loadedFonts.push(result);
+	}
+
+	// Sort the fonts based on font infos (family name, weight and width class)
+	const sortedFonts = sortFonts(loadedFonts);
+
+	for (const font of sortedFonts) {
+		callback(font.name, font.data, font.info);
 	};
 }
 
@@ -33,15 +34,65 @@ export function handleFontFile(file) {
 		const reader = new FileReader();
 
 		reader.onloadend = function(e) {
-			resolve({
+			// Parse the font to get metadatas
+			const font = Typr.parse(e.target.result)[0];
+			const fsSelection = font["OS/2"].fsSelection.toString(2).padStart(16, "0").split('').reverse();
+			const familyName = font.name.typoFamilyName || font.name.fontFamily;
+			const subfamilyName = font.name.typoSubfamilyName || font.name.fontSubfamily;
+			const fullName = familyName + ' ' + subfamilyName;
+			const info = {
+				fullName,
+				familyName,
+				subfamilyName,
 				fileName,
-				data: e.target.result
+				isItalic: fsSelection[0] === "0" ? false : true,
+				weightClass: font["OS/2"].usWeightClass,
+				widthClass: font["OS/2"].usWidthClass
+			}
+
+			resolve({
+				name: fullName,
+				data: e.target.result,
+				info
 			});
-			// callback(fileName, data);
 		}
 
 		reader.readAsArrayBuffer(file);
 	});
+}
+
+export function sortFonts(list) {
+	if (list.length <= 1) return list;
+
+	const sortedFonts = list;
+
+	// Sort regular/italic pairs
+	sortedFonts.sort((fontA, fontB) => {
+		if (fontA.info.isItalic && !fontB.info.isItalic) {
+			return 1
+		} else if (!fontA.info.isItalic && fontB.info.isItalic) {
+			return -1
+		} else {
+			return 0;
+		}
+	});
+
+	// Sort by weight
+	sortedFonts.sort((fontA, fontB) => {
+		return fontA.info.weightClass - fontB.info.weightClass;
+	});
+
+	// Sort by width
+	sortedFonts.sort((fontA, fontB) => {
+		return fontA.info.widthClass - fontB.info.widthClass;
+	});
+
+	// Sort by family name
+	sortedFonts.sort((fontA, fontB) => {
+		return fontA.info.familyName.localeCompare(fontB.info.familyName);
+	});
+
+	return sortedFonts;
 }
 
 export function random(min, max) {
