@@ -34,24 +34,10 @@ export function handleFontFile(file) {
 		const reader = new FileReader();
 
 		reader.onloadend = function(e) {
-			// Parse the font to get metadatas
-			const font = Typr.parse(e.target.result)[0];
-			const fsSelection = font["OS/2"].fsSelection.toString(2).padStart(16, "0").split('').reverse();
-			const familyName = font.name.typoFamilyName || font.name.fontFamily;
-			const subfamilyName = font.name.typoSubfamilyName || font.name.fontSubfamily;
-			const fullName = familyName + ' ' + subfamilyName;
-			const info = {
-				fullName,
-				familyName,
-				subfamilyName,
-				fileName,
-				isItalic: fsSelection[0] === "0" ? false : true,
-				weightClass: font["OS/2"].usWeightClass,
-				widthClass: font["OS/2"].usWidthClass
-			}
+			const info = getFontInfos(e.target.results);
 
 			resolve({
-				name: fullName,
+				name: info.fullName,
 				data: e.target.result,
 				info
 			});
@@ -59,6 +45,24 @@ export function handleFontFile(file) {
 
 		reader.readAsArrayBuffer(file);
 	});
+}
+
+function getFontInfos(fontBuffer) {
+	const font = Typr.parse(fontBuffer)[0];
+	const fsSelection = font["OS/2"].fsSelection.toString(2).padStart(16, "0").split('').reverse();
+	const familyName = font.name.typoFamilyName || font.name.fontFamily;
+	const subfamilyName = font.name.typoSubfamilyName || font.name.fontSubfamily;
+	const fullName = familyName + ' ' + subfamilyName;
+
+	return  {
+		fullName,
+		familyName,
+		subfamilyName,
+		fileName,
+		isItalic: fsSelection[0] === "0" ? false : true,
+		weightClass: font["OS/2"].usWeightClass,
+		widthClass: font["OS/2"].usWidthClass
+	}
 }
 
 export function sortFonts(list) {
