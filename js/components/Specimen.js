@@ -1,7 +1,6 @@
 import { AppState } from "../AppState.js";
 import { Layout } from "../Layout.js";
 import { Fonts } from "../Fonts.js";
-import { FontItems } from "./FontItems.js";
 import { Line } from "./Line.js";
 import { SizeInputGlobal } from "./SizeInputGlobal.js";
 import { FontSelectGlobal } from "./FontSelectGlobal.js";

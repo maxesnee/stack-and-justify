@@ -19,25 +19,10 @@ export function Line(size, fontId) {
 
 	size.onchange = update;
 
-	window.addEventListener('font-added', (e) => {
-		// If there's was no font before, select the one that's been added
-		if (fontId == null) {
-			fontId = e.detail.fontId;
-		}
-	});
-
 	window.addEventListener('font-loaded', (e) => {
 		if (e.detail.fontId === fontId) {
 			update();	
 		}
-	});
-
-	window.addEventListener('font-removed', (e) => {
-			// The selected font has been removed, we need to select another one
-		if (fontId === e.detail.fontId && Fonts.first()) {
-			fontId = Fonts.first().id;
-		}
-		update();
 	});
 
 	function remove() {

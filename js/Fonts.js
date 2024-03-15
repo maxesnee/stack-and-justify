@@ -9,7 +9,6 @@ export const Fonts = (function() {
 		let font;
 
 		// Check if a font with the same name does not exists already
-		// Prevents from adding duplicate fonts
 		if (!list.find(font => font.name === fontName)) {
 			font = Font(fontName, fontData, fontInfo);
 			list.push(font);
@@ -24,27 +23,6 @@ export const Fonts = (function() {
 		// Dispatch event
 		const event = new CustomEvent("font-added", {detail: {fontId: font.id}});
 		window.dispatchEvent(event);
-	}
-
-	function remove(font) {
-		list.splice(list.indexOf(font), 1);
-
-		// Dispatch event
-		const event = new CustomEvent("font-removed", {detail: {fontId: font.id}});
-		window.dispatchEvent(event);
-	}
-
-	function move(font, to) {
-		const from = list.indexOf(font);
-		if (from === -1 || to === from) return;
-
-		const target = list[from];                         
-		const increment = to < from ? -1 : 1;
-
-		for(let k = from; k != to; k += increment){
-			list[k] = list[k + increment];
-		}
-		list[to] = target;
 	}
 
 	function get(id) {
@@ -70,15 +48,13 @@ export const Fonts = (function() {
 	}
 
 	return {
-		get list() {
-			return list;
-		},
 		add,
 		get,
 		indexOf,
-		move,
 		first,
 		update,
-		remove
+		get list() {
+			return list;
+		},
 	}
 })();

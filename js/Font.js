@@ -3,7 +3,6 @@ import { Layout } from "./Layout.js";
 import { generateUID } from "./Helpers.js";
 
 export const Font = function(name, data, info) {
-	// Digits at the beginning of the file name prevent it from loading 
 	const fontFaceName = info.fileName;
 	const wordGenerator = WordGenerator(fontFaceName, data);
 	let isLoading = true;
@@ -33,6 +32,7 @@ export const Font = function(name, data, info) {
 		isLoading = true;
 		await wordGenerator.sort();
 		isLoading = false;
+
 		// Dispatch event
 		const event = new CustomEvent("font-loaded", {detail: {fontId: id}});
 		window.dispatchEvent(event);
@@ -43,14 +43,14 @@ export const Font = function(name, data, info) {
 
 	return {
 		name,
-		get isLoading() {
-			return isLoading;
-		},
 		fontFaceName,
 		data,
 		info,
 		id,
 		update,
-		wordGenerator
+		wordGenerator,
+		get isLoading() {
+			return isLoading;
+		},
 	}
 }

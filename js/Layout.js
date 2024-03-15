@@ -32,15 +32,6 @@ export const Layout = (function() {
 		}
 	});
 
-	window.addEventListener('font-removed', (e) => {
-		// The selected font has been removed, we need to select another one
-		if (fontId === e.detail.fontId && Fonts.first()) {
-			fontId = Fonts.first().id;
-		}
-
-		update();
-	});
-
 	function copyText() {
 		// Write plain text to the clipboard
 		navigator.clipboard.writeText(lines.map(line => line.text).join('\n'));
