@@ -1,3 +1,5 @@
+import { parse, getFontInfo } from './MiniOTParser.js';
+
 export async function handleFontFiles(files, callback) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 
@@ -34,35 +36,17 @@ export function handleFontFile(file) {
 		const reader = new FileReader();
 
 		reader.onloadend = function(e) {
-			const info = getFontInfos(e.target.results);
+			const fontInfo = getFontInfo(parse(e.target.result), fileName);
 
 			resolve({
-				name: info.fullName,
+				name: fontInfo.fullName,
 				data: e.target.result,
-				info
+				info: fontInfo
 			});
 		}
 
 		reader.readAsArrayBuffer(file);
 	});
-}
-
-function getFontInfos(fontBuffer) {
-	const font = Typr.parse(fontBuffer)[0];
-	const fsSelection = font["OS/2"].fsSelection.toString(2).padStart(16, "0").split('').reverse();
-	const familyName = font.name.typoFamilyName || font.name.fontFamily;
-	const subfamilyName = font.name.typoSubfamilyName || font.name.fontSubfamily;
-	const fullName = familyName + ' ' + subfamilyName;
-
-	return  {
-		fullName,
-		familyName,
-		subfamilyName,
-		fileName,
-		isItalic: fsSelection[0] === "0" ? false : true,
-		weightClass: font["OS/2"].usWeightClass,
-		widthClass: font["OS/2"].usWidthClass
-	}
 }
 
 export function sortFonts(list) {
