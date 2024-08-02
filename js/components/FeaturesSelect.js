@@ -7,18 +7,27 @@ import { generateUID } from "../Helpers.js";
 export function FeaturesSelect(initialVnode) {
 	// Menu status
 	let open = false;
-
 	let needsUpdate = false;
 
-	// Temporarily holds the selected features before they are applies
-	let selectedFeatures = {};
-
+	let menu = [];
 	addEventListener('font-added', (e) => {
-		selectedFeatures = Object.fromEntries(Features.list.map(familyGroup => {
-			return [familyGroup.id, Object.fromEntries(familyGroup.features.map(feature => [feature.id, feature.selected]))];
-		}));
+		menu = Features.list.map(family => {
+			return {
+				familyId: family.id,
+				familyName: family.name,
+				open: false,
+				features: family.features.map(feature => {
+					return {
+						id: feature.id,
+						tag: feature.tag,
+						name: feature.name,
+						selected: feature.selected
+					}
+				})
+			};
+		});
+		menu[0].open = true;
 	});
-
 
 	function update(e) {
 		e.preventDefault();
@@ -26,13 +35,14 @@ export function FeaturesSelect(initialVnode) {
 		const fontsToUpdate = new Set();
 
 		// Update the features list to match the form, and mark the fonts to be updated
-		for (const familyGroup of Features.list) {
-			for (const feature of familyGroup.features) {
+		for (const submenu of menu) {
+			for (const menuFeature of submenu.features) {
+				const feature = Features.get(menuFeature.id);
 				// If the selection changed, mark the fonts to be updated
-				if (feature.selected !== selectedFeatures[familyGroup.id][feature.id]) {
+				if (feature.selected !== menuFeature.selected) {
 					feature.fontIds.forEach(fontId => fontsToUpdate.add(fontId));
 				}
-				feature.selected = selectedFeatures[familyGroup.id][feature.id];
+				feature.selected = menuFeature.selected;
 			}
 		}
 
@@ -49,6 +59,7 @@ export function FeaturesSelect(initialVnode) {
 
 	return {
 		oncreate: function(vnode) {
+			// Close the menu when the user clicks anywhere else
 			document.addEventListener('click', (e) => {
 				const menu = vnode.dom.querySelector('.menu');
 				const btn = vnode.dom.querySelector('.menu-button');
@@ -63,11 +74,11 @@ export function FeaturesSelect(initialVnode) {
 			return m('div.menu-container',
 				m('button.menu-button', { disabled: !Fonts.list.length, onclick: () => { open = !open }}, "Features ▿"),
 				m('form.menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
-					Features.list.map(familyGroup => {
+					menu.map(submenu => {
 						return m(FeaturesSubmenu, {
-							family: familyGroup, 
-							selectedFeatures, 
-							onchange: () => { needsUpdate = true }
+							key: submenu.familyId,
+							submenu,
+							onchange: () => { needsUpdate = true },
 						});
 					}),
 					m('div.menu-update', 

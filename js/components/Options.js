@@ -14,17 +14,6 @@ export function Options(initialVnode) {
 		sources: Object.fromEntries(Words.data.sources.map(source => [source.name, source.selected]))
 	};
 
-	// Close the menu when the user clicks anywhere else
-	document.addEventListener('click', (e) => {
-		const menu = document.querySelector('.menu');
-		const btn = document.querySelector('.menu-button');
-		
-		if (!menu.contains(e.target) && e.target !== btn && open) {
-			open = false;
-			m.redraw();
-		}
-	});
-
 	async function update(e) {
 		e.preventDefault();
 
@@ -46,6 +35,18 @@ export function Options(initialVnode) {
 	}
 
 	return {
+		oncreate: function(vnode) {
+			// Close the menu when the user clicks anywhere else
+			document.addEventListener('click', (e) => {
+				const menu = vnode.dom.querySelector('.menu');
+				const btn = vnode.dom.querySelector('.menu-button');
+
+				if (!menu.contains(e.target) && e.target !== btn && open) {
+					open = false;
+					m.redraw();
+				}
+			});
+		},
 		view: function(vnode) {
 			return m('div.menu-container', 
 				m('button.menu-button', {onclick: () => { open = !open }}, "Options ▿"),

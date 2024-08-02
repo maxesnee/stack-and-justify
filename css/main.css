@@ -791,18 +791,25 @@ body.dark .logo svg .fill {
 	padding-right: 0.9rem;
 }
 
-.submenu:first-of-type .submenu-header {
-/*	padding-top: 0;*/
-	border-top: 0;
-}
-
 .submenu-header {
 	padding-top: 0.55rem;
 	padding-bottom: 0.5rem;
-	border-top: 1px dotted;
 	position: relative;
 	display: flex;
 	justify-content: space-between;
+	position: sticky;
+	top: 0;
+	background: var(--bg-color);
+	z-index: 1;
+}
+
+.submenu-header::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	width: 100%;
+	top: -1px;
+	border-bottom: 1px dotted;
 }
 
 .submenu-header::after {
@@ -816,7 +823,7 @@ body.dark .logo svg .fill {
 
 .submenu-content {
 	overflow: hidden;
-	transition: max-height 0.3s;
+	transition: max-height 0.4s;
 }
 
 .submenu-content::before {
@@ -835,6 +842,10 @@ body.dark .logo svg .fill {
 	text-align: right;
 	border-top: 1px dotted;
 	padding: 0.55rem 1rem 0.5rem;
+	position: sticky;
+	bottom: 0;
+	background: var(--bg-color);
+	z-index: 1;
 }
 
 .checkbox {

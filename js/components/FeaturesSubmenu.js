@@ -1,37 +1,30 @@
 export function FeaturesSubmenu(initialVnode) {
-	let open = true;
 	let offsetHeight = null;
 	let update = function() {};
-
-	function toggle() {
-		open = !open;
-		update();
-	};
 
 	return {
 		oncreate: function(vnode) {
 			offsetHeight = vnode.dom.offsetHeight;
-			update = function() {
-				vnode.dom.querySelector('.submenu-content').style.maxHeight = open ? `${offsetHeight}px` : '0';
-			}
-			update();
+		},
+		onupdate: function(vnode) {
+			vnode.dom.querySelector('.submenu-content').style.maxHeight = vnode.attrs.submenu.open ? `${offsetHeight}px` : '0';
 		},
 		view: function(vnode) {
-			const family = vnode.attrs.family;
+			const submenu = vnode.attrs.submenu;
 			return m('fieldset.submenu',
-				m('legend.submenu-header', {onclick: toggle, class: open ? "open" : "closed"},
-					m('span', family.name),
+				m('legend.submenu-header', {onclick: () => { submenu.open = !submenu.open }, class: submenu.open ? "open" : "closed"},
+					m('span', submenu.familyName),
 					m('span.submenu-toggle', "▿")
 				),
 				m('div.submenu-content',
-					family.features.map(feature => {
+					submenu.features.map(feature => {
 						return m('div.checkbox', 
-							m('input', {name: family.id, 
+							m('input', {name: submenu.familyId, 
 										type: 'checkbox', 
 										id: `${feature.tag}-${feature.id}`, 
 										value: feature.id, 
-										checked: vnode.attrs.selectedFeatures[family.id][feature.id],
-										onchange: (e) => {vnode.attrs.selectedFeatures[family.id][feature.id] = e.currentTarget.checked; vnode.attrs.onchange()},
+										checked: feature.selected,
+										onchange: (e) => {feature.selected = e.currentTarget.checked; vnode.attrs.onchange()},
 								}
 							),
 							m('label', {for: `${feature.tag}-${feature.id}`}, 
