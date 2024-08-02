@@ -61,7 +61,7 @@ export function FeaturesSelect(initialVnode) {
 		},
 		view: function(vnode) {
 			return m('div.features',
-				m('button.features-button', {onclick: () => { open = !open }, disabled: Layout.featuresLocked}, "Features ▿"),
+				m('button.features-button', { disabled: !Fonts.list.length, onclick: () => { open = !open }}, "Features ▿"),
 				m('form.features-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					Features.list.map(familyGroup => {
 						return m(FeaturesSubmenu, {
