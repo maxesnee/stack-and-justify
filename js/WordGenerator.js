@@ -1,19 +1,21 @@
 import { Words } from "./Words.js";
+import { Features } from "./Features.js";
 import { Layout } from "./Layout.js";
-import { Fonts } from "./Fonts.js";
 import { WorkerPool } from "./WorkerPool.js";
 import { random, shuffle } from "./Helpers.js";
 
-export const WordGenerator = function(fontName, fontData) {
+export const WordGenerator = function(fontName, fontData, fontId) {
 	const filters = ["lowercase", "uppercase", "capitalised"];
 	let sortedDict = null;
 
 	async function sort() {
 		let words = await Words.get();
 
+		let features = Features.css(fontId);
+
 		// The workers requires the OffscreenCanvas API
 		if (window.OffscreenCanvas) {
-			const result = WorkerPool.postMessage([words, fontName, fontData]);
+			const result = WorkerPool.postMessage([words, fontName, fontData, features]);
 			sortedDict = await result.then(e => e.data);
 		} else {
 			sortedDict = sortDictionary(words, fontName, fontData);

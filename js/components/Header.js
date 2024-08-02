@@ -3,6 +3,7 @@ import { SVG } from "./SVG.js";
 import { FontInput } from "./FontInput.js";
 import { DarkModeButton } from "./DarkModeButton.js";
 import { Options} from "./Options.js";
+import { FeaturesSelect } from "./FeaturesSelect.js";
 
 export function Header(initialVnode) {
 	return {
@@ -14,6 +15,7 @@ export function Header(initialVnode) {
 					),
 				m(FontInput),
 				m(Options),
+				m(FeaturesSelect),
 				m('div.header-btns',
 					m(DarkModeButton),
 					m('button.about-btn', {onclick: () => AppState.showAbout = !AppState.showAbout }, AppState.showAbout ? "❎" : "❓"),

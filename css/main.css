@@ -137,7 +137,7 @@ button:active {
 	position: relative;
 	display: grid;
 	grid-column-gap: 2rem;
-	grid-template-columns: 2fr 3fr 2fr 1fr;
+	grid-template-columns: 2fr 3fr 1fr 1fr 1fr;
 	padding-bottom: 4rem;
 }
 
@@ -170,7 +170,6 @@ body.dark .logo svg .fill {
 }
 
 .header-btns {
-	grid-column: 4;
 	text-align: right;
 	user-select: none;
 	-webkit-user-select: none;
@@ -755,15 +754,17 @@ body.dark .logo svg .fill {
 	top: 0;
 }
 
-.options {
-	margin-right: 2rem;
+.options,
+.features {
+/*	margin-right: 2rem;*/
 	white-space: nowrap;
 	position: relative;
 	user-select: none;
 	-webkit-user-select: none;
 }
 
-.options-menu {
+.options-menu,
+.features-menu {
 	position: absolute;
 	top: 1.75rem;
 	left: -1.25rem;
@@ -772,21 +773,26 @@ body.dark .logo svg .fill {
 	border-radius: 0.35rem;
 	box-shadow: 1px 2px 2px rgba(0,0,0,0.25);
 	z-index: 3;
+	max-height: calc(100vh - 5.5rem);
+	overflow: auto;
 }
 
-.options-menu fieldset {
+.options-menu fieldset,
+.features-menu fieldset {
 	padding-top: 0.75rem;
 	padding-bottom: 0.75rem; 
 }
 
-.options-menu fieldset > * {
+.options-menu fieldset > *,
+.features-menu fieldset > * {
 	box-sizing: border-box;
 	width: 100%;
 	padding-left: 1.25rem;
 	padding-right: 1.25rem;
 }
 
-.options-menu fieldset legend {
+.options-menu fieldset legend,
+.features-menu fieldset legend {
 	float: left;
 	padding-top: 0.75rem;
 	padding-bottom: 0.75rem;
@@ -795,15 +801,27 @@ body.dark .logo svg .fill {
 	margin-bottom: 1rem;
 }
 
-.options-menu fieldset:first-of-type legend {
+.options-menu fieldset:first-of-type legend,
+.features-menu fieldset:first-of-type legend {
 	padding-top: 0;
 	border-top: 0;
 }
 
-.options-update {
+.options-update,
+.features-update {
 	text-align: right;
 	border-top: 1px dotted;
 	padding: 0.75rem 1.25rem;
+}
+
+.features-submenu-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.features-submenu-content {
+	overflow: hidden;
+	transition: max-height 0.3s;
 }
 
 .checkbox {
@@ -835,6 +853,15 @@ input[type="checkbox"]:checked + label::before {
 
 .checkbox label {
 	white-space: nowrap;
+}
+
+.feature-tag {
+	font-family: monospace;
+	font-size: 11px;
+	position: relative;
+	top: -1px;
+	text-transform: uppercase;
+	margin-right: 1em;
 }
 
 /* About */

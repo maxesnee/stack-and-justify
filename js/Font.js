@@ -4,9 +4,9 @@ import { generateUID } from "./Helpers.js";
 
 export const Font = function(name, data, info) {
 	const fontFaceName = info.fileName;
-	const wordGenerator = WordGenerator(fontFaceName, data);
-	let isLoading = true;
 	const id = generateUID();
+	const wordGenerator = WordGenerator(fontFaceName, data, id);
+	let isLoading = true;
 
 	async function init() {
 		// Load font

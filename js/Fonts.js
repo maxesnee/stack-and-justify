@@ -4,6 +4,7 @@ import { sortFonts } from './Helpers.js';
 
 export const Fonts = (function() {
 	let list = [];
+	// let features = [];
 
 	function add(fontName, fontData, fontInfo) {
 		let font;
@@ -16,7 +17,7 @@ export const Fonts = (function() {
 		} else {
 			font = list.find(font => font.name === fontName);
 		}
-		
+
 		Layout.addLine("default", font.id);
 		m.redraw();
 
@@ -47,12 +48,26 @@ export const Fonts = (function() {
 		}
 	}
 
+	// Output the list of font grouped by family name
+	function familyList() {
+		const families = {};
+		list.forEach(font => {
+			const familyName = font.info.familyName;
+			if (!families[familyName]) {
+				families[familyName] = [];
+			}
+			families[familyName].push(font);
+		});
+		return families;
+	}
+
 	return {
 		add,
 		get,
 		indexOf,
 		first,
 		update,
+		familyList,
 		get list() {
 			return list;
 		},

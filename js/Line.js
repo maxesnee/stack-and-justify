@@ -1,10 +1,13 @@
 import { Fonts } from './Fonts.js';
+import { Features } from './Features.js';
 import { Size } from './Size.js';
 import { Layout } from './Layout.js';
 import { Filters } from './Filters.js';
 import { generateUID } from './Helpers.js';
 
 export function Line(size, fontId) {
+	const id = generateUID();
+
 	if (typeof size === 'string') {
 		size = Size(size)
 	} else {
@@ -15,9 +18,10 @@ export function Line(size, fontId) {
 
 	let text = "";
 	let filter = 2;
-	const id = generateUID();
+	let featuresCSS = Features.css(fontId);
 
 	size.onchange = update;
+
 
 	window.addEventListener('font-loaded', (e) => {
 		if (e.detail.fontId === fontId) {
@@ -38,6 +42,8 @@ export function Line(size, fontId) {
 		const outputFilter = Layout.filterLocked ? Layout.filter : filter;
 		const outputSize = Layout.sizeLocked ? Layout.size.getIn('px') : size.getIn('px');
 		const outputWidth = Layout.width.getIn('px');
+
+		featuresCSS = Features.css(fontId);
 
 		text = '';
 		const textOptions = await outputFont.wordGenerator.getWords(outputSize, outputWidth, Filters.list[outputFilter].value);
@@ -103,6 +109,9 @@ export function Line(size, fontId) {
 		},
 		get font() {
 			return Fonts.get(fontId);
+		},
+		get featuresCSS() {
+			return featuresCSS
 		},
 		id,
 		remove,

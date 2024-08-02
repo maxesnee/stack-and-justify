@@ -6,7 +6,10 @@ onmessage = async function(e) {
 	const words = e.data[0];
 	const fontName = e.data[1];
 	const fontData = e.data[2];	
-	const fontFace = new FontFace(fontName, fontData);
+	const fontFeatures = e.data[3];
+	const fontFace = new FontFace(fontName, fontData, {
+		featureSettings: fontFeatures
+	});
 
 	self.fonts.add(fontFace);
 	await fontFace.load();

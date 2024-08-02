@@ -5,7 +5,7 @@ import { Fonts } from "../Fonts.js";
 export function Options(initialVnode) {
 	let open = false;
 
-	document.onclick = (e) => {
+	document.addEventListener('click', (e) => {
 		const menu = document.querySelector('.options-menu');
 		const btn = document.querySelector('.options-button');
 		
@@ -13,7 +13,7 @@ export function Options(initialVnode) {
 			open = false;
 			m.redraw();
 		}
-	}
+	});
 
 	async function update(e) {
 		e.preventDefault();

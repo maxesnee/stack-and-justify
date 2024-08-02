@@ -5,6 +5,7 @@ import { CopyButton } from "./CopyButton.js";
 import { UpdateButton } from "./UpdateButton.js";
 import { DeleteButton } from "./DeleteButton.js";
 import { Fonts } from "../Fonts.js";
+import { Features } from "../Features.js";
 import { Layout } from "../Layout.js";
 
 export function Line(initialVnode) {
@@ -22,8 +23,9 @@ export function Line(initialVnode) {
 						fontSize: Layout.sizeLocked ? Layout.size.get() : line.size.get(),
 						width: Layout.width.get(),
 						fontFamily: Layout.fontLocked ? Layout.font ? Layout.font.fontFaceName : '' : line.font.fontFaceName,
-						height: Layout.sizeLocked ? (Layout.size.getIn('px') * 1.2)+'px' : (line.size.getIn('px') * 1.2)+'px' // Get the line height
-					}}, line.text),
+						height: Layout.sizeLocked ? (Layout.size.getIn('px') * 1.2)+'px' : (line.size.getIn('px') * 1.2)+'px', // Get the line height
+						fontFeatureSettings: line.featuresCSS
+					}, }, line.text),
 					line.text === '' ? m('div.no-words-found', 'No words found ☹') : '',
 					m('div.loading', {class: line.font.isLoading ? 'visible' : 'hidden'},
 						m('span', "Loading"),

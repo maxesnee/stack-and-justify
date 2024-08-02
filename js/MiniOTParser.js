@@ -37,7 +37,7 @@ const nameTableNames = [
 
 // List of OpenType features that should have user control
 // Based on http://tiro.com/John/Enabling_Typography_(OTL).pdf
-const userFeatures = {
+export const userFeatures = {
 	"smpl": "Simplified Forms",
 	"trad": "Traditional Forms",
 	"calt": "Contextual Alternates",
@@ -145,15 +145,22 @@ export function getFontInfo(font, fileName) {
 	// Create feature list
 	if (font.GSUB === undefined) return info;
 	
-	info.features = {};
+	info.features = [];
 	for (const feature of font.GSUB.featureList) {
-		if (info.features[feature.tag] === undefined && userFeatures[feature.tag]) {
+		const featureInfo = {
+			tag: feature.tag,
+			name: undefined
+		}
+		const featureAlreadyExists = info.features.some((_feature) => _feature.tag === feature.tag);
+
+		if (userFeatures[feature.tag] && !featureAlreadyExists) {
 			// Check if a custom description exists for the feature (usually for ss01-20)
 			if (feature.uiNameID !== undefined) {
-				info.features[feature.tag] = font.name[feature.uiNameID];
+				featureInfo.name = font.name[feature.uiNameID];
 			} else {
-				info.features[feature.tag] = userFeatures[feature.tag];
+				featureInfo.name = userFeatures[feature.tag];
 			}
+			info.features.push(featureInfo);
 		}
 	}
 
