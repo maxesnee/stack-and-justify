@@ -43,7 +43,7 @@ export function Line(size, fontId) {
 		const outputSize = Layout.sizeLocked ? Layout.size.getIn('px') : size.getIn('px');
 		const outputWidth = Layout.width.getIn('px');
 
-		featuresCSS = Features.css(fontId);
+		featuresCSS = Features.css(outputFontId);
 
 		text = '';
 		const textOptions = await outputFont.wordGenerator.getWords(outputSize, outputWidth, Filters.list[outputFilter].value);
