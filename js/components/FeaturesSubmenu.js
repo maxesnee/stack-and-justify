@@ -1,5 +1,4 @@
 export function FeaturesSubmenu(initialVnode) {
-	const familyId = initialVnode.attrs.familyId;
 	let open = true;
 	let offsetHeight = null;
 	let update = function() {};
@@ -18,20 +17,21 @@ export function FeaturesSubmenu(initialVnode) {
 			update();
 		},
 		view: function(vnode) {
+			const family = vnode.attrs.family;
 			return m('fieldset.features-submenu',
 				m('legend.features-submenu-header', {onclick: toggle},
-					m('span', vnode.attrs.name),
+					m('span', family.name),
 					m('span.features-submenu-toggle', "▿")
 				),
 				m('div.features-submenu-content',
-					vnode.attrs.list.map(feature => {
+					family.features.map(feature => {
 						return m('div.checkbox', 
-							m('input', {name: familyId, 
+							m('input', {name: family.id, 
 										type: 'checkbox', 
 										id: `${feature.tag}-${feature.id}`, 
 										value: feature.id, 
-										checked: feature.selected,
-										// onchange: (e) => {feature.selected = e.currentTarget.checked},
+										checked: vnode.attrs.selectedFeatures[family.id][feature.id],
+										onchange: (e) => {vnode.attrs.selectedFeatures[family.id][feature.id] = e.currentTarget.checked; vnode.attrs.onchange()},
 								}
 							),
 							m('label', {for: `${feature.tag}-${feature.id}`}, 

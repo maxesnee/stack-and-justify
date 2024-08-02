@@ -5,32 +5,34 @@ import { FeaturesSubmenu } from "./FeaturesSubmenu.js";
 import { generateUID } from "../Helpers.js";
 
 export function FeaturesSelect(initialVnode) {
+	// Menu status
 	let open = false;
-	const familyIds = {};
+
+	let needsUpdate = false;
+
+	// Temporarily holds the selected features before they are applies
+	let selectedFeatures = {};
+
+	addEventListener('font-added', (e) => {
+		selectedFeatures = Object.fromEntries(Features.list.map(familyGroup => {
+			return [familyGroup.id, Object.fromEntries(familyGroup.features.map(feature => [feature.id, feature.selected]))];
+		}));
+	});
+
 
 	function update(e) {
 		e.preventDefault();
 
 		const fontsToUpdate = new Set();
 
-		const form = document.querySelector('.features-menu');
-		const formData = new FormData(form);
-		const featuresToUpdate = Array.from(formData.values());
-
 		// Update the features list to match the form, and mark the fonts to be updated
 		for (const familyGroup of Features.list) {
 			for (const feature of familyGroup.features) {
-				if (featuresToUpdate.includes(feature.id)) {
-					// If the feature wasn't selected before, mark the fonts to update
-					if (feature.selected === false) feature.fontIds.forEach(fontId => fontsToUpdate.add(fontId));
-
-					feature.selected = true;
-				} else {
-					// Same, if the feature WAS selected before, mark the fonts to update
-					if (feature.selected === true) feature.fontIds.forEach(fontId => fontsToUpdate.add(fontId));
-
-					feature.selected = false;
+				// If the selection changed, mark the fonts to be updated
+				if (feature.selected !== selectedFeatures[familyGroup.id][feature.id]) {
+					feature.fontIds.forEach(fontId => fontsToUpdate.add(fontId));
 				}
+				feature.selected = selectedFeatures[familyGroup.id][feature.id];
 			}
 		}
 
@@ -40,6 +42,8 @@ export function FeaturesSelect(initialVnode) {
 		}
 		
 		open = false;
+		needsUpdate = false;
+
 		m.redraw();
 	}
 
@@ -60,10 +64,14 @@ export function FeaturesSelect(initialVnode) {
 				m('button.features-button', {onclick: () => { open = !open }, disabled: Layout.featuresLocked}, "Features ▿"),
 				m('form.features-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					Features.list.map(familyGroup => {
-						return m(FeaturesSubmenu, {familyId: familyGroup.id, name: familyGroup.name, list: familyGroup.features})
+						return m(FeaturesSubmenu, {
+							family: familyGroup, 
+							selectedFeatures, 
+							onchange: () => { needsUpdate = true }
+						});
 					}),
 					m('div.features-update', 
-						m('button.bold', {onclick: update},'↻ Update')
+						m('button.bold', {disabled: !needsUpdate, onclick: update},'↻ Update')
 					)
 				)
 			)
