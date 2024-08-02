@@ -6,6 +6,8 @@ export function Options(initialVnode) {
 	// Menu status
 	let open = false;
 
+	let needsUpdate = false;
+
 	// Temporarily holds the selected options before they are applies
 	let options = {
 		languages: Object.fromEntries(Words.data.languages.map(lang => [lang.name, lang.selected])),
@@ -38,6 +40,8 @@ export function Options(initialVnode) {
 		Fonts.update();
 
 		open = false;
+		needsUpdate = false;
+		
 		m.redraw();
 	}
 
@@ -56,7 +60,7 @@ export function Options(initialVnode) {
 									id:lang.name, 
 									value: lang.name, 
 									checked: options.languages[lang.name],
-									onclick: (e) => { options.languages[lang.name] = e.currentTarget.checked }
+									onclick: (e) => { options.languages[lang.name] = e.currentTarget.checked; needsUpdate = true; }
 								}),
 								m('label', {for: lang.name}, lang.label)
 							)
@@ -72,14 +76,14 @@ export function Options(initialVnode) {
 									id:source.name, 
 									value: source.name, 
 									checked: options.sources[source.name],
-									onclick: (e) => { options.sources[source.name] = e.currentTarget.checked }
+									onclick: (e) => { options.sources[source.name] = e.currentTarget.checked; needsUpdate = true; }
 								}),
 								m('label', {for: source.name}, source.label)
 								)
 						})
 					),
 					m('div.options-update', 
-						m('button.bold', {onclick: update},'↻ Update')
+						m('button.bold', {disabled: !needsUpdate, onclick: update},'↻ Update')
 					)
 				)
 			)

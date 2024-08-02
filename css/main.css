@@ -104,6 +104,11 @@ input[disabled] {
 	opacity: 0.3;
 }
 
+*[disabled]:hover {
+	cursor: default;
+	color: inherit;
+}
+
 button {
 	cursor: pointer;
 }
@@ -812,6 +817,10 @@ body.dark .logo svg .fill {
 	text-align: right;
 	border-top: 1px dotted;
 	padding: 0.75rem 1.25rem;
+}
+
+.options-update[disabled] {
+
 }
 
 .features-submenu-header {
