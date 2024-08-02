@@ -26,27 +26,13 @@ export function Options(initialVnode) {
 	async function update(e) {
 		e.preventDefault();
 
-		const form = document.querySelector('.options-menu');
-		const formData = new FormData(form);
-		const selectedLanguages = formData.getAll('languages');
-		const selectedSources = formData.getAll('sources');
-
-
 		// Update the selection of languages and dictionaries
 		for (const language of Words.data.languages) {
-			if (selectedLanguages.includes(language.name)) {
-				language.selected = true
-			} else {
-				language.selected = false;
-			}
+			language.selected = options.languages[language.name];
 		}
 
 		for (const source of Words.data.sources) {
-			if (selectedSources.includes(source.name)) {
-				source.selected = true
-			} else {
-				source.selected = false;
-			}
+			source.selected = options.sources[source.name];
 		}
 
 		Fonts.update();
