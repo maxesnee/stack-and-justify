@@ -16,8 +16,8 @@ export function Options(initialVnode) {
 
 	// Close the menu when the user clicks anywhere else
 	document.addEventListener('click', (e) => {
-		const menu = document.querySelector('.options-menu');
-		const btn = document.querySelector('.options-button');
+		const menu = document.querySelector('.menu');
+		const btn = document.querySelector('.menu-button');
 		
 		if (!menu.contains(e.target) && e.target !== btn && open) {
 			open = false;
@@ -41,48 +41,52 @@ export function Options(initialVnode) {
 
 		open = false;
 		needsUpdate = false;
-		
+
 		m.redraw();
 	}
 
 	return {
 		view: function(vnode) {
-			return m('div.options', 
-				m('button.options-button', {onclick: () => { open = !open }}, "Options ▿"),
-				m('form.options-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
-					m('fieldset',
-						m('legend', 'Languages'),
-						Words.data.languages.map(lang => {
-							return m('div.checkbox', 
-								m('input', {
-									name: 'languages', 
-									type: 'checkbox', 
-									id:lang.name, 
-									value: lang.name, 
-									checked: options.languages[lang.name],
-									onclick: (e) => { options.languages[lang.name] = e.currentTarget.checked; needsUpdate = true; }
-								}),
-								m('label', {for: lang.name}, lang.label)
-							)
-						})
-					),
-					m('fieldset', 
-						m('legend', 'Sources'),
-						Words.data.sources.map(source => {
-							return m('div.checkbox',
-								m('input', {
-									name: 'sources', 
-									type: 'checkbox', 
-									id:source.name, 
-									value: source.name, 
-									checked: options.sources[source.name],
-									onclick: (e) => { options.sources[source.name] = e.currentTarget.checked; needsUpdate = true; }
-								}),
-								m('label', {for: source.name}, source.label)
+			return m('div.menu-container', 
+				m('button.menu-button', {onclick: () => { open = !open }}, "Options ▿"),
+				m('form.menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
+					m('fieldset.submenu',
+						m('legend.submenu-header', 'Languages'),
+						m('div.submenu-content',
+							Words.data.languages.map(lang => {
+								return m('div.checkbox', 
+									m('input', {
+										name: 'languages', 
+										type: 'checkbox', 
+										id:lang.name, 
+										value: lang.name, 
+										checked: options.languages[lang.name],
+										onclick: (e) => { options.languages[lang.name] = e.currentTarget.checked; needsUpdate = true; }
+									}),
+									m('label', {for: lang.name}, lang.label)
 								)
-						})
+							})
+						)
 					),
-					m('div.options-update', 
+					m('fieldset.submenu', 
+						m('legend.submenu-header', 'Sources'),
+						m('div.submenu-content',
+							Words.data.sources.map(source => {
+								return m('div.checkbox',
+									m('input', {
+										name: 'sources', 
+										type: 'checkbox', 
+										id:source.name, 
+										value: source.name, 
+										checked: options.sources[source.name],
+										onclick: (e) => { options.sources[source.name] = e.currentTarget.checked; needsUpdate = true; }
+									}),
+									m('label', {for: source.name}, source.label)
+									)
+							})
+						)
+					),
+					m('div.menu-update', 
 						m('button.bold', {disabled: !needsUpdate, onclick: update},'↻ Update')
 					)
 				)

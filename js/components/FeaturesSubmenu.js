@@ -12,18 +12,18 @@ export function FeaturesSubmenu(initialVnode) {
 		oncreate: function(vnode) {
 			offsetHeight = vnode.dom.offsetHeight;
 			update = function() {
-				vnode.dom.querySelector('.features-submenu-content').style.maxHeight = open ? `${offsetHeight}px` : '0';
+				vnode.dom.querySelector('.submenu-content').style.maxHeight = open ? `${offsetHeight}px` : '0';
 			}
 			update();
 		},
 		view: function(vnode) {
 			const family = vnode.attrs.family;
-			return m('fieldset.features-submenu',
-				m('legend.features-submenu-header', {onclick: toggle},
+			return m('fieldset.submenu',
+				m('legend.submenu-header', {onclick: toggle, class: open ? "open" : "closed"},
 					m('span', family.name),
-					m('span.features-submenu-toggle', "▿")
+					m('span.submenu-toggle', "▿")
 				),
-				m('div.features-submenu-content',
+				m('div.submenu-content',
 					family.features.map(feature => {
 						return m('div.checkbox', 
 							m('input', {name: family.id, 

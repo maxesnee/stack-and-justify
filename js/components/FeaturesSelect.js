@@ -50,8 +50,8 @@ export function FeaturesSelect(initialVnode) {
 	return {
 		oncreate: function(vnode) {
 			document.addEventListener('click', (e) => {
-				const menu = vnode.dom.querySelector('.features-menu');
-				const btn = vnode.dom.querySelector('.features-button');
+				const menu = vnode.dom.querySelector('.menu');
+				const btn = vnode.dom.querySelector('.menu-button');
 
 				if (!menu.contains(e.target) && e.target !== btn && open) {
 					open = false;
@@ -60,9 +60,9 @@ export function FeaturesSelect(initialVnode) {
 			});
 		},
 		view: function(vnode) {
-			return m('div.features',
-				m('button.features-button', { disabled: !Fonts.list.length, onclick: () => { open = !open }}, "Features ▿"),
-				m('form.features-menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
+			return m('div.menu-container',
+				m('button.menu-button', { disabled: !Fonts.list.length, onclick: () => { open = !open }}, "Features ▿"),
+				m('form.menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					Features.list.map(familyGroup => {
 						return m(FeaturesSubmenu, {
 							family: familyGroup, 
@@ -70,7 +70,7 @@ export function FeaturesSelect(initialVnode) {
 							onchange: () => { needsUpdate = true }
 						});
 					}),
-					m('div.features-update', 
+					m('div.menu-update', 
 						m('button.bold', {disabled: !needsUpdate, onclick: update},'↻ Update')
 					)
 				)

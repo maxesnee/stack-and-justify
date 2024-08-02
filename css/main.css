@@ -759,20 +759,17 @@ body.dark .logo svg .fill {
 	top: 0;
 }
 
-.options,
-.features {
-/*	margin-right: 2rem;*/
+.menu-container {
 	white-space: nowrap;
 	position: relative;
 	user-select: none;
 	-webkit-user-select: none;
 }
 
-.options-menu,
-.features-menu {
+.menu {
 	position: absolute;
-	top: 1.75rem;
-	left: -1.25rem;
+	top: 1.5rem;
+	left: -1rem;
 	background: var(--bg-color);
 	border: 1px dotted;
 	border-radius: 0.35rem;
@@ -782,55 +779,62 @@ body.dark .logo svg .fill {
 	overflow: auto;
 }
 
-.options-menu fieldset,
-.features-menu fieldset {
-	padding-top: 0.75rem;
-	padding-bottom: 0.75rem; 
+.submenu {
+	padding-top: 0rem; 
+	padding-bottom: 0rem; 
 }
 
-.options-menu fieldset > *,
-.features-menu fieldset > * {
+.submenu > * {
 	box-sizing: border-box;
 	width: 100%;
-	padding-left: 1.25rem;
-	padding-right: 1.25rem;
+	padding-left: 0.9rem;
+	padding-right: 0.9rem;
 }
 
-.options-menu fieldset legend,
-.features-menu fieldset legend {
-	float: left;
-	padding-top: 0.75rem;
-	padding-bottom: 0.75rem;
-	border-top: 1px dotted;
-	border-bottom: 1px dotted;
-	margin-bottom: 1rem;
-}
-
-.options-menu fieldset:first-of-type legend,
-.features-menu fieldset:first-of-type legend {
-	padding-top: 0;
+.submenu:first-of-type .submenu-header {
+/*	padding-top: 0;*/
 	border-top: 0;
 }
 
-.options-update,
-.features-update {
-	text-align: right;
+.submenu-header {
+	padding-top: 0.55rem;
+	padding-bottom: 0.5rem;
 	border-top: 1px dotted;
-	padding: 0.75rem 1.25rem;
-}
-
-.options-update[disabled] {
-
-}
-
-.features-submenu-header {
+	position: relative;
 	display: flex;
 	justify-content: space-between;
 }
 
-.features-submenu-content {
+.submenu-header::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	width: 100%;
+	bottom: -1px;
+	border-bottom: 1px dotted;
+}
+
+.submenu-content {
 	overflow: hidden;
 	transition: max-height 0.3s;
+}
+
+.submenu-content::before {
+	content: "";
+	display: block;
+	padding-top: 0.75rem;
+}
+
+.submenu-content::after {
+	content: "";
+	display: block;
+	padding-bottom: 0.75rem;
+}
+
+.menu-update {
+	text-align: right;
+	border-top: 1px dotted;
+	padding: 0.55rem 1rem 0.5rem;
 }
 
 .checkbox {
@@ -840,6 +844,7 @@ body.dark .logo svg .fill {
 
 input[type="checkbox"] {
 	appearance: none;
+	display: none;
 }
 
 .checkbox label {
@@ -861,6 +866,8 @@ input[type="checkbox"]:checked + label::before {
 }
 
 .checkbox label {
+	width: 100%;
+	padding-left: 0.25rem;
 	white-space: nowrap;
 }
 
