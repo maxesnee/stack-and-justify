@@ -4,8 +4,8 @@
  * If you want an actual OpenType JS library, check opentype.js or Typr.js
  * 
  * I made this because I only needed a handful of entries from the 'name', 'OS/2' 
- * and 'GPOS' table and parsing the entire font seemed wasteful and was actually slow
- * with opentype.js. Typr.js is faster but doesn't support the 'GPOS' table.
+ * and 'GSUB' table and parsing the entire font seemed wasteful and was actually slow
+ * with opentype.js. Typr.js is faster but doesn't support the 'GSUB' table.
  * 
  */
 
