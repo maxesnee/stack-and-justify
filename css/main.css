@@ -100,11 +100,11 @@ input[disabled] {
 
 /* Links */
 
-*[disabled] {
+.disabled {
 	opacity: 0.3;
 }
 
-*[disabled]:hover {
+.disabled:hover {
 	cursor: default;
 	color: inherit;
 }
@@ -599,6 +599,12 @@ body.dark .logo svg .fill {
 
 /* Inputs */
 
+input:focus {
+	outline: 0;
+	box-shadow: 0 0 0 2px var(--grey);
+	border-radius: 1px;
+}
+
 .line-count {
 	white-space: nowrap;
 }
@@ -624,6 +630,14 @@ body.dark .logo svg .fill {
 
 .size-input-global {
 	padding-top: 0;
+}
+
+.size-input.disabled button {
+	cursor: default;
+}
+
+.size-input.disabled button:hover {
+	color: inherit;
 }
 
 .size-input input {
@@ -726,9 +740,17 @@ body.dark .logo svg .fill {
 	cursor: pointer;
 }
 
-.select-wrapper select {
+.select-wrapper:not(.disabled):hover {
+	color: var(--green);
+}
+
+select {
 	appearance: none;
 	cursor: pointer;
+}
+
+select[disabled] {
+	cursor: inherit;
 }
 
 .select-wrapper::after {
@@ -810,6 +832,7 @@ body.dark .logo svg .fill {
 	width: 100%;
 	top: -1px;
 	border-bottom: 1px dotted;
+	border-color: var(--fg-color);
 }
 
 .submenu-header::after {
@@ -819,7 +842,16 @@ body.dark .logo svg .fill {
 	width: 100%;
 	bottom: -1px;
 	border-bottom: 1px dotted;
+	border-color: var(--fg-color);
 }
+
+.submenu-toggle {
+	cursor: pointer;
+}
+
+.submenu-toggle:hover {
+	color: var(--green);
+} 
 
 .submenu-content {
 	overflow: hidden;
@@ -846,6 +878,14 @@ body.dark .logo svg .fill {
 	bottom: 0;
 	background: var(--bg-color);
 	z-index: 1;
+}
+
+.menu-update.disabled button {
+	cursor: default;
+}
+
+.menu-update.disabled button:hover {
+	color: inherit;
 }
 
 .checkbox {

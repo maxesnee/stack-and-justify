@@ -17,8 +17,9 @@ export function FontSelect(initialVnode) {
 			const fontName = vnode.attrs.params.font ? vnode.attrs.params.font.name : '';
 			return m('div.font-select', 
 				m('span.font-select-hidden-label', {style: {position: 'absolute', visibility: 'hidden'}}, fontName),
-				m('div.select-wrapper', {disabled: Layout.fontLocked},
+				m('div.select-wrapper', {class: Layout.fontLocked ? "disabled" : ""},
 					m('select', {
+						disabled: Layout.fontLocked,
 						oninput: (e) => {vnode.attrs.params.fontId = e.target.options[e.target.selectedIndex].value },
 					},
 						Fonts.list.map((font) => {

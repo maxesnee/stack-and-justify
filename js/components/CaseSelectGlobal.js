@@ -11,8 +11,9 @@ export function CaseSelectGlobal(initialVnode) {
 						}, Layout.filterLocked ? '🔒' : '🔓'),
 					m(Tooltip, {label: 'Apply to all lines'})
 				),
-				m('div.select-wrapper', {disabled: !Layout.filterLocked},
+				m('div.select-wrapper', {class: !Layout.filterLocked ? "disabled" : ""},
 					m('select.case-select', {
+						disabled: !Layout.filterLocked,
 						onchange: (e) => {Layout.filter = e.currentTarget.selectedIndex},
 					},
 						m('option', {value: 'lowercase', selected: Layout.filter == 0}, 'Lowercase'),

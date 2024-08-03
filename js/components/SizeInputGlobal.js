@@ -22,7 +22,7 @@ export function SizeInputGlobal(initialVnode) {
 
 	return {
 		view: function(vnode) {
-			return m('div.size-input.size-input-global',
+			return m('div.size-input.size-input-global', {class: !Layout.sizeLocked ? "disabled" : ""},
 				m('button', { 
 					onclick: () => { Layout.size.decrement() },
 					disabled: !Layout.sizeLocked

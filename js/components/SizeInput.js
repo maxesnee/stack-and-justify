@@ -21,7 +21,7 @@ export function SizeInput(initialVnode) {
 
 	return {
 		view: function(vnode) {
-			return m('div.size-input',
+			return m('div.size-input', {class: Layout.sizeLocked ? "disabled" : ""},
 				m('button', {
 					onclick: () => { vnode.attrs.params.size.decrement() },
 					disabled: Layout.sizeLocked

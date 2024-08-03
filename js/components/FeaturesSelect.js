@@ -72,7 +72,11 @@ export function FeaturesSelect(initialVnode) {
 		},
 		view: function(vnode) {
 			return m('div.menu-container',
-				m('button.menu-button', { disabled: !Fonts.list.length, onclick: () => { open = !open }}, "Features ▿"),
+				m('button.menu-button', { 
+					class: !Fonts.list.length ? "disabled" : "",
+					disabled: !Fonts.list.length, 
+					onclick: () => { open = !open }
+				}, "Features ▿"),
 				m('form.menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					menu.map(submenu => {
 						return m(FeaturesSubmenu, {
@@ -81,7 +85,7 @@ export function FeaturesSelect(initialVnode) {
 							onchange: () => { needsUpdate = true },
 						});
 					}),
-					m('div.menu-update', 
+					m('div.menu-update', {class: !needsUpdate ? "disabled" : ""}, 
 						m('button.bold', {disabled: !needsUpdate, onclick: update},'↻ Update')
 					)
 				)

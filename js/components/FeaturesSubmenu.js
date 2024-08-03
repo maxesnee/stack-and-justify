@@ -12,7 +12,7 @@ export function FeaturesSubmenu(initialVnode) {
 		view: function(vnode) {
 			const submenu = vnode.attrs.submenu;
 			return m('fieldset.submenu',
-				m('legend.submenu-header', {onclick: () => { submenu.open = !submenu.open }, class: submenu.open ? "open" : "closed"},
+				m('legend.submenu-header.submenu-toggle', {onclick: () => { submenu.open = !submenu.open }, class: submenu.open ? "open" : "closed"},
 					m('span', submenu.familyName),
 					m('span.submenu-toggle', "▿")
 				),

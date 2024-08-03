@@ -87,7 +87,7 @@ export function Options(initialVnode) {
 							})
 						)
 					),
-					m('div.menu-update', 
+					m('div.menu-update', {class: !needsUpdate ? "disabled" : ""},
 						m('button.bold', {disabled: !needsUpdate, onclick: update},'↻ Update')
 					)
 				)
