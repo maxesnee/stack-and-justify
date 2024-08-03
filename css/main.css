@@ -809,8 +809,8 @@ select[disabled] {
 .submenu > * {
 	box-sizing: border-box;
 	width: 100%;
-	padding-left: 0.9rem;
-	padding-right: 0.9rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 
 .submenu-header {
