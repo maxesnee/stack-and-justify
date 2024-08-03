@@ -1,5 +1,5 @@
 export const Filters = (function() {
-	let selected = localStorage['selectedFilter'] || 2;
+	let selected = 2;
 
 	const list = [
 		{ value: 'lowercase', label: 'Lowercase'},
@@ -9,7 +9,6 @@ export const Filters = (function() {
 
 	function select(i) {
 		selected = i;
-		localStorage['selectedFilter'] = i;
 	}
 
 	return {

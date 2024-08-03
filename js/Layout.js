@@ -124,7 +124,6 @@ export const Layout = (function() {
 		},
 		set filterLocked(value) {
 			filterLocked = value;
-			localStorage['filterLocked'] = value;
 			updateAfterLockChange('filter');	
 		},
 		get filter() {
@@ -132,7 +131,6 @@ export const Layout = (function() {
 		},
 		set filter(value) {
 			filter = parseInt(value);
-			localStorage['filter'] = value;
 			update();
 		},
 		get fontLocked() {
@@ -140,7 +138,6 @@ export const Layout = (function() {
 		},
 		set fontLocked(value) {
 			fontLocked = value;
-			localStorage['fontLocked'] = value;
 			updateAfterLockChange('font');	
 		},
 		get fontId() {
