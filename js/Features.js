@@ -55,6 +55,7 @@ export const Features = (function() {
 	function css(fontId) {
 		let str = "";
 		let featureStrings = [];
+
 		for (const familyGroup of features) {
 			familyGroup.features.forEach(feature => {
 				if (feature.fontIds.includes(fontId)) {
@@ -66,6 +67,7 @@ export const Features = (function() {
 				}
 			});
 		}
+
 		str = featureStrings.join(',');
 		return str;
 	}
