@@ -15,6 +15,8 @@ export const Features = (function() {
 		const familyId = generateUID(familyName);
 		const fontFeatures = font.info.features;
 
+		if (fontFeatures === undefined || fontFeatures.length === 0) return;
+
 		// Group the features by family names
 		let familyGroup = features.find(family => family.name === familyName);
 		if (!familyGroup) {
@@ -38,6 +40,7 @@ export const Features = (function() {
 				familyGroup.features.find(feature => feature.name === fontFeature.name).fontIds.push(fontId);
 			}
 		});
+
 		// Sort by tag name
 		familyGroup.features.sort((feaA, feaB) => feaA.tag > feaB.tag);
 	});

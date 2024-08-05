@@ -26,7 +26,7 @@ export function FeaturesSelect(initialVnode) {
 				})
 			};
 		});
-		menu[0].open = true;
+		if (menu[0]) menu[0].open = true;
 	});
 
 	function update(e) {
@@ -73,8 +73,8 @@ export function FeaturesSelect(initialVnode) {
 		view: function(vnode) {
 			return m('div.menu-container',
 				m('button.menu-button', { 
-					class: !Fonts.list.length ? "disabled" : "",
-					disabled: !Fonts.list.length, 
+					class: !Features.list.length ? "disabled" : "",
+					disabled: !Features.list.length, 
 					onclick: () => { open = !open }
 				}, "Features ▿"),
 				m('form.menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
