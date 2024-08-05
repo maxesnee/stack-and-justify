@@ -58,6 +58,7 @@ body {
 
 	--bg-color: #FFF;
 	--fg-color: #000;
+	--grey-light: #F9F9F9;
 	--grey: #A0A0A0;
 	--green: #00b47c;
 	--green-light: #00e682;
@@ -66,6 +67,7 @@ body {
 body.dark {
 	--bg-color: #000;
 	--fg-color: #FFF;
+	--grey-light: #171717;
 	--green: #00e682;
 	--green-light: #00b47c;
 }
@@ -304,10 +306,18 @@ body.dark .logo svg .fill {
 }
 
 .specimen-line {
+	position: relative;
 	display: grid;
 	grid-column: span 3;
 	grid-template-columns: subgrid;
 	border-bottom: 1px dotted;
+	cursor: grab;
+	transition: background-color 0.2s;
+}
+
+.specimen-line:hover {
+	background-color: var(--grey-light);
+
 }
 
 @supports not (grid-template-columns: subgrid) {
@@ -351,7 +361,18 @@ body.dark .logo svg .fill {
 
 .specimen-line .text {
 	align-self: center;
+	cursor: text;
+	transition: opacity 0.15s;
 }
+
+.specimen-line .text.visible {
+	opacity: 1;
+}
+
+.specimen-line .text.hidden {
+	opacity: 0;
+}
+
 
 .specimen-line .loading {
 	position: absolute;
@@ -363,7 +384,7 @@ body.dark .logo svg .fill {
 	justify-content: center;
 	align-items: center;
 	color: #A0A0A0;
-	background: var(--bg-color);
+/*	background: var(--bg-color);*/
 	transition: opacity 0.15s;
 	pointer-events: none;
 	user-select: none;
