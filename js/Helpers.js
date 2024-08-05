@@ -32,6 +32,8 @@ export function handleFontFile(file) {
 		let fileName = file.name.replace(/\..+$/, "");
 		// Replace any non alpha numeric characters with -
 		fileName = fileName.replace(/\W+/g, "-");
+		// Remove leading digits in the filename
+		fileName = fileName.replace(/^[0-9]+/g, '');
 	
 		const reader = new FileReader();
 
