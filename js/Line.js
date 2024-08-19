@@ -47,11 +47,14 @@ export function Line(size, fontId) {
 
 		text = '';
 		const textOptions = await outputFont.wordGenerator.getWords(outputSize, outputWidth, Filters.list[outputFilter].value);
+
 		textOptions.forEach(option => {
 			if (!Layout.textAlreadyUsed(option)) {
 				text = option;
+				return;
 			}
 		});
+		
 		m.redraw();
 	}
 
