@@ -1,5 +1,4 @@
 import { Font } from './Font.js';
-import { Layout } from './Layout.js';
 import { parse, getFontInfo } from './miniotparser/MiniOTParser.js';
 
 export const Fonts = [];
@@ -10,7 +9,7 @@ export function handleFontFiles(files) {
 	files = Array.from(files);
 	const validFiles = files.filter(file => file.name.match(acceptedExtensions));
 
-	const loadedFonts = validFiles.map(handleFontFile);
+	const loadedFonts = validFiles.map(loadFontFile);
 
 	Promise.all(loadedFonts).then(fonts => {
 		sortFonts(fonts);
@@ -29,7 +28,7 @@ export function handleFontFiles(files) {
 	});
 }
 
-export function handleFontFile(file) {
+export function loadFontFile(file) {
 
 	return new Promise((resolve, reject) => {
 		// Removes file extension from name
