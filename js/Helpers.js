@@ -1,4 +1,4 @@
-import { parse, getFontInfo } from './MiniOTParser.js';
+import { parse, getFontInfo } from './miniotparser/MiniOTParser.js';
 
 export async function handleFontFiles(files, callback) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
