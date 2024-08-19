@@ -46,7 +46,7 @@ export function Line(size, fontId) {
 		featuresCSS = Features.css(outputFontId);
 
 		text = '';
-		const textOptions = await outputFont.wordGenerator.getWords(outputSize, outputWidth, Filters.list[outputFilter].value);
+		const textOptions = await outputFont.wordGenerator.getWords(outputSize, outputWidth, Filters.list[outputFilter].value, Layout.lines.length);
 
 		textOptions.forEach(option => {
 			if (!Layout.textAlreadyUsed(option)) {

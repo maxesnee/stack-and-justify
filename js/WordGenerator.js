@@ -1,48 +1,67 @@
-import { Words } from "./Words.js";
-import { Features } from "./Features.js";
-import { Layout } from "./Layout.js";
 import { WorkerPool } from "./WorkerPool.js";
-import { random, shuffle } from "./Helpers.js";
 
-export const WordGenerator = function(fontName, fontData, fontId) {
+export const WordGenerator = function(fontName, fontData) {
 	const filters = ["lowercase", "uppercase", "capitalised"];
-	let sortedDict = null;
+	let sortedWords = null;
 
-	async function sort() {
-		let words = await Words.get();
-
-		let features = Features.css(fontId);
-
+	async function sort(words, fontFeaturesSettings) {
 		// The workers requires the OffscreenCanvas API
 		if (window.OffscreenCanvas) {
-			const result = WorkerPool.postMessage([words, fontName, fontData, features]);
-			sortedDict = await result.then(e => e.data);
+			const result = WorkerPool.postMessage([words, fontName, fontData, fontFeaturesSettings]);
+			sortedWords = await result.then(e => e.data);
 		} else {
-			sortedDict = sortDictionary(words, fontName, fontData);
+			sortedWords = sortWords(words, fontName, fontData, fontFeaturesSettings);
 		}
 	}
 
-	async function getWords(size, width, filter) {
+	// This function is to be used if the OffscreenCanvas API (and thus, workers) is not available
+	function sortWords(words, fontName, fontData, fontFeatures) {
+		const filters = ['lowercase', 'capitalised', 'uppercase'];
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
+		const sortedWords = {};
+		sortedWords.minWidth = Infinity;
+
+		ctx.font = `100px ${fontName}`;
+
+		for (let filter of filters) {
+			sortedWords[filter] = {};
+
+			for (let word of words) {
+				let filteredWord = applyFilter(word, filter);
+				let width = Math.floor(ctx.measureText(filteredWord).width);
+				if (sortedWords[filter][width] === undefined) {
+					sortedWords[filter][width] = []
+				}
+				sortedWords[filter][width].push(filteredWord);
+
+				if (width < minWidth) sortedWords.minWidth = width;
+			}
+
+			sortedWords.spaceWidth = Math.floor(ctx.measureText(' ').width);
+		}
+		return sortedWords;
+	}
+
+	async function getWords(size, width, filter, minWords=16) {
 		let tolerance = 5;
 		let words = [];
 		let scaledWidth = Math.round(width * (100 / size));
 
-		if (sortedDict === null) return words;
+		if (sortedWords === null || scaledWidth < sortedWords.minWidth) {
+			return words;
+		};
 
-		let scaledSpaceWidth = Math.round(sortedDict.spaceWidth * (size / 100));
-
-		// If the width is too short
-		const widths = Object.keys(sortedDict[filter]).map(key => parseInt(key));
-		const minWidth = Math.min(...widths);
-		if (scaledWidth < minWidth) return words;
+		let scaledSpaceWidth = Math.round(sortedWords.spaceWidth * (size / 100));
 
 		// Find words within the given tolerance
 		for (let i = scaledWidth - tolerance; i <= scaledWidth; i++) {
-			if (sortedDict[filter][i] !== undefined) {
-				words.push(...sortedDict[filter][i]);	
+			if (sortedWords[filter][i] !== undefined) {
+				words.push(...sortedWords[filter][i]);	
 			}
 		}
-		if (words.length <= Layout.lines.length) {
+
+		if (words.length <= minWords) {
 			// If the width is too long, concatenate multiple words
 			const randomWidth = Math.floor(random(width*0.15, width*0.667));
 			const remainingWidth = width - randomWidth - scaledSpaceWidth;
@@ -54,70 +73,48 @@ export const WordGenerator = function(fontName, fontData, fontId) {
 				words.push(firstWords[i] + " " + secondWords[i]);
 			}
 		}
+
 		return shuffle(words);
-	}
-
-	async function getLine(size, width, filter) {
-		const words = await getWords(size, width, filter);
-
-		const randomIndex = Math.floor(Math.random()*words.length);
-		if (words[randomIndex]) {
-			return words[randomIndex];	
-		} else {
-			return "";
-		}
 	}
 
 	return {
 		getWords,
-		getLine,
 		sort
 	}
 };
 
-// This function is to be used if the OffscreenCanvas API (and thus, workers) is not available
-function sortDictionary(words, fontName, fontData) {
-	const filters = ['lowercase', 'capitalised', 'uppercase'];
-	const canvas = document.createElement('canvas');
-	const ctx = canvas.getContext('2d');
-	const sortedDict = {};
-	// const fontFace = new FontFace(fontName, fontData);
-
-	// self.fonts.add(fontFace);
-	// await fontFace.load();
-
-	ctx.font = `100px ${fontName}`;
-
-	for (let filter of filters) {
-		sortedDict[filter] = {};
-
-		for (let word of words) {
-			let filteredWord = applyFilter(word, filter);
-			let width = Math.floor(ctx.measureText(filteredWord).width);
-			if (sortedDict[filter][width] === undefined) {
-				sortedDict[filter][width] = []
-			}
-			sortedDict[filter][width].push(filteredWord)
-		}
-
-		sortedDict.spaceWidth = Math.floor(ctx.measureText(' ').width);
-	}
-	return sortedDict;
+export function random(min, max) {
+	return Math.random() * (max - min) + min;
 }
+
+export function shuffle(array) {
+	let currentIndex = array.length,  randomIndex;
+
+	while (currentIndex != 0) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex--;
+
+		[array[currentIndex], array[randomIndex]] = [
+		array[randomIndex], array[currentIndex]];
+	}
+
+	return array;
+}
+
 
 function applyFilter(string, filter) {
 	let filteredString = string;
 
 	switch (filter) {
-		case 'lowercase':
-			filteredString = filteredString.toLowerCase()
-			break;
-		case 'capitalised':
-			filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
-			break;
-		case 'uppercase':
-			filteredString = filteredString.toUpperCase();
-			break;
+	case 'lowercase':
+		filteredString = filteredString.toLowerCase()
+		break;
+	case 'capitalised':
+		filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
+		break;
+	case 'uppercase':
+		filteredString = filteredString.toUpperCase();
+		break;
 	}
 	return filteredString;
 }

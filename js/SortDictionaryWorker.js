@@ -2,7 +2,8 @@ onmessage = async function(e) {
 	const filters = ['lowercase', 'capitalised', 'uppercase'];
 	const canvas = new OffscreenCanvas(0, 0);
 	const ctx = canvas.getContext('2d');
-	const sortedDict = {};
+	const sortedWords = {};
+	sortedWords.minWidth = Infinity;
 	const words = e.data[0];
 	const fontName = e.data[1];
 	const fontData = e.data[2];	
@@ -17,20 +18,22 @@ onmessage = async function(e) {
 	ctx.font = `100px ${fontName}`;
 
 	for (let filter of filters) {
-		sortedDict[filter] = {};
+		sortedWords[filter] = {};
 
 		for (let word of words) {
 			let filteredWord = applyFilter(word, filter);
 			let width = Math.floor(ctx.measureText(filteredWord).width);
-			if (sortedDict[filter][width] === undefined) {
-				sortedDict[filter][width] = []
+			if (sortedWords[filter][width] === undefined) {
+				sortedWords[filter][width] = []
 			}
-			sortedDict[filter][width].push(filteredWord)
+			sortedWords[filter][width].push(filteredWord)
+
+			if (width < sortedWords.minWidth) sortedWords.minWidth = width;
 		}
 
-		sortedDict.spaceWidth = Math.floor(ctx.measureText(' ').width);
+		sortedWords.spaceWidth = Math.floor(ctx.measureText(' ').width);
 	}
-	postMessage(sortedDict);
+	postMessage(sortedWords);
 }
 
 function applyFilter(string, filter) {
