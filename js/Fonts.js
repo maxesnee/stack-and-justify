@@ -9,7 +9,7 @@ export function handleFontFiles(files) {
 
 	files = Array.from(files);
 	const validFiles = files.filter(file => file.name.match(acceptedExtensions));
-	
+
 	const loadedFonts = validFiles.map(handleFontFile);
 
 	Promise.all(loadedFonts).then(fonts => {
@@ -17,6 +17,8 @@ export function handleFontFiles(files) {
 
 		fonts.forEach(font => {
 			Fonts.push(font);
+
+			font.load();
 
 			// Dispatch event
 			const event = new CustomEvent("font-added", {detail: {font: font}});

@@ -10,8 +10,7 @@ export const Font = function(name, data, info) {
 	const wordGenerator = WordGenerator(fontFaceName, data);
 	let isLoading = true;
 
-	async function init() {
-		// Load font
+	async function load() {
 		const fontFace = new FontFace(fontFaceName, data);
 		document.fonts.add(fontFace);
 
@@ -49,14 +48,13 @@ export const Font = function(name, data, info) {
 		m.redraw();
 	}
 
-	init();
-
 	return {
 		name,
 		fontFaceName,
 		data,
 		info,
 		id,
+		load,
 		update,
 		wordGenerator,
 		get isLoading() {
