@@ -22,7 +22,7 @@ export function FontSelect(initialVnode) {
 						disabled: Layout.fontLocked,
 						oninput: (e) => {vnode.attrs.params.fontId = e.target.options[e.target.selectedIndex].value },
 					},
-						Fonts.list.map((font) => {
+						Fonts.map((font) => {
 							return m('option', { value: font.id, selected: vnode.attrs.params.fontId == font.id}, font.name)
 						})
 					)

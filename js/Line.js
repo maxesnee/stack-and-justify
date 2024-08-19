@@ -14,7 +14,7 @@ export function Line(size, fontId) {
 		size = Size(size.get());
 	}
 
-	if (!fontId && Fonts.first()) fontId = Fonts.first().id;
+	if (!fontId && Fonts[0]) fontId = Fonts[0].id;
 
 	let text = "";
 	let filter = 2;
@@ -25,7 +25,7 @@ export function Line(size, fontId) {
 
 	window.addEventListener('font-loaded', (e) => {
 		if (e.detail.fontId === fontId) {
-			update();	
+			update();
 		}
 	});
 
@@ -36,7 +36,7 @@ export function Line(size, fontId) {
 	// Regenerate the text
 	async function update() {
 		const outputFontId = Layout.fontLocked ? Layout.fontId : fontId;
-		const outputFont = Fonts.get(outputFontId);
+		const outputFont = Fonts.find(font => font.id === outputFontId);
 		if (!outputFont) return;
 
 		const outputFilter = Layout.filterLocked ? Layout.filter : filter;
@@ -111,7 +111,7 @@ export function Line(size, fontId) {
 			update();
 		},
 		get font() {
-			return Fonts.get(fontId);
+			return Fonts.find(font => font.id === fontId);
 		},
 		get featuresCSS() {
 			return featuresCSS

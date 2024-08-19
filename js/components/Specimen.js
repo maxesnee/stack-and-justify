@@ -114,7 +114,7 @@ export function Specimen(initialVnode) {
 				m('header.specimen-header',
 					m('div.line-left-col',
 						m(SizeInputGlobal),
-						Fonts.list.length ? m(FontSelectGlobal) : ''
+						Fonts.length ? m(FontSelectGlobal) : ''
 					),
 					m('div.line-middle-col',
 						m(WidthInput)

@@ -15,7 +15,7 @@ export function Line(initialVnode) {
 			return m('div', {class: 'specimen-line', id: line.id},
 				m('div.line-left-col',
 					m(SizeInput, {params: line}),
-					Fonts.list.length ? m(FontSelect, {params: line}) : ''
+					Fonts.length ? m(FontSelect, {params: line}) : ''
 					),
 				m('div.line-middle-col',
 					m('div.text', {

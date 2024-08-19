@@ -26,12 +26,10 @@ export function Options(initialVnode) {
 			source.selected = options.sources[source.name];
 		}
 
-		Fonts.update();
+		Fonts.forEach(font => font.update());
 
 		open = false;
 		needsUpdate = false;
-
-		m.redraw();
 	}
 
 	return {

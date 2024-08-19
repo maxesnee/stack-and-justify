@@ -18,7 +18,7 @@ export function FontSelectGlobal(initialVnode) {
 						disabled: !Layout.fontLocked,
 						oninput: (e) => {Layout.fontId = e.target.options[e.target.selectedIndex].value},
 					},
-						Fonts.list.map((font) => {
+						Fonts.map((font) => {
 							return m('option', { value: font.id, selected: Layout.fontId == font.id}, font.name)
 						})
 					),

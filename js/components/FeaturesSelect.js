@@ -48,7 +48,7 @@ export function FeaturesSelect(initialVnode) {
 
 		// Update the fonts to match the new features selection
 		for (const id of fontsToUpdate.values()) {
-			Fonts.get(id).update();
+			Fonts.find(font => font.id === id).update();
 		}
 		
 		open = false;

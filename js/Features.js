@@ -9,8 +9,7 @@ export const Features = (function() {
 
 	// Update the feature list when a new font is added
 	addEventListener('font-added', (e) => {
-		const fontId = e.detail.fontId;
-		const font = Fonts.get(fontId);
+		const font = e.detail.font;
 		const familyName = font.info.familyName;
 		const familyId = generateUID(familyName);
 		const fontFeatures = font.info.features;
@@ -34,10 +33,10 @@ export const Features = (function() {
 			if (!familyGroup.features.some(feature => feature.name === fontFeature.name)) {
 				// Add the feature
 				const feature = Feature(fontFeature.tag, fontFeature.name);
-				feature.fontIds.push(fontId);
+				feature.fontIds.push(font.id);
 				familyGroup.features.push(feature);
 			} else {
-				familyGroup.features.find(feature => feature.name === fontFeature.name).fontIds.push(fontId);
+				familyGroup.features.find(feature => feature.name === fontFeature.name).fontIds.push(font.id);
 			}
 		});
 

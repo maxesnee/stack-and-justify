@@ -28,8 +28,10 @@ export const Layout = (function() {
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added
 		if (fontId == null) {
-			fontId = e.detail.fontId;
+			fontId = e.detail.font.id;
 		}
+
+		addLine("default", e.detail.font.id);
 	});
 
 	function copyText() {
@@ -148,7 +150,7 @@ export const Layout = (function() {
 			update();
 		},
 		get font() {
-			return Fonts.get(fontId);
+			return Fonts.find(font => font.id === fontId);
 		}
 	}
 })();

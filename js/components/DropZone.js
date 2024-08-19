@@ -1,5 +1,4 @@
-import { handleFontFiles } from "../Helpers.js";
-import { Fonts } from "../Fonts.js";
+import { Fonts, handleFontFiles } from "../Fonts.js";
 import { Font } from "../Font.js";
 
 export function DropZone(initialVnode) {
@@ -29,9 +28,7 @@ export function DropZone(initialVnode) {
 
 				let files = e.dataTransfer.files;
 
-				handleFontFiles(files, function(fontName, fontData, fontInfo) {
-					Fonts.add(fontName, fontData, fontInfo);
-				});
+				handleFontFiles(files);
 				
 				vnode.dom.classList.remove('active');
 			});

@@ -1,75 +1,89 @@
 import { Font } from './Font.js';
 import { Layout } from './Layout.js';
-import { sortFonts } from './Helpers.js';
+import { parse, getFontInfo } from './miniotparser/MiniOTParser.js';
 
-export const Fonts = (function() {
-	let list = [];
-	// let features = [];
+export const Fonts = [];
 
-	function add(fontName, fontData, fontInfo) {
-		let font;
+export function handleFontFiles(files) {
+	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
 
-		// Check if a font with the same name does not exists already
-		if (!list.find(font => font.name === fontName)) {
-			font = Font(fontName, fontData, fontInfo);
-			list.push(font);
-			list = sortFonts(list);
-		} else {
-			font = list.find(font => font.name === fontName);
-		}
+	files = Array.from(files);
+	const validFiles = files.filter(file => file.name.match(acceptedExtensions));
+	
+	const loadedFonts = validFiles.map(handleFontFile);
 
-		Layout.addLine("default", font.id);
-		m.redraw();
+	Promise.all(loadedFonts).then(fonts => {
+		sortFonts(fonts);
 
-		// Dispatch event
-		const event = new CustomEvent("font-added", {detail: {fontId: font.id}});
-		window.dispatchEvent(event);
-	}
+		fonts.forEach(font => {
+			Fonts.push(font);
 
-	function get(id) {
-		return list.find(font => font.id == id) || null;
-	}
-
-	function first() {
-		return list[0] || null;
-	}
-
-	function last() {
-		return list[list.length-1] || null;
-	}
-
-	function indexOf(id) {
-		return list.indexOf(get(id));
-	}
-
-	async function update() {
-		for (const font of list) {
-			await font.update();
-		}
-	}
-
-	// Output the list of font grouped by family name
-	function familyList() {
-		const families = {};
-		list.forEach(font => {
-			const familyName = font.info.familyName;
-			if (!families[familyName]) {
-				families[familyName] = [];
-			}
-			families[familyName].push(font);
+			// Dispatch event
+			const event = new CustomEvent("font-added", {detail: {font: font}});
+			window.dispatchEvent(event);
 		});
-		return families;
-	}
 
-	return {
-		add,
-		get,
-		indexOf,
-		first,
-		update,
-		familyList,
-		get list() {
-			return list;
-		},
-	}
-})();
+		sortFonts(Fonts);
+	});
+}
+
+export function handleFontFile(file) {
+
+	return new Promise((resolve, reject) => {
+		// Removes file extension from name
+		let fileName = file.name.replace(/\..+$/, "");
+		// Replace any non alpha numeric characters with -
+		fileName = fileName.replace(/\W+/g, "-");
+		// Remove leading digits in the filename
+		fileName = fileName.replace(/^[0-9]+/g, '');
+	
+		const reader = new FileReader();
+
+		reader.onloadend = function(e) {
+			const fontInfo = getFontInfo(parse(e.target.result), fileName);
+
+			// Check if a font with the same name does not exists already
+			if (Fonts.find(font => font.name === fontInfo.fullName)) {
+				reject();
+			}
+
+			resolve(Font(fontInfo.fullName, e.target.result, fontInfo));
+		}
+
+		reader.readAsArrayBuffer(file);
+	});
+}
+
+export function sortFonts(list) {
+	if (list.length <= 1) return list;
+
+	const sortedFonts = list;
+
+	// Sort regular/italic pairs
+	sortedFonts.sort((fontA, fontB) => {
+		if (fontA.info.isItalic && !fontB.info.isItalic) {
+			return 1
+		} else if (!fontA.info.isItalic && fontB.info.isItalic) {
+			return -1
+		} else {
+			return 0;
+		}
+	});
+
+	// Sort by weight
+	sortedFonts.sort((fontA, fontB) => {
+		return fontA.info.weightClass - fontB.info.weightClass;
+	});
+
+	// Sort by width
+	sortedFonts.sort((fontA, fontB) => {
+		return fontA.info.widthClass - fontB.info.widthClass;
+	});
+
+	// Sort by family name
+	sortedFonts.sort((fontA, fontB) => {
+		return fontA.info.familyName.localeCompare(fontB.info.familyName);
+	});
+
+	return sortedFonts;
+}
