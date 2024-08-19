@@ -2,28 +2,26 @@ import { Fonts } from "./Fonts.js";
 import { Line } from "./Line.js";
 import { Size } from "./Size.js";
 
+const defaultWidth = '15cm';
+const defaultSize = '60pt';
+
 export const Layout = (function() {
-	const defaultWidth = '15cm';
-	const defaultSize = '60pt';
-
 	let lines = [];
-
 	let width = Size(defaultWidth);
+	let size = Size(defaultSize);
+	let sizeLocked = true;
+	let filter = 2;
+	let filterLocked = true;
+	let fontId = null;
+	let fontLocked = false;
+
 	width.onchange = () => {
 		update();
 	};
 
-	let size = Size(defaultSize);
 	size.onchange = () => {
 		update();
 	}
-	let sizeLocked = true;
-
-	let filter = 2;
-	let filterLocked = true;
-
-	let fontId = null;
-	let fontLocked = false;
 
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added
@@ -31,7 +29,7 @@ export const Layout = (function() {
 			fontId = e.detail.font.id;
 		}
 
-		addLine("default", e.detail.font.id);
+		addLine(Size(defaultSize), e.detail.font.id);
 	});
 
 	function copyText() {
@@ -52,9 +50,6 @@ export const Layout = (function() {
 			const lastLine = lines[lines.length-1];
 			size = lastLine.size;
 			fontId = lastLine.fontId;
-		}
-		if (!size || size === "default") {
-			size = defaultSize;
 		}
 
 		lines.push(Line(size, fontId));

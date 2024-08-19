@@ -7,19 +7,10 @@ import { generateUID } from './Helpers.js';
 
 export function Line(size, fontId) {
 	const id = generateUID();
-
-	if (typeof size === 'string') {
-		size = Size(size)
-	} else {
-		size = Size(size.get());
-	}
-
-	if (!fontId && Fonts[0]) fontId = Fonts[0].id;
-
 	let text = "";
 	let filter = 2;
 	let featuresCSS = Features.css(fontId);
-
+	size = Size(size.get());
 	size.onchange = update;
 
 
