@@ -4,7 +4,7 @@ export const WorkerPool = (function() {
 	const queue = [];
 
 	for (let i = 0; i < workerCount; i++) {
-		const worker = new Worker('./js/SortDictionaryWorker.js');
+		const worker = new Worker('./js/wordgenerator/SortWordsWorker.js');
 		workers[i] = {
 			worker,
 			available: true

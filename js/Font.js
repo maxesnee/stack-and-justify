@@ -1,6 +1,6 @@
 import { Words } from "./Words.js";
 import { Features } from "./Features.js";
-import { WordGenerator } from "./WordGenerator.js";
+import { WordGenerator } from "./wordgenerator/WordGenerator.js";
 import { Layout } from "./Layout.js";
 import { generateUID } from "./Helpers.js";
 
