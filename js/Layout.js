@@ -1,4 +1,3 @@
-import { Fonts } from "./Fonts.js";
 import { Line } from "./Line.js";
 import { Size } from "./Size.js";
 
@@ -12,7 +11,7 @@ export const Layout = (function() {
 	let sizeLocked = true;
 	let filter = 2;
 	let filterLocked = true;
-	let fontId = null;
+	let font = null;
 	let fontLocked = false;
 
 	width.onchange = () => {
@@ -25,11 +24,10 @@ export const Layout = (function() {
 
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added
-		if (fontId == null) {
-			fontId = e.detail.font.id;
+		if (font == null) {
+			font = e.detail.font;
 		}
-
-		addLine(Size(defaultSize), e.detail.font.id);
+		addLine(Size(defaultSize), e.detail.font);
 	});
 
 	function copyText() {
@@ -45,14 +43,14 @@ export const Layout = (function() {
 		lines.forEach(line => {line.updateAfterLockChange(parameter)});
 	}
 
-	function addLine(size, fontId) {
-		if (!size && !fontId && lines.length) {
+	function addLine(size, font) {
+		if (!size && !font && lines.length) {
 			const lastLine = lines[lines.length-1];
 			size = lastLine.size;
-			fontId = lastLine.fontId;
+			font = lastLine.font;
 		}
 
-		lines.push(Line(size, fontId));
+		lines.push(Line(size, font));
 	}
 
 	function moveLine(line, to) {
@@ -85,10 +83,6 @@ export const Layout = (function() {
 		}	
 	}
 
-	function clear() {
-		lines = [];
-	}
-
 	function textAlreadyUsed(text) {
 		return lines.find(line => line.text === text) ? true : false;
 	}
@@ -99,9 +93,7 @@ export const Layout = (function() {
 		getLine,
 		moveLine,
 		indexOf,
-		clear,
 		update,
-		clear,
 		copyText,
 		width,
 		size,
@@ -137,15 +129,12 @@ export const Layout = (function() {
 			fontLocked = value;
 			updateAfterLockChange('font');	
 		},
-		get fontId() {
-			return fontId;
+		get font() {
+			return font;
 		},
-		set fontId(value) {
-			fontId = value;
+		set font(value) {
+			font = value;
 			update();
 		},
-		get font() {
-			return Fonts.find(font => font.id === fontId);
-		}
 	}
 })();

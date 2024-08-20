@@ -16,6 +16,12 @@ export const Font = function(name, data, info) {
 
 		await fontFace.load();
 
+		update();
+	}
+
+	async function update() {
+		isLoading = true;
+
 		const words = await Words.get();
 		const features = Features.css(id);
 
@@ -28,27 +34,11 @@ export const Font = function(name, data, info) {
 		isLoading = false;
 
 		// Dispatch event
-		const event = new CustomEvent("font-loaded", {detail: {fontId: id}});
+		const event = new CustomEvent("font-loaded", {detail: {font}});
 		window.dispatchEvent(event);
 	}
 
-	async function update() {
-		isLoading = true;
-
-		const words = await Words.get();
-		const features = Features.css(id);
-
-		await wordGenerator.sort(words, features);
-
-		isLoading = false;
-
-		// Dispatch event
-		const event = new CustomEvent("font-loaded", {detail: {fontId: id}});
-		window.dispatchEvent(event);
-		m.redraw();
-	}
-
-	return {
+	const font = {
 		name,
 		fontFaceName,
 		data,
@@ -61,4 +51,6 @@ export const Font = function(name, data, info) {
 			return isLoading;
 		},
 	}
+
+	return font;
 }

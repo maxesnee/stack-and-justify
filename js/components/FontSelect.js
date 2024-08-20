@@ -20,10 +20,10 @@ export function FontSelect(initialVnode) {
 				m('div.select-wrapper', {class: Layout.fontLocked ? "disabled" : ""},
 					m('select', {
 						disabled: Layout.fontLocked,
-						oninput: (e) => {vnode.attrs.params.fontId = e.target.options[e.target.selectedIndex].value },
+						oninput: (e) => {vnode.attrs.params.font = Fonts.find(font => font.id === e.target.options[e.target.selectedIndex].value)},
 					},
 						Fonts.map((font) => {
-							return m('option', { value: font.id, selected: vnode.attrs.params.fontId == font.id}, font.name)
+							return m('option', { value: font.id, selected: vnode.attrs.params.font.id == font.id}, font.name)
 						})
 					)
 				)
