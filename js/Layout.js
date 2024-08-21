@@ -3,13 +3,16 @@ import { Size } from "./Size.js";
 import { Filters } from "./Filters.js";
 import { Box } from "./Helpers.js";
 
+export const defaultWidth = '15cm';
+export const defaultSize = '60pt';
+export const defaultFilter = Filters[2];
 
 export const Layout = (function() {
 	let lines = [];
 	let width = Size('15cm');
-	let size = Size('60pt');
+	let size = Size(defaultSize);
 	let sizeLocked = Box(true);
-	let filter = Box(Filters[2]);
+	let filter = Box(defaultFilter);
 	let filterLocked = Box(true);
 	let font = Box(null);
 	let fontLocked = Box(false);
@@ -19,7 +22,7 @@ export const Layout = (function() {
 		if (font.val == null) {
 			font.val = e.detail.font;
 		}
-		addLine(Size(defaultSize), e.detail.font);
+		addLine(Size(defaultSize), e.detail.font, defaultFilter);
 		m.redraw();
 	});
 
@@ -31,13 +34,14 @@ export const Layout = (function() {
 		lines.forEach(line => {line.update()});
 	}
 
-	function addLine(size, font) {
+	function addLine(size, font, filter) {
 		if (!size && !font && lines.length) {
 			const lastLine = lines[lines.length-1];
 			size = lastLine.size;
 			font = lastLine.font.val;
+			filter = lastLine.filter.val
 		}
-		lines.push(Line(size, font));
+		lines.push(Line(size, font, filter));
 	}
 
 	function moveLine(line, to) {

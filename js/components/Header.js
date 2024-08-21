@@ -2,8 +2,8 @@ import { AppState } from "../AppState.js";
 import { SVG } from "./SVG.js";
 import { FontInput } from "./FontInput.js";
 import { DarkModeButton } from "./DarkModeButton.js";
-import { Options} from "./Options.js";
-import { FeaturesSelect } from "./FeaturesSelect.js";
+import { OptionsMenu} from "./OptionsMenu.js";
+import { FeaturesMenu } from "./FeaturesMenu.js";
 
 export function Header(initialVnode) {
 	return {
@@ -14,8 +14,8 @@ export function Header(initialVnode) {
 					m('span', 'Stack & Justify')
 					),
 				m(FontInput),
-				m(Options),
-				m(FeaturesSelect),
+				m(OptionsMenu),
+				m(FeaturesMenu),
 				m('div.header-btns',
 					m(DarkModeButton),
 					m('button.about-btn', {onclick: () => AppState.showAbout = !AppState.showAbout }, AppState.showAbout ? "❎" : "❓"),

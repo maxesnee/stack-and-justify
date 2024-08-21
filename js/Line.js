@@ -1,14 +1,13 @@
 import { Features } from './Features.js';
 import { Size } from './Size.js';
 import { Layout } from './Layout.js';
-import { Filters } from './Filters.js';
 import { generateUID, Box, Computed } from './Helpers.js';
 
-export function Line(_size, _font) {
+export function Line(_size, _font, _filter) {
 	const id = generateUID();
 	let size = Size(_size.get());
 	let font = Box(_font);
-	let filter = Box(Filters[2]);
+	let filter = Box(_filter);
 	
 	const outputFont = Computed(() => Layout.fontLocked.val ? Layout.font.val : font.val);
 	outputFont.dependsOn(Layout.font, Layout.fontLocked, font);

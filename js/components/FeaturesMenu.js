@@ -4,7 +4,7 @@ import { Fonts } from "../Fonts.js";
 import { FeaturesSubmenu } from "./FeaturesSubmenu.js";
 import { generateUID } from "../Helpers.js";
 
-export function FeaturesSelect(initialVnode) {
+export function FeaturesMenu(initialVnode) {
 	// Menu status
 	let open = false;
 	let needsUpdate = false;

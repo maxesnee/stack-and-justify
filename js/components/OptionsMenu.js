@@ -2,7 +2,7 @@ import { Words } from "../Words.js";
 import { Layout } from "../Layout.js";
 import { Fonts } from "../Fonts.js";
 
-export function Options(initialVnode) {
+export function OptionsMenu(initialVnode) {
 	// Menu status
 	let open = false;
 
