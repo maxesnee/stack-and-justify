@@ -7,11 +7,11 @@ import { generateUID, Box, Computed } from './Helpers.js';
 export function Line(_size, _font) {
 	const id = generateUID();
 	let size = Size(_size.get());
-	let font = Box(_font);
-	let filter = Box(2);
+	let fontSelection = Box(_font);
+	let filter = Box(Filters[2]);
 	
-	const outputFont = Computed(() => Layout.fontLocked.val ? Layout.font.val : font.val);
-	outputFont.dependsOn(Layout.font, Layout.fontLocked, font);
+	const outputFont = Computed(() => Layout.fontSelectionLocked.val ? Layout.fontSelection.val : fontSelection.val);
+	outputFont.dependsOn(Layout.fontSelection, Layout.fontSelectionLocked, fontSelection);
 
 	const outputFilter = Computed(() => Layout.filterLocked.val ? Layout.filter.val : filter.val);
 	outputFilter.dependsOn(Layout.filter, Layout.filterLocked, filter);
@@ -20,7 +20,7 @@ export function Line(_size, _font) {
 	outputSize.dependsOn(Layout.sizeLocked, Layout.size, size);
 
 	const text = Computed(() => {
-		const textOptions = outputFont.val.wordGenerator.getWords(outputSize.val, Layout.width.getIn('px'), Filters.list[outputFilter.val].value, Layout.lines.length);
+		const textOptions = outputFont.val.wordGenerator.getWords(outputSize.val, Layout.width.getIn('px'), outputFilter.val, Layout.lines.length);
 		return textOptions.find(option => !Layout.textAlreadyUsed(option)) || "";
 	});
 	text.dependsOn(Layout.width, outputFont, outputSize, outputFilter);
@@ -44,7 +44,7 @@ export function Line(_size, _font) {
 		id,
 		size,
 		filter,
-		font,
+		fontSelection,
 		text,
 		get featuresCSS() {
 			return Features.css(outputFont.val.id);

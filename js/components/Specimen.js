@@ -5,7 +5,7 @@ import { Line } from "./Line.js";
 import { SizeInputGlobal } from "./SizeInputGlobal.js";
 import { FontSelectGlobal } from "./FontSelectGlobal.js";
 import { WidthInput } from "./WidthInput.js";
-import { CaseSelectGlobal } from "./CaseSelectGlobal.js";
+import { FilterSelectGlobal } from "./FilterSelectGlobal.js";
 import { CopyButtonGlobal } from "./CopyButtonGlobal.js";
 import { UpdateButtonGlobal } from "./UpdateButtonGlobal.js";
 import { NewLineButton } from "./NewLineButton.js";
@@ -120,7 +120,7 @@ export function Specimen(initialVnode) {
 						m(WidthInput)
 					),
 					m('div.line-right-col',
-						m(CaseSelectGlobal),
+						m(FilterSelectGlobal),
 						m(CopyButtonGlobal, {onclick: Layout.copyText}),
 						m(UpdateButtonGlobal, {onclick: Layout.update}),
 						m(DeleteButtonGlobal, {onclick: Layout.clear})

@@ -1,6 +1,6 @@
 import { SizeInput } from "./SizeInput.js";
 import { FontSelect } from "./FontSelect.js";
-import { CaseSelect } from "./CaseSelect.js";
+import { FilterSelect } from "./FilterSelect.js";
 import { CopyButton } from "./CopyButton.js";
 import { UpdateButton } from "./UpdateButton.js";
 import { DeleteButton } from "./DeleteButton.js";
@@ -19,23 +19,23 @@ export function Line(initialVnode) {
 					),
 				m('div.line-middle-col',
 					m('div.text', {
-						class: !line.font.val.isLoading ? 'visible' : 'hidden',
+						class: !line.fontSelection.val.isLoading ? 'visible' : 'hidden',
 						style: {
 							whiteSpace: "nowrap",
 							fontSize: Layout.sizeLocked.val ? Layout.size.get() : line.size.get(),
 							width: Layout.width.get(),
-							fontFamily: Layout.fontLocked.val ? Layout.font.val ? Layout.font.val.fontFaceName : '' : line.font.val.fontFaceName,
+							fontFamily: Layout.fontSelectionLocked.val ? Layout.fontSelection.val ? Layout.fontSelection.val.fontFaceName : '' : line.fontSelection.val.fontFaceName,
 							height: Layout.sizeLocked.val ? (Layout.size.getIn('px') * 1.2)+'px' : (line.size.getIn('px') * 1.2)+'px', // Get the line height
 							fontFeatureSettings: line.featuresCSS
 					}, }, line.text.val),
-					!line.font.val.isLoading && line.text.val === '' ? m('div.no-words-found', 'No words found ☹') : '',
-					m('div.loading', {class: line.font.val.isLoading ? 'visible' : 'hidden'},
+					!line.fontSelection.val.isLoading && line.text.val === '' ? m('div.no-words-found', 'No words found ☹') : '',
+					m('div.loading', {class: line.fontSelection.val.isLoading ? 'visible' : 'hidden'},
 						m('span', "Loading"),
 						m('div.icon-spinning', "◌")
 					)
 				),
 				m('div.line-right-col',
-					m(CaseSelect, {params: line}),
+					m(FilterSelect, {params: line}),
 					m(CopyButton, {onclick: line.copyText}),
 					m(UpdateButton, {onclick: line.update}),
 					m(DeleteButton, {onclick: line.remove})

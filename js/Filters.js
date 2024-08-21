@@ -1,21 +1,8 @@
-export const Filters = (function() {
-	let selected = 2;
+import { Filter } from './Filter.js';
 
-	const list = [
-		{ value: 'lowercase', label: 'Lowercase'},
-		{ value: 'uppercase', label: 'Uppercase'},
-		{ value: 'capitalised', label: 'Capitalised'}
-	];
+export const Filters = [
+	Filter('lowercase', 'Lowercase', (str) => str.toLowerCase()),
+	Filter('uppercase', 'Uppercase', (str) => str.toUpperCase()),
+	Filter('capitalised', 'Capitalised', (str) => str[0].toUpperCase() + str.slice(1))
+];
 
-	function select(i) {
-		selected = i;
-	}
-
-	return {
-		list,
-		get selected() {
-			return list[selected].value
-		},
-		select
-	}
-})();

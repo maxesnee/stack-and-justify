@@ -1,5 +1,6 @@
 import { Line } from "./Line.js";
 import { Size } from "./Size.js";
+import { Filters } from "./Filters.js";
 import { Box } from "./Helpers.js";
 
 const defaultWidth = '15cm';
@@ -10,15 +11,15 @@ export const Layout = (function() {
 	let width = Size(defaultWidth);
 	let size = Size(defaultSize);
 	let sizeLocked = Box(true);
-	let filter = Box(2);
+	let filter = Box(Filters[2]);
 	let filterLocked = Box(true);
-	let font = Box(null);
-	let fontLocked = Box(false);
+	let fontSelection = Box(null);
+	let fontSelectionLocked = Box(false);
 
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added
-		if (font.val == null) {
-			font.val = e.detail.font;
+		if (fontSelection.val == null) {
+			fontSelection.val = e.detail.font;
 		}
 		addLine(Size(defaultSize), e.detail.font);
 		m.redraw();
@@ -36,7 +37,7 @@ export const Layout = (function() {
 		if (!size && !font && lines.length) {
 			const lastLine = lines[lines.length-1];
 			size = lastLine.size;
-			font = lastLine.font.val;
+			font = lastLine.fontSelection.val;
 		}
 		lines.push(Line(size, font));
 	}
@@ -80,10 +81,10 @@ export const Layout = (function() {
 		width,
 		size,
 		filter,
-		font,
+		fontSelection,
 		sizeLocked,
 		filterLocked,
-		fontLocked,
+		fontSelectionLocked,
 		addLine,
 		removeLine,
 		getLine,

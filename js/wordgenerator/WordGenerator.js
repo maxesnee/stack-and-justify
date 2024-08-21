@@ -1,7 +1,7 @@
+import { Filters } from '../Filters.js';
 import { WorkerPool } from "./WorkerPool.js";
 
 export const WordGenerator = function(fontName, fontData) {
-	const filters = ["lowercase", "uppercase", "capitalised"];
 	let sortedWords = null;
 
 	async function sort(words, fontFeaturesSettings) {
@@ -16,7 +16,6 @@ export const WordGenerator = function(fontName, fontData) {
 
 	// This function is to be used if the OffscreenCanvas API (and thus, workers) is not available
 	function sortWords(words, fontName, fontData, fontFeatures) {
-		const filters = ['lowercase', 'capitalised', 'uppercase'];
 		const canvas = document.createElement('canvas');
 		const ctx = canvas.getContext('2d');
 		const sortedWords = {};
@@ -24,16 +23,16 @@ export const WordGenerator = function(fontName, fontData) {
 
 		ctx.font = `100px ${fontName}`;
 
-		for (let filter of filters) {
-			sortedWords[filter] = {};
+		for (let filter of Filters) {
+			sortedWords[filter.name] = {};
 
 			for (let word of words) {
-				let filteredWord = applyFilter(word, filter);
+				let filteredWord = filter.apply(word);
 				let width = Math.floor(ctx.measureText(filteredWord).width);
-				if (sortedWords[filter][width] === undefined) {
-					sortedWords[filter][width] = []
+				if (sortedWords[filter.name][width] === undefined) {
+					sortedWords[filter.name][width] = []
 				}
-				sortedWords[filter][width].push(filteredWord);
+				sortedWords[filter.name][width].push(filteredWord);
 
 				if (width < minWidth) sortedWords.minWidth = width;
 			}
@@ -56,8 +55,8 @@ export const WordGenerator = function(fontName, fontData) {
 
 		// Find words within the given tolerance
 		for (let i = scaledWidth - tolerance; i <= scaledWidth; i++) {
-			if (sortedWords[filter][i] !== undefined) {
-				words.push(...sortedWords[filter][i]);	
+			if (sortedWords[filter.name][i] !== undefined) {
+				words.push(...sortedWords[filter.name][i]);	
 			}
 		}
 
@@ -102,19 +101,19 @@ export function shuffle(array) {
 }
 
 
-function applyFilter(string, filter) {
-	let filteredString = string;
+// function applyFilter(string, filter) {
+// 	let filteredString = string;
 
-	switch (filter) {
-	case 'lowercase':
-		filteredString = filteredString.toLowerCase()
-		break;
-	case 'capitalised':
-		filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
-		break;
-	case 'uppercase':
-		filteredString = filteredString.toUpperCase();
-		break;
-	}
-	return filteredString;
-}
+// 	switch (filter) {
+// 	case 'lowercase':
+// 		filteredString = filteredString.toLowerCase()
+// 		break;
+// 	case 'capitalised':
+// 		filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
+// 		break;
+// 	case 'uppercase':
+// 		filteredString = filteredString.toUpperCase();
+// 		break;
+// 	}
+// 	return filteredString;
+// }
