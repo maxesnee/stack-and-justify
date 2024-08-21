@@ -3,14 +3,14 @@ import { Size } from "./Size.js";
 import { Filters } from "./Filters.js";
 import { Box } from "./Helpers.js";
 
-export const defaultWidth = '15cm';
-export const defaultSize = '60pt';
+export const defaultWidth = Size('15cm');
+export const defaultSize = Size('60pt');
 export const defaultFilter = Filters[2];
 
 export const Layout = (function() {
 	let lines = [];
-	let width = Size('15cm');
-	let size = Size(defaultSize);
+	let width = Size(defaultWidth.get());
+	let size = Size(defaultSize.get());
 	let sizeLocked = Box(true);
 	let filter = Box(defaultFilter);
 	let filterLocked = Box(true);
@@ -22,26 +22,32 @@ export const Layout = (function() {
 		if (font.val == null) {
 			font.val = e.detail.font;
 		}
-		addLine(Size(defaultSize), e.detail.font, defaultFilter);
+		addLine(e.detail.font, defaultSize, defaultFilter);
 		m.redraw();
 	});
 
 	function copyText() {
-		navigator.clipboard.writeText(lines.map(line => line.text).join('\n'));
+		navigator.clipboard.writeText(lines.map(line => line.text.val).join('\n'));
 	}
 
 	async function update() {
 		lines.forEach(line => {line.update()});
 	}
 
-	function addLine(size, font, filter) {
-		if (!size && !font && lines.length) {
-			const lastLine = lines[lines.length-1];
-			size = lastLine.size;
-			font = lastLine.font.val;
-			filter = lastLine.filter.val
+	function addLine(_font, _size, _filter) {
+		if (!_font && !_size && !_filter) {
+			if (lines.length) {
+				const lastLine = lines[lines.length-1];
+				_font = lastLine.font.val;
+				_size = lastLine.size;
+				_filter = lastLine.filter.val;
+			} else {
+				_font = font.val;
+				_size = defaultSize;
+				_filter = defaultFilter;
+			}
 		}
-		lines.push(Line(size, font, filter));
+		lines.push(Line(_font, _size, _filter));
 	}
 
 	function moveLine(line, to) {
@@ -74,6 +80,10 @@ export const Layout = (function() {
 		}	
 	}
 
+	function clear() {
+		lines.length = 0;
+	}
+
 	function textAlreadyUsed(str) {
 		return lines.find(line => line.text.val === str) ? true : false;
 	}
@@ -94,6 +104,8 @@ export const Layout = (function() {
 		indexOf,
 		update,
 		copyText,
-		textAlreadyUsed
+		clear,
+		textAlreadyUsed,
+
 	}
 })();

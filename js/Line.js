@@ -3,20 +3,20 @@ import { Size } from './Size.js';
 import { Layout } from './Layout.js';
 import { generateUID, Box, Computed } from './Helpers.js';
 
-export function Line(_size, _font, _filter) {
+export function Line(_font, _size, _filter) {
 	const id = generateUID();
-	let size = Size(_size.get());
 	let font = Box(_font);
+	let size = Size(_size.get());
 	let filter = Box(_filter);
 	
 	const outputFont = Computed(() => Layout.fontLocked.val ? Layout.font.val : font.val);
 	outputFont.dependsOn(Layout.font, Layout.fontLocked, font);
 
-	const outputFilter = Computed(() => Layout.filterLocked.val ? Layout.filter.val : filter.val);
-	outputFilter.dependsOn(Layout.filter, Layout.filterLocked, filter);
-
 	const outputSize = Computed(() => Layout.sizeLocked.val ? Layout.size.getIn('px') : size.getIn('px'));
 	outputSize.dependsOn(Layout.sizeLocked, Layout.size, size);
+
+	const outputFilter = Computed(() => Layout.filterLocked.val ? Layout.filter.val : filter.val);
+	outputFilter.dependsOn(Layout.filter, Layout.filterLocked, filter);
 
 	const text = Computed(() => {
 		const textOptions = outputFont.val.wordGenerator.getWords(outputSize.val, Layout.width.getIn('px'), outputFilter.val, Layout.lines.length);
@@ -41,9 +41,9 @@ export function Line(_size, _font, _filter) {
 
 	return {
 		id,
+		font,
 		size,
 		filter,
-		font,
 		text,
 		get featuresCSS() {
 			return Features.css(outputFont.val.id);
