@@ -7,11 +7,11 @@ import { generateUID, Box, Computed } from './Helpers.js';
 export function Line(_size, _font) {
 	const id = generateUID();
 	let size = Size(_size.get());
-	let fontSelection = Box(_font);
+	let font = Box(_font);
 	let filter = Box(Filters[2]);
 	
-	const outputFont = Computed(() => Layout.fontSelectionLocked.val ? Layout.fontSelection.val : fontSelection.val);
-	outputFont.dependsOn(Layout.fontSelection, Layout.fontSelectionLocked, fontSelection);
+	const outputFont = Computed(() => Layout.fontLocked.val ? Layout.font.val : font.val);
+	outputFont.dependsOn(Layout.font, Layout.fontLocked, font);
 
 	const outputFilter = Computed(() => Layout.filterLocked.val ? Layout.filter.val : filter.val);
 	outputFilter.dependsOn(Layout.filter, Layout.filterLocked, filter);
@@ -44,7 +44,7 @@ export function Line(_size, _font) {
 		id,
 		size,
 		filter,
-		fontSelection,
+		font,
 		text,
 		get featuresCSS() {
 			return Features.css(outputFont.val.id);

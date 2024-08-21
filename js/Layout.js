@@ -13,13 +13,13 @@ export const Layout = (function() {
 	let sizeLocked = Box(true);
 	let filter = Box(Filters[2]);
 	let filterLocked = Box(true);
-	let fontSelection = Box(null);
-	let fontSelectionLocked = Box(false);
+	let font = Box(null);
+	let fontLocked = Box(false);
 
 	window.addEventListener('font-added', (e) => {
 		// If there's was no font before, select the one that's been added
-		if (fontSelection.val == null) {
-			fontSelection.val = e.detail.font;
+		if (font.val == null) {
+			font.val = e.detail.font;
 		}
 		addLine(Size(defaultSize), e.detail.font);
 		m.redraw();
@@ -37,7 +37,7 @@ export const Layout = (function() {
 		if (!size && !font && lines.length) {
 			const lastLine = lines[lines.length-1];
 			size = lastLine.size;
-			font = lastLine.fontSelection.val;
+			font = lastLine.font.val;
 		}
 		lines.push(Line(size, font));
 	}
@@ -81,10 +81,10 @@ export const Layout = (function() {
 		width,
 		size,
 		filter,
-		fontSelection,
+		font,
 		sizeLocked,
 		filterLocked,
-		fontSelectionLocked,
+		fontLocked,
 		addLine,
 		removeLine,
 		getLine,

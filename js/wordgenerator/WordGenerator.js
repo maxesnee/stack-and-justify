@@ -99,21 +99,3 @@ export function shuffle(array) {
 
 	return array;
 }
-
-
-// function applyFilter(string, filter) {
-// 	let filteredString = string;
-
-// 	switch (filter) {
-// 	case 'lowercase':
-// 		filteredString = filteredString.toLowerCase()
-// 		break;
-// 	case 'capitalised':
-// 		filteredString = filteredString[0].toUpperCase() + filteredString.slice(1);
-// 		break;
-// 	case 'uppercase':
-// 		filteredString = filteredString.toUpperCase();
-// 		break;
-// 	}
-// 	return filteredString;
-// }
