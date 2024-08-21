@@ -3,13 +3,11 @@ import { Size } from "./Size.js";
 import { Filters } from "./Filters.js";
 import { Box } from "./Helpers.js";
 
-const defaultWidth = '15cm';
-const defaultSize = '60pt';
 
 export const Layout = (function() {
 	let lines = [];
-	let width = Size(defaultWidth);
-	let size = Size(defaultSize);
+	let width = Size('15cm');
+	let size = Size('60pt');
 	let sizeLocked = Box(true);
 	let filter = Box(Filters[2]);
 	let filterLocked = Box(true);
