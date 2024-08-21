@@ -23,3 +23,49 @@ export function generateUIDFromString(str) {
   }
   return hash;
 }
+
+
+export function Box(val) {
+  let _val = val;
+  let callbacks = [];
+  
+  return {
+    get val() {
+      return _val;
+    },
+    set val(newVal) {
+      _val = newVal;
+      callbacks.forEach(callback => callback());
+    },
+    onchange(callback) {
+      callbacks.push(callback);
+    }
+  }
+}
+
+export function Computed(fn) {
+  let _val = fn();
+  let callbacks = [];
+  return {
+    get val() {
+      return _val;
+    },
+    update() {
+      const newVal = fn();
+      if (_val !== newVal) {
+        _val = newVal;
+        callbacks.forEach(callback => callback());
+      }
+    },
+    onchange(callback) {
+      callbacks.push(callback);
+    },
+    dependsOn(...dependencies) {
+      dependencies.forEach(dependency => {
+        if (typeof dependency.onchange === 'function') {
+          dependency.onchange(this.update);
+        }
+      });
+    }
+  }
+}

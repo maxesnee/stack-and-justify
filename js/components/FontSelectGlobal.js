@@ -10,23 +10,23 @@ export function FontSelectGlobal(initialVnode) {
 			vnode.dom.querySelector('select').style.width = width + 'px';
 		},
 		view: function(vnode) {
-			const fontName = Layout.font ? Layout.font.name : '';
+			const fontName = Layout.font.val ? Layout.font.val.name : '';
 			return m('div.font-select', 
 				m('span.font-select-hidden-label', {style: {position: 'absolute', visibility: 'hidden'}}, fontName),
-				m('div.select-wrapper', {class: !Layout.fontLocked ? "disabled" : ""},
+				m('div.select-wrapper', {class: !Layout.fontLocked.val ? "disabled" : ""},
 					m('select', {
-						disabled: !Layout.fontLocked,
-						oninput: (e) => {Layout.font = Fonts.find(font => font.id === e.target.options[e.target.selectedIndex].value)},
+						disabled: !Layout.fontLocked.val,
+						oninput: (e) => {Layout.font.val = Fonts.find(font => font.id === e.target.options[e.target.selectedIndex].value)},
 					},
 						Fonts.map((font) => {
-							return m('option', { value: font.id, selected: Layout.font.id == font.id}, font.name)
+							return m('option', { value: font.id, selected: Layout.font.val.id == font.id}, font.name)
 						})
 					),
 				),
 				m('div.font-select-lock',
 					m('button', {
-						onclick: () => {Layout.fontLocked = !Layout.fontLocked}
-					}, Layout.fontLocked ? '🔒' : '🔓'),
+						onclick: () => {Layout.fontLocked.val = !Layout.fontLocked.val}
+					}, Layout.fontLocked.val ? '🔒' : '🔓'),
 					m(Tooltip, {label: 'Apply to all lines'})
 				)
 			)

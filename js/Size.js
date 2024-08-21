@@ -1,6 +1,6 @@
 export const Size = function(_str) {
 	let value, unit;
-	let onchange = function() {};
+	let callbacks = [];
 
 	({value, unit} = processStr(_str));
 
@@ -62,6 +62,10 @@ export const Size = function(_str) {
 		}
 	}
 
+	function onchange() {
+		callbacks.forEach(callback => callback());
+	}
+
 	return {
 		get value() {
 			return value;
@@ -75,8 +79,8 @@ export const Size = function(_str) {
 		setIn,
 		increment,
 		decrement,
-		set onchange(val) {
-			onchange = val;
+		onchange(callback) {
+			callbacks.push(callback);
 		}
 	}
 }

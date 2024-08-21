@@ -14,16 +14,16 @@ export function FontSelect(initialVnode) {
 			vnode.dom.querySelector('select').style.width = width + 'px';
 		},
 		view: function(vnode) {
-			const fontName = vnode.attrs.params.font ? vnode.attrs.params.font.name : '';
+			const line = vnode.attrs.params;
 			return m('div.font-select', 
-				m('span.font-select-hidden-label', {style: {position: 'absolute', visibility: 'hidden'}}, fontName),
-				m('div.select-wrapper', {class: Layout.fontLocked ? "disabled" : ""},
+				m('span.font-select-hidden-label', {style: {position: 'absolute', visibility: 'hidden'}}, line.font.val.name),
+				m('div.select-wrapper', {class: Layout.fontLocked.val ? "disabled" : ""},
 					m('select', {
-						disabled: Layout.fontLocked,
-						oninput: (e) => {vnode.attrs.params.font = Fonts.find(font => font.id === e.target.options[e.target.selectedIndex].value)},
+						disabled: Layout.fontLocked.val,
+						oninput: (e) => {line.font.val = Fonts.find(font => font.id === e.target.options[e.target.selectedIndex].value)},
 					},
 						Fonts.map((font) => {
-							return m('option', { value: font.id, selected: vnode.attrs.params.font.id == font.id}, font.name)
+							return m('option', { value: font.id, selected: line.font.val.id == font.id}, font.name)
 						})
 					)
 				)

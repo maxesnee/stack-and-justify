@@ -2,19 +2,33 @@ import { Features } from './Features.js';
 import { Size } from './Size.js';
 import { Layout } from './Layout.js';
 import { Filters } from './Filters.js';
-import { generateUID } from './Helpers.js';
+import { generateUID, Box, Computed } from './Helpers.js';
 
-export function Line(size, font) {
+export function Line(_size, _font) {
 	const id = generateUID();
-	let text = "";
-	let filter = 2;
-	let featuresCSS = Features.css(font.id);
-	size = Size(size.get());
-	size.onchange = update;
+	let size = Size(_size.get());
+	let font = Box(_font);
+	let filter = Box(2);
+	
+	const outputFont = Computed(() => Layout.fontLocked.val ? Layout.font.val : font.val);
+	outputFont.dependsOn(Layout.font, Layout.fontLocked, font);
+
+	const outputFilter = Computed(() => Layout.filterLocked.val ? Layout.filter.val : filter.val);
+	outputFilter.dependsOn(Layout.filter, Layout.filterLocked, filter);
+
+	const outputSize = Computed(() => Layout.sizeLocked.val ? Layout.size.getIn('px') : size.getIn('px'));
+	outputSize.dependsOn(Layout.sizeLocked, Layout.size, size);
+
+	const text = Computed(() => {
+		const textOptions = outputFont.val.wordGenerator.getWords(outputSize.val, Layout.width.getIn('px'), Filters.list[outputFilter.val].value, Layout.lines.length);
+		return textOptions.find(option => !Layout.textAlreadyUsed(option)) || "";
+	});
+	text.dependsOn(Layout.width, outputFont, outputSize, outputFilter);
 
 	window.addEventListener('font-loaded', (e) => {
-		if (e.detail.font === font) {
-			update();
+		if (e.detail.font === outputFont.val) {
+			text.update();
+			m.redraw();
 		}
 	});
 
@@ -22,82 +36,21 @@ export function Line(size, font) {
 		Layout.removeLine(id);
 	}
 
-	// Regenerate the text
-	async function update() {
-		const outputFont = Layout.fontLocked ? Layout.font : font;
-		const outputFilter = Layout.filterLocked ? Layout.filter : filter;
-		const outputSize = Layout.sizeLocked ? Layout.size.getIn('px') : size.getIn('px');
-		const outputWidth = Layout.width.getIn('px');
-
-		featuresCSS = Features.css(outputFont.id);
-
-		text = '';
-		const textOptions = await outputFont.wordGenerator.getWords(outputSize, outputWidth, Filters.list[outputFilter].value, Layout.lines.length);
-
-		textOptions.forEach(option => {
-			if (!Layout.textAlreadyUsed(option)) {
-				text = option;
-				return;
-			}
-		});
-		
-		m.redraw();
-	}
-
-	// Regenerate the text only if the line’s parameter differs from global parameters
-	async function updateAfterLockChange(parameter) {
-		switch (parameter) {
-			case 'font':
-				if (Layout.font !== font) {
-					update();
-				}
-				break;
-			case 'size':
-				if (Layout.size.get() !== size.get()) {
-					update();
-				}
-				break;
-			case 'filter':
-				if (Layout.filter !== filter) {
-					update();
-				}
-				break;
-
-		}
-	}
-
 	function copyText() {
-		navigator.clipboard.writeText(text);
+		navigator.clipboard.writeText(text.val);
 	}
-
-	update();
 
 	return {
 		id,
 		size,
-		get filter() {
-			return filter;
-		},
-		set filter(value) {
-			filter = parseInt(value);
-			update();
-		},
-		get font() {
-			return font
-		},
-		set font(value) {
-			font = value;
-			update();
-		},
-		get text() {
-			return text;
-		},
+		filter,
+		font,
+		text,
 		get featuresCSS() {
-			return featuresCSS;
+			return Features.css(outputFont.val.id);
 		},
+		update: text.update,
 		remove,
-		copyText,
-		update,
-		updateAfterLockChange,
+		copyText
 	}
 }

@@ -7,18 +7,18 @@ export function CaseSelectGlobal(initialVnode) {
 			return m('div.case-select',
 				m('div.case-select-lock',
 					m('button', {
-							onclick: () => {Layout.filterLocked = !Layout.filterLocked}
-						}, Layout.filterLocked ? '🔒' : '🔓'),
+							onclick: () => {Layout.filterLocked.val = !Layout.filterLocked.val}
+						}, Layout.filterLocked.val ? '🔒' : '🔓'),
 					m(Tooltip, {label: 'Apply to all lines'})
 				),
-				m('div.select-wrapper', {class: !Layout.filterLocked ? "disabled" : ""},
+				m('div.select-wrapper', {class: !Layout.filterLocked.val ? "disabled" : ""},
 					m('select.case-select', {
-						disabled: !Layout.filterLocked,
-						onchange: (e) => {Layout.filter = e.currentTarget.selectedIndex},
+						disabled: !Layout.filterLocked.val,
+						onchange: (e) => {Layout.filter.val = e.currentTarget.selectedIndex},
 					},
-						m('option', {value: 'lowercase', selected: Layout.filter == 0}, 'Lowercase'),
-						m('option', {value: 'uppercase', selected: Layout.filter == 1}, 'Uppercase'),
-						m('option', {value: 'capitalised', selected: Layout.filter == 2}, 'Capitalised')
+						m('option', {value: 'lowercase', selected: Layout.filter.val == 0}, 'Lowercase'),
+						m('option', {value: 'uppercase', selected: Layout.filter.val == 1}, 'Uppercase'),
+						m('option', {value: 'capitalised', selected: Layout.filter.val == 2}, 'Capitalised')
 					)
 				)
 			)

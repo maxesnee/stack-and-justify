@@ -22,28 +22,28 @@ export function SizeInputGlobal(initialVnode) {
 
 	return {
 		view: function(vnode) {
-			return m('div.size-input.size-input-global', {class: !Layout.sizeLocked ? "disabled" : ""},
+			return m('div.size-input.size-input-global', {class: !Layout.sizeLocked.val ? "disabled" : ""},
 				m('button', { 
 					onclick: () => { Layout.size.decrement() },
-					disabled: !Layout.sizeLocked
+					disabled: !Layout.sizeLocked.val
 				}, '－'),
 				m('input', {
 					type: 'text', 
 					value: isFocused ? editValue : Layout.size.get(),
 					onchange: (e) => {Layout.size.set(e.currentTarget.value)},
-					disabled: !Layout.sizeLocked,
+					disabled: !Layout.sizeLocked.val,
 					oninput,
 					onfocus,
 					onblur
 				}),
 				m('button', {
 					onclick: () => { Layout.size.increment() },
-					disabled: !Layout.sizeLocked
+					disabled: !Layout.sizeLocked.val
 				}, '＋'),
 				m('div.size-input-lock',
 					m('button', {
-						onclick: () => {Layout.sizeLocked = !Layout.sizeLocked}
-					}, `${Layout.sizeLocked ? '🔒' : '🔓'}`),
+						onclick: () => {Layout.sizeLocked.val = !Layout.sizeLocked.val}
+					}, `${Layout.sizeLocked.val ? '🔒' : '🔓'}`),
 					m(Tooltip, {label: 'Apply to all lines'})
 				)
 			)

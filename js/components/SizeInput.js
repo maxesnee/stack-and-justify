@@ -21,23 +21,23 @@ export function SizeInput(initialVnode) {
 
 	return {
 		view: function(vnode) {
-			return m('div.size-input', {class: Layout.sizeLocked ? "disabled" : ""},
+			return m('div.size-input', {class: Layout.sizeLocked.val ? "disabled" : ""},
 				m('button', {
 					onclick: () => { vnode.attrs.params.size.decrement() },
-					disabled: Layout.sizeLocked
+					disabled: Layout.sizeLocked.val
 				}, '－'),
 				m('input', {
 					type: 'text', 
 					value: isFocused ? editValue : vnode.attrs.params.size.get(), 
 					onchange: (e) => {vnode.attrs.params.size.set(e.currentTarget.value)},
-					disabled: Layout.sizeLocked,
+					disabled: Layout.sizeLocked.val,
 					oninput,
 					onfocus,
 					onblur
 				}),
 				m('button', {
 					onclick: () => { vnode.attrs.params.size.increment() },
-					disabled: Layout.sizeLocked
+					disabled: Layout.sizeLocked.val
 				}, '＋')
 			)
 		}

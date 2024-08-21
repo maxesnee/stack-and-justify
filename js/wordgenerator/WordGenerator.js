@@ -43,7 +43,7 @@ export const WordGenerator = function(fontName, fontData) {
 		return sortedWords;
 	}
 
-	async function getWords(size, width, filter, minWords=16) {
+	function getWords(size, width, filter, minWords=16) {
 		let tolerance = 5;
 		let words = [];
 		let scaledWidth = Math.round(width * (100 / size));
@@ -65,8 +65,8 @@ export const WordGenerator = function(fontName, fontData) {
 			// If the width is too long, concatenate multiple words
 			const randomWidth = Math.floor(random(width*0.15, width*0.667));
 			const remainingWidth = width - randomWidth - scaledSpaceWidth;
-			const firstWords = shuffle(await getWords(size, randomWidth, filter));
-			const secondWords = shuffle(await getWords(size, remainingWidth, filter));
+			const firstWords = shuffle(getWords(size, randomWidth, filter));
+			const secondWords = shuffle(getWords(size, remainingWidth, filter));
 
 			const minLength = firstWords.length < secondWords.length ? firstWords.length : secondWords.length;
 			for (let i = 0; i < minLength; i++) {	
