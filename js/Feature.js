@@ -1,3 +1,5 @@
+import { generateUID } from "./Helpers.js";
+
 // List of user controlled features that should be activated by default
 const defaultFeatures = ['liga', 'clig', 'calt'];
 

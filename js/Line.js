@@ -1,4 +1,3 @@
-import { Features } from './Features.js';
 import { Size } from './Size.js';
 import { Layout } from './Layout.js';
 import { generateUID, Box, Computed } from './Helpers.js';
@@ -44,10 +43,10 @@ export function Line(_font, _size, _filter) {
 		font,
 		size,
 		filter,
+		outputFont,
+		outputSize,
+		outputFilter,
 		text,
-		get featuresCSS() {
-			return Features.css(outputFont.val.id);
-		},
 		update: text.update,
 		remove,
 		copyText

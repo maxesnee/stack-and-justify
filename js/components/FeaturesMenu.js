@@ -1,55 +1,16 @@
 import { Layout } from "../Layout.js";
-import { Features } from "../Features.js";
 import { Fonts } from "../Fonts.js";
-import { FeaturesSubmenu } from "./FeaturesSubmenu.js";
 import { generateUID } from "../Helpers.js";
 
 export function FeaturesMenu(initialVnode) {
-	// Menu status
 	let open = false;
 	let needsUpdate = false;
-
-	let menu = [];
-	addEventListener('font-added', (e) => {
-		menu = Features.list.map(family => {
-			return {
-				familyId: family.id,
-				familyName: family.name,
-				open: false,
-				features: family.features.map(feature => {
-					return {
-						id: feature.id,
-						tag: feature.tag,
-						name: feature.name,
-						selected: feature.selected
-					}
-				})
-			};
-		});
-		if (menu[0]) menu[0].open = true;
-	});
 
 	function update(e) {
 		e.preventDefault();
 
-		const fontsToUpdate = new Set();
-
-		// Update the features list to match the form, and mark the fonts to be updated
-		for (const submenu of menu) {
-			for (const menuFeature of submenu.features) {
-				const feature = Features.get(menuFeature.id);
-				// If the selection changed, mark the fonts to be updated
-				if (feature.selected !== menuFeature.selected) {
-					feature.fontIds.forEach(fontId => fontsToUpdate.add(fontId));
-				}
-				feature.selected = menuFeature.selected;
-			}
-		}
-
-		// Update the fonts to match the new features selection
-		for (const id of fontsToUpdate.values()) {
-			Fonts.find(font => font.id === id).update();
-		}
+		const formData = new FormData(e.target);
+		Fonts.updateFeatures(formData);
 		
 		open = false;
 		needsUpdate = false;
@@ -73,21 +34,81 @@ export function FeaturesMenu(initialVnode) {
 		view: function(vnode) {
 			return m('div.menu-container',
 				m('button.menu-button', { 
-					class: !Features.list.length ? "disabled" : "",
-					disabled: !Features.list.length, 
+					class: !Fonts.length ? "disabled" : "",
+					disabled: !Fonts.length, 
 					onclick: () => { open = !open }
 				}, "Features ▿"),
-				m('form.menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
-					menu.map(submenu => {
+				m('form.menu', {onsubmit: update, style: {visibility: open ? 'visible' : 'hidden'}}, 
+					Fonts.list.map(family => {
 						return m(FeaturesSubmenu, {
-							key: submenu.familyId,
-							submenu,
+							key: family.id,
+							family,
+							open: true,
 							onchange: () => { needsUpdate = true },
 						});
 					}),
 					m('div.menu-update', {class: !needsUpdate ? "disabled" : ""}, 
-						m('button.bold', {disabled: !needsUpdate, onclick: update},'↻ Update')
+						m('button.bold', {type: 'submit', disabled: !needsUpdate},'↻ Update')
 					)
+				)
+			)
+		}
+	}
+}
+
+export function FeaturesSubmenu(initialVnode) {
+	let open = initialVnode.attrs.open;
+	let offsetHeight = null;
+	let update = function() {};
+
+	return {
+		oncreate: function(vnode) {
+			offsetHeight = vnode.dom.offsetHeight;
+		},
+		onupdate: function(vnode) {
+			vnode.dom.querySelector('.submenu-content').style.maxHeight = open ? `${offsetHeight}px` : '0';
+		},
+		view: function(vnode) {
+			const family = vnode.attrs.family;
+			return m('fieldset.submenu',
+				m('legend.submenu-header.submenu-toggle', {onclick: () => { open = !open }, class: open ? "open" : "closed"},
+					m('span', family.name),
+					m('span.submenu-toggle', "▿")
+				),
+				m('div.submenu-content',
+					family.features.map(feature => {
+						return m(FeatureCheckbox, {
+							key: feature.id,
+							family,
+							feature,
+							onchange: vnode.attrs.onchange
+						});
+					})
+				)
+			);
+		}
+ 	}
+}
+
+function FeatureCheckbox(initialVnode) {
+	let checked = initialVnode.attrs.feature.selected;
+
+	return {
+		view: function(vnode) {
+			const family = vnode.attrs.family;
+			const feature = vnode.attrs.feature;
+			return m('div.checkbox', 
+				m('input', {name: family.id, 
+							type: 'checkbox', 
+							id: `${feature.tag}-${feature.id}`, 
+							value: feature.id, 
+							checked: checked,
+							onchange: (e) => {checked = e.currentTarget.checked; vnode.attrs.onchange()},
+					}
+				),
+				m('label', {for: `${feature.tag}-${feature.id}`}, 
+					m('span.feature-tag', feature.tag),
+					m('span', feature.name)
 				)
 			)
 		}

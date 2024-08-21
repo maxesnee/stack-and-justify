@@ -1,7 +1,109 @@
-import { Font } from './Font.js';
 import { parse, getFontInfo } from './miniotparser/MiniOTParser.js';
+import { Font } from './Font.js';
+import { Feature } from './Feature.js';
+import { generateUID } from './Helpers.js';
 
-export const Fonts = [];
+export const Fonts = (function() {
+	const list = [];
+
+	function add(font) {
+		// Group the font by family name
+		let family = list.find(family => family.name === font.info.familyName);
+
+		// If the family group doesn't already exist, create it
+		if (!family) {
+			family = {
+				id: generateUID(font.info.familyName),
+				name: font.info.familyName,
+				list: [],
+				features: font.info.features.map(feature => Feature(feature.tag, feature.name))
+			};
+			list.push(family);
+		}
+
+		// Add the features that were not already present in the list
+		// We allow for duplicate features only if they have different names
+ 		// This allow for multiple version of the same stylistic sets inside a family
+		font.info.features.forEach(featureInfo => {
+			let feature = family.features.find(_feature => _feature.name === featureInfo.name);
+
+			if (!feature) {
+				feature = Feature(featureInfo.tag, featureInfo.name);
+				family.features.push(feature);	
+			}
+			// We also add a reference to the feature in the font object
+			font.features.push(feature);
+		});
+
+		// Push the font in the family list
+		family.list.push(font);
+
+		// Sort by style
+		sortFonts(family.list);
+
+		// Start sorting the dictionnary
+		font.load();
+
+		// Dispatch event
+		const event = new CustomEvent("font-added", {detail: {font: font}});
+		window.dispatchEvent(event);
+	}
+
+	function find(fontId) {
+		for (let family of list) {
+			for (let font of family.list) {
+				if (font.id === fontId) {
+					return font;
+				}
+			}
+		}
+	}
+
+	// Get form data from the Features menu and activate/desactivate 
+	// the corresponding features in the list.
+	// Then, update the fonts that includes one the updated features.
+	function updateFeatures(formData) {
+		for (let family of list) {
+			if (formData.has(family.id)) {
+				const updatedFeatures = [];
+
+				const selectedFeatures = formData.getAll(family.id);
+				for (let feature of family.features) {
+					if (selectedFeatures.includes(feature.id) && !feature.selected) {
+						// The feature has been activated
+						feature.selected = true;
+						updatedFeatures.push(feature);
+						
+					} else if (!selectedFeatures.includes(feature.id) && feature.selected) {
+						// The feature has been desactivated
+						feature.selected = false;
+						updatedFeatures.push(feature);
+						
+					}
+				}
+
+				for (let font of family.list) {
+					for (let feature of updatedFeatures) {
+						if (font.features.includes(feature)) {
+							font.update();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return {
+		list,
+		add,
+		find,
+		updateFeatures,
+		get length() {
+			return list.reduce((acc, curr) => acc + curr.list.length, 0);
+		}
+	}
+
+})();
 
 export function handleFontFiles(files) {
 	const acceptedExtensions = /^.*\.(ttf|otf|woff|woff2)$/i;
@@ -14,17 +116,7 @@ export function handleFontFiles(files) {
 	Promise.all(loadedFonts).then(fonts => {
 		sortFonts(fonts);
 
-		fonts.forEach(font => {
-			Fonts.push(font);
-
-			font.load();
-
-			// Dispatch event
-			const event = new CustomEvent("font-added", {detail: {font: font}});
-			window.dispatchEvent(event);
-		});
-
-		sortFonts(Fonts);
+		fonts.forEach(Fonts.add);
 	});
 }
 

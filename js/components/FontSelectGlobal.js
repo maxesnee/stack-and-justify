@@ -16,10 +16,14 @@ export function FontSelectGlobal(initialVnode) {
 				m('div.select-wrapper', {class: !Layout.fontLocked.val ? "disabled" : ""},
 					m('select', {
 						disabled: !Layout.fontLocked.val,
-						oninput: (e) => {Layout.font.val = Fonts.find(font => font.id === e.target.options[e.target.selectedIndex].value)},
+						oninput: (e) => {Layout.font.val = Fonts.find(e.target.selectedOptions[0].value)},
 					},
-						Fonts.map((font) => {
-							return m('option', { value: font.id, selected: Layout.font.val.id == font.id}, font.name)
+						Fonts.list.map(family => {
+							return m('optgroup', {label: family.name},
+								family.list.map(font => {
+									return m('option', { value: font.id, selected: Layout.font.val.id == font.id}, font.name);
+								})
+							)
 						})
 					),
 				),
