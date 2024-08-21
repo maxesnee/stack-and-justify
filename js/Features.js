@@ -1,8 +1,6 @@
+import { Feature } from './Feature.js';
 import { Fonts } from './Fonts.js';
 import { generateUID } from "./Helpers.js";
-
-// List of user controlled features that should be activated by default
-const defaultFeatures = ['liga', 'clig', 'calt'];
 
 export const Features = (function() {
 	const features = [];
@@ -82,16 +80,3 @@ export const Features = (function() {
 	}
 })();
 
-function Feature(tag, name) {
-	let selected = defaultFeatures.includes(tag) ? true : false;
-	let fontIds = [];
-	const id = generateUID();
-
-	return {
-		tag,
-		name,
-		selected,
-		fontIds,
-		id
-	}
-}
