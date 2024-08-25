@@ -6,11 +6,17 @@ export const WordGenerator = function(fontName, fontData) {
 	let sortedWords = null;
 	
 	async function sort(words, fontFeaturesSettings) {
-		SortWorker.postMessage([fontData, words]);
-		SortWorker.onmessage = (e) => {
-			sortedWords = e.data;
-			console.log(sortedWords);
-		}
+		const promise = new Promise((resolve, reject) => {
+			SortWorker.postMessage([fontData, words]);	
+
+			SortWorker.onmessage = (e) => {
+				sortedWords = e.data;
+				resolve();
+			}
+		});
+
+
+		return promise;
 	}
 
 	function getWords(size, width, filter, minWords=16) {
