@@ -1,4 +1,5 @@
 import { Filters } from '../Filters.js';
+import { WorkerPool } from '../WorkerPool.js';
 
 const SortWorker = new Worker('js/wordgenerator/worker.js', {type: 'module'});
 
