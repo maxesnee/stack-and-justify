@@ -134,7 +134,6 @@ export function loadFontFile(file) {
 
 		reader.onloadend = function(e) {
 			const fontInfo = getFontInfo(parse(e.target.result), fileName);
-
 			// Check if a font with the same name does not exists already
 			if (Fonts.find(font => font.name === fontInfo.fullName)) {
 				reject();

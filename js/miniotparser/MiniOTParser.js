@@ -143,9 +143,9 @@ export function getFontInfo(font, fileName) {
 	info.fileName = fileName;
 
 	// Create feature list
+	info.features = [];
 	if (font.GSUB === undefined) return info;
 	
-	info.features = [];
 	for (const feature of font.GSUB.featureList) {
 		const featureInfo = {
 			tag: feature.tag,
