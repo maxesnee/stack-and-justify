@@ -1,13 +1,14 @@
 import { Filters } from '../Filters.js';
 
+const SortWorker = new Worker('js/wordgenerator/worker.js', {type: 'module'});
+
 export const WordGenerator = function(fontName, fontData) {
 	let sortedWords = null;
-	const worker = new Worker('js/wordgenerator/worker.js', {type: 'module'});	
 	
 	async function sort(words, fontFeaturesSettings) {
-		const result = worker.postMessage([fontData, words]);
-		sortedWords = await result.then(e => e.data);
-		console.log(sortedWords);
+		const result = await SortWorker.postMessage([fontData, words]);
+		// sortedWords = await result.then(e => e.data);
+		// console.log(sortedWords);
 	}
 
 	function getWords(size, width, filter, minWords=16) {
