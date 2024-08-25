@@ -4,11 +4,11 @@ export const WorkerPool = (function() {
 	const queue = [];
 
 	for (let i = 0; i < workerCount; i++) {
-		const worker = new Worker('./js/wordgenerator/SortWordsWorker.js');
+		const worker = new Worker('js/wordgenerator/worker.js', {type: 'module'});
 		workers[i] = {
 			worker,
 			available: true
-		};		
+		};
 	}
 
 	function handleNextMessage() {
@@ -24,7 +24,7 @@ export const WorkerPool = (function() {
 
 	function postMessage(message, promise) {
 		const worker = workers.find(worker => worker.available);
-		
+
 		if (!promise) promise = Deferred();
 
 		if (!worker) {
