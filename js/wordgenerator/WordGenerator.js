@@ -1,45 +1,14 @@
 import { Filters } from '../Filters.js';
-import { WorkerPool } from "./WorkerPool.js";
 
 export const WordGenerator = function(fontName, fontData) {
 	let sortedWords = null;
-
-	async function sort(words, fontFeaturesSettings) {
-		// The workers requires the OffscreenCanvas API
-		if (window.OffscreenCanvas) {
-			const result = WorkerPool.postMessage([words, fontName, fontData, fontFeaturesSettings]);
-			sortedWords = await result.then(e => e.data);
-		} else {
-			sortedWords = sortWords(words, fontName, fontData, fontFeaturesSettings);
-		}
+	const worker = new Worker('js/wordgenerator/worker.js', {type: 'module'});	
+	worker.onmessage = (e) => {
+		console.log(e.data);
 	}
-
-	// This function is to be used if the OffscreenCanvas API (and thus, workers) is not available
-	function sortWords(words, fontName, fontData, fontFeatures) {
-		const canvas = document.createElement('canvas');
-		const ctx = canvas.getContext('2d');
-		const sortedWords = {};
-		sortedWords.minWidth = Infinity;
-
-		ctx.font = `100px ${fontName}`;
-
-		for (let filter of Filters) {
-			sortedWords[filter.name] = {};
-
-			for (let word of words) {
-				let filteredWord = filter.apply(word);
-				let width = Math.floor(ctx.measureText(filteredWord).width);
-				if (sortedWords[filter.name][width] === undefined) {
-					sortedWords[filter.name][width] = []
-				}
-				sortedWords[filter.name][width].push(filteredWord);
-
-				if (width < minWidth) sortedWords.minWidth = width;
-			}
-
-			sortedWords.spaceWidth = Math.floor(ctx.measureText(' ').width);
-		}
-		return sortedWords;
+	
+	async function sort(words, fontFeaturesSettings) {
+		worker.postMessage([fontData, words]);
 	}
 
 	function getWords(size, width, filter, minWords=16) {
