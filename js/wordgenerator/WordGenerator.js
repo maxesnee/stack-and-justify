@@ -1,25 +1,12 @@
-import { Filters } from '../Filters.js';
 import { WorkerPool } from './WorkerPool.js';
-
-const hbModule = WebAssembly.compileStreaming(fetch('./js/wordgenerator/harfbuzzjs/hb.wasm'));
 
 export const WordGenerator = function(fontName, fontData) {
 	let sortedWords = null;
-	const worker = new Worker('js/wordgenerator/worker.js', {type: 'module'});
-	
-	hbModule.then(hbModule => {
-		worker.postMessage(['load', hbModule, fontData]);
-	});
-	
+	const fontBuffer = new Uint8Array(fontData);
+
 	async function sort(words, fontFeaturesSettings) {
-		const promise = new Promise((resolve, reject) => {
-			worker.postMessage(['sort', words]);
-			worker.onmessage = (e) => {
-				sortedWords = e.data;
-				resolve();
-			}
-		});
-		return promise;
+		const result = await WorkerPool.postMessage({type: 'sort', words, fontBuffer, fontFeaturesSettings});
+		sortedWords = result.data;
 	}
 
 	function getWords(size, width, filter, minWords=16) {

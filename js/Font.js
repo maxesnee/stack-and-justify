@@ -23,12 +23,11 @@ export const Font = function(name, data, info) {
 
 	async function update() {
 		isLoading = true;
-
 		const words = await Words.get();
 		fontFeatureSettings.update();
 
 		try {
-			await wordGenerator.sort(words, fontFeatureSettings.val);	
+			await wordGenerator.sort(words, fontFeatureSettings.val);
 		} catch (error) {
 			console.log(error);
 		}
@@ -67,7 +66,7 @@ function generateFontFeatureSettings(features) {
 
 	for (let feature of features) {
 		if (feature.selected) {
-			featureStrings.push(`"${feature.tag}"`);
+			featureStrings.push(`"${feature.tag}" on`);
 		} else {
 			featureStrings.push(`"${feature.tag}" off`);
 		}

@@ -124,15 +124,21 @@ export const Words = (function() {
 
 	async function get() {
 		let words = [];
+		const promises = [];
 		for (const source of sources.filter(source => source.selected)) {
 			for (const language of languages.filter(lang => lang.selected)) {
 				const listObject = source.words[language.name];
 				if (listObject.list === null) {
-					listObject.list = await loadFile(listObject.url);
+					listObject.list = loadFile(listObject.url);
 				}
-				words = words.concat(listObject.list);
+				promises.push(listObject.list);
+				listObject.list.then(list => {
+					words = words.concat(list);
+				});
+				
 			}
 		}
+		await Promise.all(promises);
 		return words;
 	}
 

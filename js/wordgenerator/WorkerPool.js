@@ -1,15 +1,20 @@
 export const WorkerPool = (function() {
-	const workerCount = 1;
+	const workerCount = 4;
 	const workers = [];
 	const queue = [];
+	const hbModule = WebAssembly.compileStreaming(fetch('./js/wordgenerator/harfbuzzjs/hb.wasm'));
 
-	for (let i = 0; i < workerCount; i++) {
-		const worker = new Worker('js/wordgenerator/worker.js', {type: 'module'});
-		workers[i] = {
-			worker,
-			available: true
-		};
-	}
+	hbModule.then(hbModule => {
+		for (let i = 0; i < workerCount; i++) {
+			const worker = new Worker('js/wordgenerator/worker.js', {type: 'module'});
+			worker.postMessage({type: 'load-module', module: hbModule});
+
+			workers[i] = {
+				worker,
+				available: true
+			};
+		}
+	});
 
 	function handleNextMessage() {
 		if (queue.length) {

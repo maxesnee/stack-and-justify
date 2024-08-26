@@ -83,11 +83,13 @@ export const Fonts = (function() {
 				}
 
 				for (let font of family.list) {
+					let needsUpdate = false;
 					for (let feature of updatedFeatures) {
 						if (font.features.includes(feature)) {
-							font.update();
+							needsUpdate = true;	
 						}
 					}
+					if (needsUpdate) font.update();
 				}
 			}
 		}

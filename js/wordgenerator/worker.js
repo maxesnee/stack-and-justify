@@ -2,42 +2,40 @@ import { hbjs } from './harfbuzzjs/hbjs.js';
 import { Filters } from '../Filters.js';
 
 let hb;
-let font;
 
-onmessage = (e) => {
-	if (e.data[0] === 'load') {
-		const hbModule = e.data[1];
-		hb = WebAssembly.instantiate(hbModule, {}).then((instance) => {	
+onmessage = async function(e) {
+	if (e.data.type === 'load-module') {
+		const hbModule = e.data.module;
+		hb = await WebAssembly.instantiate(hbModule, {}).then((instance) => {	
 			return hbjs(instance);
 		});
-		hb.then(hb => {
-			const fontBuffer = e.data[2];
-			const blob = hb.createBlob(fontBuffer);
-			const face = hb.createFace(blob, 0);
-			font = hb.createFont(face);			
-		});
 	}
-	if (e.data[0] === 'sort') {
-		hb.then(hb => {
-			const words = e.data[1];
-			const sortedWords = measureWords(hb, words, font, 100);
-			postMessage(sortedWords);
-		});
+	if (e.data.type === 'sort') {
+		const words = e.data.words;
+		const fontBuffer = e.data.fontBuffer;
+		const fontFeaturesSettings = e.data.fontFeaturesSettings;
+		const blob = hb.createBlob(fontBuffer)
+		const face = hb.createFace(blob, 0);
+		const font = hb.createFont(face);
 
+		const sortedWords = measureWords(words, font, 100, fontFeaturesSettings);
+		postMessage(sortedWords);
 	}
 };
 
 
-function measureWords(hb, words, font, size) {
+function measureWords(words, font, size, fontFeaturesSettings) {
+	const scale = 1/(1000/size);
 	const sortedWords = {};
 	sortedWords.minWidth = Infinity;
+	font.setScale(1000, 1000);
 
 	for (let filter of Filters) {
 		sortedWords[filter.name] = {};
 
 		for (let word of words) {
 			let filteredWord = filter.apply(word);
-			let width = Math.floor(measureText(filteredWord, font, size));
+			let width = Math.floor(measureText(filteredWord, font, scale, fontFeaturesSettings));
 			if (sortedWords[filter.name][width] === undefined) {
 				sortedWords[filter.name][width] = []
 			}
@@ -45,17 +43,19 @@ function measureWords(hb, words, font, size) {
 
 			if (width < sortedWords.minWidth) sortedWords.minWidth = width;
 		}
-	}
 
-	function measureText(str, font, size) {
-		const buffer = hb.createBuffer();
-		buffer.addText(str);
-		buffer.guessSegmentProperties();
-		hb.shape(font, buffer);
-		const result =  buffer.json();
-		buffer.destroy();
-		return (result.reduce((acc, curr) => acc + curr.ax, 0)/1000)*size;
+		sortedWords.spaceWidth = Math.floor(measureText(' ', font, scale, fontFeaturesSettings));
 	}
 
 	return sortedWords;
+}
+
+function measureText(str, font, scale, fontFeaturesSettings) {
+	const buffer = hb.createBuffer();
+	buffer.addText(str);
+	buffer.guessSegmentProperties();
+	hb.shape(font, buffer, fontFeaturesSettings);
+	const result =  buffer.json();
+	buffer.destroy();
+	return result.reduce((acc, curr) => acc + curr.ax, 0)*scale;
 }
