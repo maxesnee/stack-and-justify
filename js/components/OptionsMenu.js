@@ -26,7 +26,7 @@ export function OptionsMenu(initialVnode) {
 			source.selected = options.sources[source.name];
 		}
 
-		Fonts.forEach(font => font.update());
+		Fonts.updateAll();
 
 		open = false;
 		needsUpdate = false;

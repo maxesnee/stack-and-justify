@@ -59,6 +59,13 @@ export const Fonts = (function() {
 		}
 	}
 
+	// Update every font in the list
+	function updateAll() {
+		list.forEach(family => {
+			family.list.forEach(font => font.update());
+		});
+	}
+
 	// Get form data from the Features menu and activate/desactivate 
 	// the corresponding features in the list.
 	// Then, update the fonts that includes one the updated features.
@@ -99,6 +106,7 @@ export const Fonts = (function() {
 		list,
 		add,
 		find,
+		updateAll,
 		updateFeatures,
 		get length() {
 			return list.reduce((acc, curr) => acc + curr.list.length, 0);
