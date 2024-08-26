@@ -2,7 +2,7 @@ export const WorkerPool = (function() {
 	const workerCount = 4;
 	const workers = [];
 	const queue = [];
-	const hbModule = WebAssembly.compileStreaming(fetch('./js/wordgenerator/harfbuzzjs/hb.wasm'));
+	const hbModule = WebAssembly.compileStreaming(fetch('./js/harfbuzzjs/hb.wasm'));
 
 	hbModule.then(hbModule => {
 		for (let i = 0; i < workerCount; i++) {

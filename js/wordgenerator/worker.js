@@ -1,4 +1,4 @@
-import { hbjs } from './harfbuzzjs/hbjs.js';
+import { hbjs } from '../harfbuzzjs/hbjs.js';
 import { Filters } from '../Filters.js';
 
 let hb;
