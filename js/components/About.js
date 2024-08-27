@@ -16,7 +16,12 @@ export function About(initialVnode) {
 						m('span', "For a similar tool, also check "),
 						m('a.big-link', {target: '_blank', href: "https://workshop.mass-driver.com/waterfall"}, "Mass Driver’s Waterfall"),
 						m('span', " from which this tool was inspired.")
-					)
+					),
+					m('p.col-1',
+						m('span', "If you want to support this project, you can make a donation via Paypal"),
+						m('br'),
+						m('a.t-big.donation-btn', {target: '_blank', href: "https://www.paypal.com/donate/?hosted_button_id=677KMWSBSRL3N"}, "Donate")
+					),
 				),
 			)
 		}
