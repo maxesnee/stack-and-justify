@@ -15,17 +15,16 @@ export function Tooltip(initialVnode) {
 	}
 
 	function positionTooltip(vnode) {
-		vnode.dom.style.transform = '';
-		const width = vnode.dom.offsetWidth;
 		const rect = vnode.dom.getBoundingClientRect();
+		const parentRect = vnode.dom.parentElement.getBoundingClientRect();
 		const padding = parseFloat(getComputedStyle(document.body).getPropertyValue('padding-right'))/2;
-		let pos = -width/2;
+		let pos = -rect.width/2 + parentRect.width/2;
 
-			// if tooltip is outside the viewport
-		if (rect.right + pos + padding > window.innerWidth) {
-			pos -= rect.right + pos + padding - window.innerWidth;
+		// if tooltip is outside the viewport
+		if (rect.right + pos + padding > document.body.clientWidth) {
+			pos -= (rect.right + pos + padding) - document.body.clientWidth;
 		}
-
+		
 		vnode.dom.style.transform = `translateX(${pos}px)`;
 	}
 
