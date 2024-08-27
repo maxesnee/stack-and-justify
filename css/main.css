@@ -652,6 +652,11 @@ input:focus {
 	margin-right: 3rem;
 }
 
+.size-input-wrapper {
+	display: flex;
+	align-items: start;
+}
+
 .size-input-global {
 	padding-top: 0;
 }
