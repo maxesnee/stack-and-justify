@@ -209,13 +209,16 @@ body.dark .logo svg .fill {
 		order: 1;
 	}
 
-	.drop-message {
-		order: 2;
-		margin-bottom: 0.75rem;
+	.options {
+		display: none;
 	}
 
-	.options {
-		order: 3;
+	.features {
+		display: none;
+	}
+
+	.drop-message {
+		order: 2;
 	}
 }
 
@@ -1036,5 +1039,9 @@ input[type="checkbox"]:checked + label::before {
 
 	.about-text p {
 		margin-bottom: 1rem;
+	}
+
+	.about-text p.col-1 {
+		grid-column: span 2;
 	}
 }

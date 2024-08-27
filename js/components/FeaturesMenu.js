@@ -35,7 +35,7 @@ export function FeaturesMenu(initialVnode) {
 			const familiesWithFeatures = Fonts.list.filter(family => family.features.length);
 			const disabled = familiesWithFeatures.length === 0;
 			
-			return m('div.menu-container',
+			return m('div.menu-container.features',
 				m('button.menu-button', { 
 					class: disabled ? "disabled" : "",
 					disabled, 

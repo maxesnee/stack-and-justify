@@ -46,7 +46,7 @@ export function OptionsMenu(initialVnode) {
 			});
 		},
 		view: function(vnode) {
-			return m('div.menu-container', 
+			return m('div.menu-container.options', 
 				m('button.menu-button', {onclick: () => { open = !open }}, "Options ▿"),
 				m('form.menu', {style: {visibility: open ? 'visible' : 'hidden'}}, 
 					m('fieldset.submenu',
