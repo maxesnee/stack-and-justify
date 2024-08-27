@@ -32,14 +32,17 @@ export function FeaturesMenu(initialVnode) {
 			});
 		},
 		view: function(vnode) {
+			const familiesWithFeatures = Fonts.list.filter(family => family.features.length);
+			const disabled = familiesWithFeatures.length === 0;
+			
 			return m('div.menu-container',
 				m('button.menu-button', { 
-					class: !Fonts.length ? "disabled" : "",
-					disabled: !Fonts.length, 
+					class: disabled ? "disabled" : "",
+					disabled, 
 					onclick: () => { open = !open }
 				}, "Features ▿"),
 				m('form.menu', {onsubmit: update, style: {visibility: open ? 'visible' : 'hidden'}}, 
-					Fonts.list.map(family => {
+					familiesWithFeatures.map(family => {
 						return m(FeaturesSubmenu, {
 							key: family.id,
 							family,
