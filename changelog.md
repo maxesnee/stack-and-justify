@@ -7,7 +7,9 @@
 
 ### Changed
 - Fonts are sorted using font metadatas (usWeightClass, usWidthClass) instead of style names
+- Fonts are grouped by family in the font inputs
 - Small design fixes in menus and inputs
+- Use Harfbuzz instead of Canvas API for measuring strings.
 
 ### Fixed
 - Selected options in the Options menu are now persistent even when not applied (also applies to the Features menu)
