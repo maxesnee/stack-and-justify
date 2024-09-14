@@ -134,7 +134,7 @@ export function loadFontFile(file) {
 
 	return new Promise((resolve, reject) => {
 		// Removes file extension from name
-		let fileName = file.name.replace(/\..+$/, "");
+		let fileName = file.name.substring(0, file.name.lastIndexOf('.'));
 		// Replace any non alpha numeric characters with -
 		fileName = fileName.replace(/\W+/g, "-");
 		// Remove leading digits in the filename
