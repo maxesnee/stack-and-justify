@@ -80,6 +80,11 @@ export const Words = (function() {
 			label: 'Spanish',
 			code: 'es',
 			selected: false
+		}, {
+			name: 'vietnamese',
+			label: 'Vietnamese',
+			code: 'vi',
+			selected: false
 		}
 	];
 
